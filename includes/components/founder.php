@@ -5,12 +5,12 @@
             <!-- Left Side -->
             <div class="founder-image-col">
                 <div class="founder-pattern"></div>
-                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Amit Sharma - Founder" class="founder-img">
+                <img src="assets/images/kalp-interior-founder.webp" alt="Reedam - Founder" class="founder-img">
                 <div class="founder-card">
-                    <h4>Amit Sharma</h4>
+                    <h4>Reedam</h4>
                     <p class="founder-title">Founder & Managing Director</p>
                     <div class="founder-card-divider"></div>
-                    <p class="founder-bio">With over 15 years of experience in real estate, Amit's leadership continues to shape our journey of growth, trust, and excellence.</p>
+                    <p class="founder-bio">With over 15 years of experience in interior design, Reedam's leadership continues to shape our journey of growth, trust, and excellence.</p>
                     <a href="#" class="founder-social"><i class="fa-brands fa-linkedin-in"></i></a>
                 </div>
             </div>
@@ -56,8 +56,8 @@
                     </div>
                     <div class="quote-content">
                         <p>We believe that every property has the power to transform lives.<br>Our mission is to turn dreams into reality through trust,<br>innovation, and unwavering commitment.</p>
-                        <div class="signature-wrapper">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Signature_of_Amitabh_Bachchan.svg" alt="Signature" class="founder-signature">
+                        <div class="signature-wrapper" style="text-align: right; margin-top: 15px;">
+                            <span class="founder-signature" style="font-family: var(--font-accent); font-size: 2.5rem; color: var(--text-dark); opacity: 0.8; font-style: italic;">Reedam</span>
                         </div>
                     </div>
                 </div>

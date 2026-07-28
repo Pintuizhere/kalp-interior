@@ -42,19 +42,27 @@
         <div class="projects-marquee-wrapper">
             <div class="projects-marquee-content">
                 <!-- Set 1 -->
-                <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=150&q=80" alt="Project 1" class="projects-stripe-img" style="width: 70px;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=150&q=80" alt="Project 2" class="projects-stripe-img" style="width: 70px;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=150&q=80" alt="Project 3" class="projects-stripe-img" style="width: 70px;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=150&q=80" alt="Project 4" class="projects-stripe-img" style="width: 70px;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&w=150&q=80" alt="Project 5" class="projects-stripe-img" style="width: 70px;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=150&q=80" alt="Project 6" class="projects-stripe-img" style="width: 70px;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo1.webp" alt="Brand 1" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo2.webp" alt="Brand 2" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo3.png" alt="Brand 3" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo4.png" alt="Brand 4" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo5.png" alt="Brand 5" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo1.webp" alt="Brand 1" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo2.webp" alt="Brand 2" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo3.png" alt="Brand 3" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo4.png" alt="Brand 4" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo5.png" alt="Brand 5" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <!-- Set 2 (Duplicate for continuous loop) -->
-                <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=150&q=80" alt="Project 1" class="projects-stripe-img" style="width: 70px;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=150&q=80" alt="Project 2" class="projects-stripe-img" style="width: 70px;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=150&q=80" alt="Project 3" class="projects-stripe-img" style="width: 70px;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=150&q=80" alt="Project 4" class="projects-stripe-img" style="width: 70px;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&w=150&q=80" alt="Project 5" class="projects-stripe-img" style="width: 70px;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=150&q=80" alt="Project 6" class="projects-stripe-img" style="width: 70px;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo1.webp" alt="Brand 1" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo2.webp" alt="Brand 2" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo3.png" alt="Brand 3" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo4.png" alt="Brand 4" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo5.png" alt="Brand 5" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo1.webp" alt="Brand 1" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo2.webp" alt="Brand 2" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo3.png" alt="Brand 3" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo4.png" alt="Brand 4" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo5.png" alt="Brand 5" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
             </div>
         </div>
         

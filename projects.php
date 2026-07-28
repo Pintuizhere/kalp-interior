@@ -3,6 +3,7 @@ $currentPage = 'projects';
 include 'includes/header.php'; 
 ?>
 
+
 <main>
     <!-- Page Banner -->
     <section class="page-banner">
@@ -13,179 +14,282 @@ include 'includes/header.php';
             </div>
         </div>
     </section>
+    <section class="projects-section" style="background-color: #F6F6F6; padding: 100px 0;">
+        <div class="container" style="max-width: 1300px;">
+            <div class="projects-header" style="align-items: flex-start;">
+                <div>
+                    <p class="section-subtitle" style="justify-content: flex-start; margin-bottom: 20px;">OUR PROJECTS</p>
+                    <h2 class="section-title" style="font-size: 3.5rem; color: var(--text-dark);">Explore <span class="accent-text" style="font-family: var(--font-accent); font-style: italic; font-weight: 400;">Our Portfolio</span></h2>
+                    <p style="color: var(--text-muted); max-width: 500px; font-size: 1.1rem; line-height: 1.6; margin-top: 15px;">Discover a selection of our finest interior design projects crafted with creativity, functionality, and elegance.</p>
+                </div>
+                <a href="#" class="btn hero-btn" style="background: var(--text-dark); padding: 8px 30px 8px 8px; border-radius: 40px; align-self: center;">
+                    <span class="btn-icon" style="background: var(--accent-color); color: var(--text-dark); width: 40px; height: 40px;"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></span>
+                    <span class="btn-text" style="background: transparent; color: white; padding: 0 10px; font-weight: 500;">View All Projects</span>
+                </a>
+            </div>
+            
+            <div class="filter-tags" style="justify-content: flex-start; gap: 15px; margin-bottom: 50px;">
+                <span class="filter-tag active" style="background-color: #fcebdc; color: var(--text-dark); border: none; padding: 12px 25px;"><i class="fa-solid fa-border-all" style="margin-right: 8px;"></i> All</span>
+                <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px; border-radius: 25px;"><i class="fa-solid fa-chair" style="margin-right: 8px;"></i> Interior</span>
+                <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px; border-radius: 25px;"><i class="fa-solid fa-house" style="margin-right: 8px;"></i> Exterior</span>
+                <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px; border-radius: 25px;"><i class="fa-regular fa-building" style="margin-right: 8px;"></i> Residence</span>
+                <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px; border-radius: 25px;"><i class="fa-solid fa-briefcase" style="margin-right: 8px;"></i> Offices</span>
+                <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px; border-radius: 25px;"><i class="fa-solid fa-kitchen-set" style="margin-right: 8px;"></i> Kitchen</span>
+                <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px; border-radius: 25px;"><i class="fa-solid fa-couch" style="margin-right: 8px;"></i> Living Room</span>
+                <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px; border-radius: 25px;"><i class="fa-solid fa-bed" style="margin-right: 8px;"></i> Bed Room</span>
 
-    <!-- Projects Portfolio Section -->
-    <section class="projects-portfolio-section" style="padding: 80px 0; background-color: var(--bg-white);">
-        <div class="container">
-            <div class="text-center" style="margin-bottom: 40px; text-align: center;">
-                <p class="section-subtitle" style="justify-content: center;">OUR PROJECTS</p>
-                <h2 class="section-title">Explore <span class="accent-text" style="font-family: var(--font-accent); font-style: italic; font-weight: 400;">Our Portfolio</span><br>of Featured Projects</h2>
             </div>
             
-            <div class="portfolio-filters">
-                <button class="filter-btn active">All</button>
-                <button class="filter-btn">Interior</button>
-                <button class="filter-btn">Exterior</button>
-                <button class="filter-btn">Residence</button>
-                <button class="filter-btn">Offices</button>
-                <button class="filter-btn">Kitchen</button>
-                <button class="filter-btn">Living Room</button>
-                <button class="filter-btn">Bed Room</button>
-                <button class="filter-btn">Hospitality Design</button>
+            <div class="projects-grid" style="grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 50px;">
+
+            <div class="project-card new-design" style="position: relative;">
+                <a href="project-details.php" style="display: block; overflow: hidden;"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="MODERN 4 BHK APARTMENT" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;"></a>
+                <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
+                    <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-house" style="color: #24352a;"></i> Residential Design</span>
+                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-regular fa-heart"></i></span>
+                </div>
+                <div class="project-bottom-content">
+                    <div class="project-bottom-main">
+                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <div class="project-bottom-info">
+                            <h3><a href="project-details.php" style="color: inherit; text-decoration: none;">MODERN 4 BHK APARTMENT</a></h3>
+                            <p><i class="fa-solid fa-location-dot"></i> Mumbai, India</p>
+                        </div>
+                    </div>
+                    <div class="project-bottom-tags">
+                        <span class="p-tag">Apartment</span>
+                        <span class="p-tag">Residential Design</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card new-design" style="position: relative;">
+                <a href="project-details.php" style="display: block; overflow: hidden;"><img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="LUXURY 6 BHK BUNGALOW" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;"></a>
+                <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
+                    <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-house" style="color: #24352a;"></i> Residential Design</span>
+                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-regular fa-heart"></i></span>
+                </div>
+                <div class="project-bottom-content">
+                    <div class="project-bottom-main">
+                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <div class="project-bottom-info">
+                            <h3><a href="project-details.php" style="color: inherit; text-decoration: none;">LUXURY 6 BHK BUNGALOW</a></h3>
+                            <p><i class="fa-solid fa-location-dot"></i> Pune, India</p>
+                        </div>
+                    </div>
+                    <div class="project-bottom-tags">
+                        <span class="p-tag">Bungalow</span>
+                        <span class="p-tag">Residential Design</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card new-design" style="position: relative;">
+                <a href="project-details.php" style="display: block; overflow: hidden;"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="CORPORATE OFFICE SPACE" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;"></a>
+                <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
+                    <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-building" style="color: #24352a;"></i> Commercial Design</span>
+                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-regular fa-heart"></i></span>
+                </div>
+                <div class="project-bottom-content">
+                    <div class="project-bottom-main">
+                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <div class="project-bottom-info">
+                            <h3><a href="project-details.php" style="color: inherit; text-decoration: none;">CORPORATE OFFICE SPACE</a></h3>
+                            <p><i class="fa-solid fa-location-dot"></i> Bengaluru, India</p>
+                        </div>
+                    </div>
+                    <div class="project-bottom-tags">
+                        <span class="p-tag">Offices</span>
+                        <span class="p-tag">Commercial Design</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card new-design" style="position: relative;">
+                <a href="project-details.php" style="display: block; overflow: hidden;"><img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="MINIMALIST LIVING ROOM" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;"></a>
+                <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
+                    <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-couch" style="color: #24352a;"></i> Interior Design</span>
+                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-regular fa-heart"></i></span>
+                </div>
+                <div class="project-bottom-content">
+                    <div class="project-bottom-main">
+                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <div class="project-bottom-info">
+                            <h3><a href="project-details.php" style="color: inherit; text-decoration: none;">MINIMALIST LIVING ROOM</a></h3>
+                            <p><i class="fa-solid fa-location-dot"></i> Hyderabad, India</p>
+                        </div>
+                    </div>
+                    <div class="project-bottom-tags">
+                        <span class="p-tag">Living Room</span>
+                        <span class="p-tag">Interior Design</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card new-design" style="position: relative;">
+                <a href="project-details.php" style="display: block; overflow: hidden;"><img src="https://images.unsplash.com/photo-1556910103-1c02745a8728?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="MODERN KITCHEN SPACE" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;"></a>
+                <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
+                    <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-kitchen-set" style="color: #24352a;"></i> Kitchen Design</span>
+                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-regular fa-heart"></i></span>
+                </div>
+                <div class="project-bottom-content">
+                    <div class="project-bottom-main">
+                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <div class="project-bottom-info">
+                            <h3><a href="project-details.php" style="color: inherit; text-decoration: none;">MODERN KITCHEN SPACE</a></h3>
+                            <p><i class="fa-solid fa-location-dot"></i> Delhi, India</p>
+                        </div>
+                    </div>
+                    <div class="project-bottom-tags">
+                        <span class="p-tag">Kitchen</span>
+                        <span class="p-tag">Interior Design</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card new-design" style="position: relative;">
+                <a href="project-details.php" style="display: block; overflow: hidden;"><img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="CONTEMPORARY BEDROOM" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;"></a>
+                <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
+                    <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-bed" style="color: #24352a;"></i> Bedroom Design</span>
+                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-regular fa-heart"></i></span>
+                </div>
+                <div class="project-bottom-content">
+                    <div class="project-bottom-main">
+                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <div class="project-bottom-info">
+                            <h3><a href="project-details.php" style="color: inherit; text-decoration: none;">CONTEMPORARY BEDROOM</a></h3>
+                            <p><i class="fa-solid fa-location-dot"></i> Bengaluru, India</p>
+                        </div>
+                    </div>
+                    <div class="project-bottom-tags">
+                        <span class="p-tag">Bedroom</span>
+                        <span class="p-tag">Residential Design</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card new-design" style="position: relative;">
+                <a href="project-details.php" style="display: block; overflow: hidden;"><img src="https://images.unsplash.com/photo-1613490908592-fd5e16f9f2c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="MODERN VILLA EXTERIOR" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;"></a>
+                <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
+                    <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-house-user" style="color: #24352a;"></i> Exterior Design</span>
+                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-regular fa-heart"></i></span>
+                </div>
+                <div class="project-bottom-content">
+                    <div class="project-bottom-main">
+                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <div class="project-bottom-info">
+                            <h3><a href="project-details.php" style="color: inherit; text-decoration: none;">MODERN VILLA EXTERIOR</a></h3>
+                            <p><i class="fa-solid fa-location-dot"></i> Jaipur, India</p>
+                        </div>
+                    </div>
+                    <div class="project-bottom-tags">
+                        <span class="p-tag">Villa</span>
+                        <span class="p-tag">Exterior Design</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card new-design" style="position: relative;">
+                <a href="project-details.php" style="display: block; overflow: hidden;"><img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="ELEGANT FAMILY LOUNGE" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;"></a>
+                <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
+                    <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-couch" style="color: #24352a;"></i> Living Room Design</span>
+                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-regular fa-heart"></i></span>
+                </div>
+                <div class="project-bottom-content">
+                    <div class="project-bottom-main">
+                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <div class="project-bottom-info">
+                            <h3><a href="project-details.php" style="color: inherit; text-decoration: none;">ELEGANT FAMILY LOUNGE</a></h3>
+                            <p><i class="fa-solid fa-location-dot"></i> Chennai, India</p>
+                        </div>
+                    </div>
+                    <div class="project-bottom-tags">
+                        <span class="p-tag">Living Room</span>
+                        <span class="p-tag">Interior Design</span>
+                    </div>
+                </div>
+            </div>
+
             </div>
             
-            <div class="projects-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px;">
-                <!-- Project 1 (Active) -->
-                <div class="project-card active">
-                    <div class="project-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Modern 4 BHK Apartment">
-                        <div class="project-info">
-                            <h3>Modern 4 BHK Apartment<br>Interior Design</h3>
-                            <div class="project-tags">
-                                <span>2024</span>
-                                <span>Apartment</span>
-                                <span>Residential Design</span>
-                            </div>
-                        </div>
-                        <div class="project-btn-container">
-                            <a href="#" class="project-btn"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></a>
-                        </div>
+            <div class="projects-pagination" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 50px;">
+                <a href="#" class="page-link prev-page"><i class="fa-solid fa-angle-left"></i></a>
+                
+                <a href="#" class="page-link active">1</a>
+                <a href="#" class="page-link">2</a>
+                <a href="#" class="page-link">3</a>
+                <span class="page-dots">...</span>
+                <a href="#" class="page-link">8</a>
+                
+                <a href="#" class="page-link next-page"><i class="fa-solid fa-angle-right"></i></a>
+            </div>
+            
+            <!-- Features block -->
+            <div class="portfolio-features new-features-bar" style="display: flex; justify-content: space-between; align-items: center; margin-top: 80px; padding: 30px 40px; background-color: white; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.03);">
+                <div class="pf-item" style="display: flex; align-items: center; gap: 15px;">
+                    <div class="pf-icon" style="width: 50px; height: 50px; background-color: #fcf1db; color: #EAB136; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                        <i class="fa-solid fa-users-gear"></i>
+                    </div>
+                    <div class="pf-text">
+                        <strong style="display: block; font-size: 16px; color: var(--text-dark); margin-bottom: 2px;">Client Focused</strong>
+                        <span style="font-size: 13px; color: var(--text-muted);">Your vision, our priority.</span>
                     </div>
                 </div>
                 
-                <!-- Project 2 -->
-                <div class="project-card">
-                    <div class="project-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Modern and Luxurious 6 BHK">
-                        <div class="project-info">
-                            <h3>Modern and Luxurious 6 BHK<br>Bungalow Interior Design</h3>
-                            <div class="project-tags">
-                                <span>2024</span>
-                                <span>Bungalow</span>
-                                <span>Residential Design</span>
-                            </div>
-                        </div>
-                        <div class="project-btn-container">
-                            <a href="#" class="project-btn"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></a>
-                        </div>
+                <div style="width: 1px; height: 40px; background-color: rgba(0,0,0,0.05);"></div>
+                
+                <div class="pf-item" style="display: flex; align-items: center; gap: 15px;">
+                    <div class="pf-icon" style="width: 50px; height: 50px; background-color: #fcf1db; color: #EAB136; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                        <i class="fa-regular fa-lightbulb"></i>
+                    </div>
+                    <div class="pf-text">
+                        <strong style="display: block; font-size: 16px; color: var(--text-dark); margin-bottom: 2px;">Innovative Solutions</strong>
+                        <span style="font-size: 13px; color: var(--text-muted);">Creative ideas for unique spaces.</span>
                     </div>
                 </div>
-                
-                <!-- Project 3 -->
-                <div class="project-card">
-                    <div class="project-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1580618672591-eb180b1a973f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Modern Hair Salon">
-                        <div class="project-info">
-                            <h3>Modern Hair Salon<br>Interior Design</h3>
-                            <div class="project-tags">
-                                <span>2024</span>
-                                <span>Salon</span>
-                                <span>Commercial Design</span>
-                            </div>
-                        </div>
-                        <div class="project-btn-container">
-                            <a href="#" class="project-btn"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></a>
-                        </div>
+
+                <div style="width: 1px; height: 40px; background-color: rgba(0,0,0,0.05);"></div>
+
+                <div class="pf-item" style="display: flex; align-items: center; gap: 15px;">
+                    <div class="pf-icon" style="width: 50px; height: 50px; background-color: #fcf1db; color: #EAB136; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <div class="pf-text">
+                        <strong style="display: block; font-size: 16px; color: var(--text-dark); margin-bottom: 2px;">Quality & Excellence</strong>
+                        <span style="font-size: 13px; color: var(--text-muted);">Commitment to highest standards.</span>
                     </div>
                 </div>
-                
-                <!-- Project 4 -->
-                <div class="project-card">
-                    <div class="project-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Modern Restaurant">
-                        <div class="project-info">
-                            <h3>Modern Restaurant<br>Interior Design</h3>
-                            <div class="project-tags">
-                                <span>2024</span>
-                                <span>Restaurant</span>
-                                <span>Commercial Design</span>
-                            </div>
-                        </div>
-                        <div class="project-btn-container">
-                            <a href="#" class="project-btn"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></a>
-                        </div>
+
+                <div style="width: 1px; height: 40px; background-color: rgba(0,0,0,0.05);"></div>
+
+                <div class="pf-item" style="display: flex; align-items: center; gap: 15px;">
+                    <div class="pf-icon" style="width: 50px; height: 50px; background-color: #fcf1db; color: #EAB136; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                        <i class="fa-regular fa-clock"></i>
                     </div>
-                </div>
-                
-                <!-- Project 5 -->
-                <div class="project-card">
-                    <div class="project-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Modern 2 BHK Apartment">
-                        <div class="project-info">
-                            <h3>Modern 2 BHK Apartment<br>Interior Design</h3>
-                            <div class="project-tags">
-                                <span>2024</span>
-                                <span>Apartment</span>
-                                <span>Residential Design</span>
-                            </div>
-                        </div>
-                        <div class="project-btn-container">
-                            <a href="#" class="project-btn"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Project 6 -->
-                <div class="project-card">
-                    <div class="project-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Digital Agency Office">
-                        <div class="project-info">
-                            <h3>Digital Agency Office<br>Interior Design</h3>
-                            <div class="project-tags">
-                                <span>2024</span>
-                                <span>Agency</span>
-                                <span>Commercial Design</span>
-                            </div>
-                        </div>
-                        <div class="project-btn-container">
-                            <a href="#" class="project-btn"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Project 7 -->
-                <div class="project-card">
-                    <div class="project-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Modern 6 BHK Bungalow">
-                        <div class="project-info">
-                            <h3>Modern 6 BHK Bungalow<br>Interior Design</h3>
-                            <div class="project-tags">
-                                <span>2023</span>
-                                <span>Bungalow</span>
-                                <span>Residential Design</span>
-                            </div>
-                        </div>
-                        <div class="project-btn-container">
-                            <a href="#" class="project-btn"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Project 8 -->
-                <div class="project-card">
-                    <div class="project-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Modern Coffee Cafe">
-                        <div class="project-info">
-                            <h3>Modern Coffee Cafe<br>Interior Design</h3>
-                            <div class="project-tags">
-                                <span>2024</span>
-                                <span>Agency</span>
-                                <span>Commercial Design</span>
-                            </div>
-                        </div>
-                        <div class="project-btn-container">
-                            <a href="#" class="project-btn"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></a>
-                        </div>
+                    <div class="pf-text">
+                        <strong style="display: block; font-size: 16px; color: var(--text-dark); margin-bottom: 2px;">On-Time Delivery</strong>
+                        <span style="font-size: 13px; color: var(--text-muted);">Reliable service, every time.</span>
                     </div>
                 </div>
             </div>
+            
+            <!-- Dark CTA -->
+            <div class="projects-cta" style="background: linear-gradient(to right, rgba(26, 34, 31, 0.4) 0%, rgba(26, 34, 31, 1) 70%), url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') left center / cover no-repeat; border-radius: 15px; padding: 40px 50px; display: flex; justify-content: space-between; align-items: center; margin-top: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div class="cta-icon" style="background-color: var(--accent-color); width: 60px; height: 60px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--text-dark);">
+                        <i class="fa-regular fa-calendar-days"></i>
+                    </div>
+                    <div>
+                        <h3 style="color: white; font-size: 24px; margin-bottom: 5px;">Have a project in mind?</h3>
+                        <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 15px;">Let's create a space that's uniquely yours.</p>
+                    </div>
+                </div>
+                <a href="contact.php" class="btn" style="background-color: var(--accent-color); color: var(--text-dark); padding: 12px 35px; border-radius: 30px; font-weight: 600; display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">Book a Consultation <i class="fa-solid fa-arrow-right" style="background-color: var(--text-dark); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; transform: rotate(-45deg);"></i></a>
+            </div>
+            
         </div>
     </section>
-
-    <!-- Include Marquee and Contact from components -->
-    <?php include 'includes/components/contact.php'; ?>
-
-
 </main>
+
 
 <?php include 'includes/footer.php'; ?>

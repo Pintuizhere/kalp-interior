@@ -102,10 +102,6 @@
                                 Quality You Can Trust, Spaces You'll Love. <span style="color: #EAB136;">That's Our Promise.</span>
                             </p>
                         </div>
-                        <a href="contact.php" class="btn hero-btn" style="background: var(--text-dark); padding: 6px 25px 6px 6px; border-radius: 40px; text-decoration: none;">
-                            <span class="btn-icon" style="background: var(--accent-color); color: var(--text-dark); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%;"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></span>
-                            <span class="btn-text" style="background: transparent; color: white; padding: 0 10px; font-weight: 500; font-size: 14px;">Start Your Project</span>
-                        </a>
                     </div>
                 </div>
 

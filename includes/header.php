@@ -158,11 +158,16 @@
                 
                 <div class="nav-right" style="display: flex; align-items: center; gap: 15px;">
                     <a href="#" class="btn nav-book-call-btn" style="background: var(--accent-color); color: var(--text-dark); font-weight: 600; padding: 8px 8px 8px 24px; border-radius: 40px; display: inline-flex; align-items: center; gap: 15px; font-size: 16px;">
-                        Book a Call 
+                        Book Now 
                         <span class="nav-btn-circle" style="background: var(--text-dark); color: var(--text-light); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                             <i class="fa-solid fa-arrow-right nav-btn-arrow" style="transform: rotate(-45deg); font-size: 14px; transition: transform 0.3s ease;"></i>
                         </span>
                     </a>
+                    <style>
+                        .nav-book-call-btn:hover {
+                            color: white !important;
+                        }
+                    </style>
                     
                     <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
                         <i class="fa-solid fa-bars"></i>

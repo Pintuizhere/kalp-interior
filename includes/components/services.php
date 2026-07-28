@@ -3,13 +3,13 @@
     <div class="container" style="max-width: 1300px;">
         <div class="services-header" style="align-items: flex-start; margin-bottom: 50px;">
             <div>
-                <p class="section-subtitle" style="justify-content: flex-start; margin-bottom: 20px;"><span style="display: inline-block; width: 40px; height: 1px; background-color: var(--accent-color); margin-right: 15px;"></span> OUR SERVICES</p>
-                <h2 class="section-title" style="font-size: 3.5rem; color: var(--text-dark);">Explore <span class="accent-text">Our Services</span>:<br>Your Path to Success</h2>
+                <p class="section-subtitle" style="justify-content: flex-start; margin-bottom: 20px;">OUR SERVICES</p>
+                <h2 class="section-title" style="font-size: 3.5rem; color: var(--text-dark);">Explore <span class="accent-text">Our Services</span><br>Your Path to Success</h2>
                 <p style="color: var(--text-muted); max-width: 500px; font-size: 1.1rem; line-height: 1.6; margin-top: 15px;">Innovative design solutions crafted to bring your vision to life and create lasting impact.</p>
             </div>
-            <a href="#" class="btn hero-btn" style="background: #EAB136; padding: 8px 30px 8px 8px; border-radius: 40px; align-self: center;">
-                <span class="btn-icon" style="background: var(--text-dark); color: white; width: 40px; height: 40px;"><i class="fa-solid fa-arrow-right"></i></span>
-                <span class="btn-text" style="background: transparent; color: var(--text-dark); padding: 0 10px; font-weight: 600;">View All Services</span>
+            <a href="#" class="btn hero-btn" style="background: var(--text-dark); padding: 8px 30px 8px 8px; border-radius: 40px; align-self: center;">
+                <span class="btn-icon" style="background: var(--accent-color); color: var(--text-dark); width: 40px; height: 40px;"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></span>
+                <span class="btn-text" style="background: transparent; color: white; padding: 0 10px; font-weight: 500;">View All Services</span>
             </a>
         </div>
         

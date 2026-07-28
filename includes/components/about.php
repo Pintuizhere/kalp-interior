@@ -35,8 +35,8 @@
                     </div>
 
                     <div class="signature-block" style="display: flex; flex-direction: column; gap: 5px;">
-                        <h2 style="font-family: 'Mrs Saint Delafield', cursive; font-size: 42px; color: var(--text-dark); font-weight: 400; margin: 0; line-height: 1;">Jenny Alexander</h2>
-                        <p style="font-size: 13px; color: var(--text-muted); margin: 0; padding-left: 5px;">Jenny Alexander <span style="color: var(--accent-color);">•</span> CEO</p>
+                        <span class="founder-signature" style="font-family: var(--font-accent); font-size: 2.5rem; color: var(--text-dark); opacity: 0.8; font-style: italic;">Reedam</span>
+                        <p style="font-size: 13px; color: var(--text-muted); margin: 0; padding-left: 5px;">Reedam <span style="color: var(--accent-color);">•</span> Founder</p>
                     </div>
                 </div>
 

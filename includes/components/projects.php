@@ -22,7 +22,6 @@
             <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px;"><i class="fa-solid fa-kitchen-set" style="margin-right: 8px;"></i> Kitchen</span>
             <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px;"><i class="fa-solid fa-couch" style="margin-right: 8px;"></i> Living Room</span>
             <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px;"><i class="fa-solid fa-bed" style="margin-right: 8px;"></i> Bed Room</span>
-            <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px;"><i class="fa-solid fa-bell-concierge" style="margin-right: 8px;"></i> Hospitality Design</span>
         </div>
         
         <div class="projects-grid" style="grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 50px;">
@@ -31,7 +30,6 @@
                 <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Modern 4 BHK Apartment">
                 <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
                     <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-house" style="color: #24352a;"></i> Residential Design</span>
-                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer;"><i class="fa-regular fa-heart"></i></span>
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
@@ -53,7 +51,6 @@
                 <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Luxury 6 BHK Bungalow">
                 <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
                     <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-house" style="color: #24352a;"></i> Residential Design</span>
-                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer;"><i class="fa-regular fa-heart"></i></span>
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
@@ -75,7 +72,6 @@
                 <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Corporate Office Space">
                 <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
                     <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-building" style="color: #24352a;"></i> Commercial Design</span>
-                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer;"><i class="fa-regular fa-heart"></i></span>
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
@@ -94,9 +90,9 @@
         </div>
 
         <!-- Portfolio Footer Features -->
-        <div class="portfolio-features" style="display: flex; justify-content: space-between; align-items: center; background-color: #fbf3ec; padding: 35px 50px; border-radius: 20px; margin-top: 50px;">
+        <div class="portfolio-features" style="display: flex; justify-content: space-between; align-items: center; background-color: var(--text-light); padding: 35px 50px; border-radius: 20px; margin-top: 50px;">
             <div class="pf-item" style="display: flex; align-items: center; gap: 15px;">
-                <div class="pf-icon" style="width: 50px; height: 50px; background-color: var(--text-dark); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                <div class="pf-icon" style="width: 50px; height: 50px; background-color: var(--primary-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">
                     <i class="fa-solid fa-award"></i>
                 </div>
                 <div class="pf-text">
@@ -108,7 +104,7 @@
             <div style="width: 1px; height: 40px; background-color: rgba(0,0,0,0.1);"></div>
             
             <div class="pf-item" style="display: flex; align-items: center; gap: 15px;">
-                <div class="pf-icon" style="width: 50px; height: 50px; background-color: #e59d79; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                <div class="pf-icon" style="width: 50px; height: 50px; background-color: var(--accent-color); color: var(--text-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">
                     <i class="fa-regular fa-lightbulb"></i>
                 </div>
                 <div class="pf-text">
@@ -120,7 +116,7 @@
             <div style="width: 1px; height: 40px; background-color: rgba(0,0,0,0.1);"></div>
 
             <div class="pf-item" style="display: flex; align-items: center; gap: 15px;">
-                <div class="pf-icon" style="width: 50px; height: 50px; background-color: #2a3d33; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                <div class="pf-icon" style="width: 50px; height: 50px; background-color: var(--primary-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">
                     <i class="fa-solid fa-user-group"></i>
                 </div>
                 <div class="pf-text">
@@ -132,7 +128,7 @@
             <div style="width: 1px; height: 40px; background-color: rgba(0,0,0,0.1);"></div>
 
             <div class="pf-item" style="display: flex; align-items: center; gap: 15px;">
-                <div class="pf-icon" style="width: 50px; height: 50px; background-color: #df916b; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                <div class="pf-icon" style="width: 50px; height: 50px; background-color: var(--accent-color); color: var(--text-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">
                     <i class="fa-regular fa-calendar-check"></i>
                 </div>
                 <div class="pf-text">

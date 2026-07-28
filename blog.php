@@ -22,6 +22,25 @@ include 'includes/header.php';
                 <h2 class="section-title">Our Latest <span class="accent-text" style="font-family: var(--font-accent); font-style: italic; font-weight: 400;">News & Blogs</span></h2>
             </div>
             
+            <div class="blog-filters-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; flex-wrap: wrap; gap: 20px;">
+                <div class="filter-tags" style="display: flex; justify-content: flex-start; gap: 10px; flex-wrap: wrap;">
+                    <span class="filter-tag active" style="background-color: var(--accent-color); color: var(--text-dark); border: none; padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; display: inline-flex; align-items: center; cursor: pointer; transition: all 0.3s ease;"><i class="fa-solid fa-border-all" style="margin-right: 8px;"></i> All Posts</span>
+                    <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">Design Tips</span>
+                    <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">Trends</span>
+                    <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">Ideas & Inspiration</span>
+                    <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">News</span>
+                    <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">Projects</span>
+                    <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">Lifestyle</span>
+                </div>
+                
+                <div class="blog-search-form" style="position: relative; max-width: 250px; width: 100%;">
+                    <input type="text" placeholder="Search blogs..." style="width: 100%; padding: 10px 45px 10px 20px; border-radius: 30px; border: 1px solid rgba(0,0,0,0.1); outline: none; font-size: 13px; background: white; color: var(--text-dark); font-family: inherit;">
+                    <button type="submit" style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%); background-color: #23352A; color: white; width: 32px; height: 32px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease;">
+                        <i class="fa-solid fa-magnifying-glass" style="font-size: 12px;"></i>
+                    </button>
+                </div>
+            </div>
+            
             <div class="blog-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-bottom: 50px;">
                 <!-- Blog Card 1 -->
                 <div class="blog-card">
