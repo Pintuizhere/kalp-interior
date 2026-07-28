@@ -28,12 +28,15 @@
             padding: 5px;
         }
 
+        .mobile-only-li { display: none; }
+
         @media (max-width: 1199px) {
             .absolute-header .navbar {
                 padding: 12px 20px !important;
                 margin-top: 15px !important;
                 border-radius: 40px !important;
                 position: relative;
+                z-index: 1002;
             }
             .mobile-menu-toggle {
                 display: block !important;
@@ -46,11 +49,9 @@
                 width: 100%;
                 height: auto;
                 max-width: none;
-                background: rgba(30, 30, 30, 0.95);
-                backdrop-filter: blur(16px);
-                -webkit-backdrop-filter: blur(16px);
+                background: #111111;
                 border-radius: 30px;
-                border: 1px solid rgba(255, 255, 255, 0.15);
+                border: 1px solid rgba(255, 255, 255, 0.1);
                 display: flex !important;
                 flex-direction: column;
                 align-items: center;
@@ -58,9 +59,9 @@
                 gap: 15px;
                 transition: all 0.3s ease-in-out;
                 z-index: 1001;
-                box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.6);
                 margin: 0;
-                padding: 30px 20px;
+                padding: 40px 20px;
                 
                 /* Hidden state */
                 opacity: 0;
@@ -79,19 +80,25 @@
                 width: 100%;
                 text-align: center;
             }
-            .nav-links a {
+            .nav-links a:not(.mobile-book-btn) {
                 font-size: 20px;
-                font-weight: 600;
-                color: white;
+                font-weight: 700;
+                color: rgba(255, 255, 255, 0.9);
                 display: block;
-                padding: 10px;
+                padding: 12px;
                 letter-spacing: 0.5px;
+                text-transform: uppercase;
             }
             .nav-book-call-btn {
                 display: none !important;
             }
             .close-btn-wrapper {
                 display: none !important;
+            }
+            .mobile-only-li {
+                display: block !important;
+                width: 100%;
+                margin-top: 15px;
             }
         }
         @media (max-width: 768px) {
@@ -154,6 +161,11 @@
                     <li><a href="blog.php" class="<?php echo (isset($currentPage) && $currentPage == 'blog') ? 'active' : ''; ?>">Blog</a></li>
                     <li><a href="calculator.php" class="<?php echo (isset($currentPage) && $currentPage == 'calculator') ? 'active' : ''; ?>">Get Estimate</a></li>
                     <li><a href="contact.php" class="<?php echo (isset($currentPage) && $currentPage == 'contact') ? 'active' : ''; ?>">Contact Us</a></li>
+                    <li class="mobile-only-li">
+                        <a href="calculator.php" class="mobile-book-btn" style="background: var(--accent-color); color: var(--text-dark); font-weight: 700; padding: 15px 30px; border-radius: 40px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 16px; text-transform: uppercase;">
+                            Book Now <i class="fa-solid fa-arrow-right" style="margin-left: 10px; transform: rotate(-45deg);"></i>
+                        </a>
+                    </li>
                 </ul>
                 
                 <div class="nav-right" style="display: flex; align-items: center; gap: 15px;">

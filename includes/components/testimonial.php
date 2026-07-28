@@ -1,4 +1,24 @@
 <!-- Testimonial Section -->
+<style>
+    @media (max-width: 992px) {
+        .testi-slide { min-width: calc(50% - 15px) !important; }
+        .testi-stats-bar { flex-wrap: wrap !important; justify-content: center !important; gap: 30px !important; }
+        .testi-stats-bar > div[style*="width: 1px"] { display: none !important; }
+    }
+    @media (max-width: 768px) {
+        .testimonial-section.new-testi-design { padding: 60px 0 !important; }
+        .testi-top-area { flex-direction: column !important; align-items: flex-start !important; gap: 15px !important; }
+        .testi-top-area > div { max-width: 100% !important; }
+        .testi-top-area h2.section-title { font-size: 2.2rem !important; }
+        .testi-top-area p { font-size: 1rem !important; }
+        .testi-slider-wrapper { margin-bottom: 40px !important; }
+        .testi-slide { min-width: 100% !important; padding: 25px !important; }
+        .testi-slide p { font-size: 14px !important; margin-bottom: 20px !important; }
+        .testi-stats-bar { flex-direction: column !important; padding: 30px 20px !important; gap: 30px !important; }
+        .stat-item { flex-direction: column !important; text-align: center !important; gap: 12px !important; width: 100% !important; }
+        .testi-nav-arrow { width: 40px !important; height: 40px !important; }
+    }
+</style>
 <section class="testimonial-section new-testi-design" style="background-color: #F6F6F6; padding: 100px 0;">
     <div class="container" style="max-width: 1200px;">
         <div class="testi-top-area" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px;">

@@ -1,13 +1,34 @@
 <!-- Services Section -->
+<style>
+    .mobile-svc-view-all { display: none; }
+    @media (max-width: 992px) {
+        .new-services-grid { grid-template-columns: repeat(2, 1fr) !important; }
+        .portfolio-features { flex-wrap: wrap; justify-content: center !important; gap: 30px; }
+    }
+    @media (max-width: 768px) {
+        .services-section { padding: 60px 0 !important; }
+        .services-header { flex-direction: column !important; align-items: flex-start !important; margin-bottom: 30px !important; }
+        .services-header .section-title { font-size: 2.2rem !important; }
+        .services-header p { font-size: 1rem !important; margin-bottom: 20px; }
+        .desktop-svc-view-all { display: none !important; }
+        .mobile-svc-view-all { display: flex; justify-content: center; margin-top: 20px; margin-bottom: 40px; }
+        
+        .new-services-grid { grid-template-columns: 1fr !important; gap: 20px !important; margin-bottom: 0 !important; }
+        
+        .portfolio-features { flex-direction: column !important; padding: 30px 20px !important; gap: 25px !important; align-items: flex-start !important; }
+        .portfolio-features > div[style*="width: 1px"] { display: none !important; }
+        .pf-item { width: 100%; justify-content: flex-start; }
+    }
+</style>
 <section class="services-section new-services-design" style="background-color: #F6F6F6; padding: 100px 0;">
     <div class="container" style="max-width: 1300px;">
-        <div class="services-header" style="align-items: flex-start; margin-bottom: 50px;">
+        <div class="services-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 50px;">
             <div>
                 <p class="section-subtitle" style="justify-content: flex-start; margin-bottom: 20px;">OUR SERVICES</p>
                 <h2 class="section-title" style="font-size: 3.5rem; color: var(--text-dark);">Explore <span class="accent-text">Our Services</span><br>Your Path to Success</h2>
                 <p style="color: var(--text-muted); max-width: 500px; font-size: 1.1rem; line-height: 1.6; margin-top: 15px;">Innovative design solutions crafted to bring your vision to life and create lasting impact.</p>
             </div>
-            <a href="#" class="btn hero-btn" style="background: var(--text-dark); padding: 8px 30px 8px 8px; border-radius: 40px; align-self: center;">
+            <a href="#" class="btn hero-btn desktop-svc-view-all" style="background: var(--text-dark); padding: 8px 30px 8px 8px; border-radius: 40px; align-self: center;">
                 <span class="btn-icon" style="background: var(--accent-color); color: var(--text-dark); width: 40px; height: 40px;"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></span>
                 <span class="btn-text" style="background: transparent; color: white; padding: 0 10px; font-weight: 500;">View All Services</span>
             </a>
@@ -71,6 +92,14 @@
                 </div>
             </div>
 
+        </div>
+
+        <!-- Mobile View All Services Button -->
+        <div class="mobile-svc-view-all">
+            <a href="#" class="btn hero-btn" style="background: var(--text-dark); padding: 8px 30px 8px 8px; border-radius: 40px;">
+                <span class="btn-icon" style="background: var(--accent-color); color: var(--text-dark); width: 40px; height: 40px;"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></span>
+                <span class="btn-text" style="background: transparent; color: white; padding: 0 10px; font-weight: 500;">View All Services</span>
+            </a>
         </div>
 
         <!-- Services Footer Features -->

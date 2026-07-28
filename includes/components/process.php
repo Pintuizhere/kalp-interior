@@ -1,4 +1,25 @@
     <!-- Work Process Section -->
+    <style>
+        @media (max-width: 1024px) {
+            .new-process-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 50px 30px !important; }
+            .process-connecting-line { display: none !important; }
+        }
+        @media (max-width: 768px) {
+            .process-section { padding: 60px 15px !important; }
+            .process-header-new { margin-bottom: 40px !important; }
+            .process-header-new .section-title { font-size: 2.2rem !important; }
+            .process-header-new .section-title .accent-text { font-size: 2.2rem !important; display: block; margin-top: 10px; }
+            .process-header-new p { font-size: 1rem !important; }
+            .new-process-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+            .np-icon-circle { width: 110px !important; height: 110px !important; font-size: 35px !important; border-width: 6px !important; margin-bottom: 20px !important; }
+            .np-number { width: 35px !important; height: 35px !important; font-size: 14px !important; border-width: 3px !important; top: -10px !important; }
+            .np-card { padding: 30px 20px !important; }
+            .promise-banner-inner { border-radius: 10px !important; padding: 15px 10px !important; box-shadow: none !important; border: none !important; background: #ffffff !important; }
+            .promise-banner-content { flex-direction: row !important; text-align: left !important; gap: 10px !important; justify-content: center !important; align-items: center !important; }
+            .promise-banner-content p { font-size: 11.5px !important; line-height: 1.4 !important; }
+            .promise-icon { width: 28px !important; height: 28px !important; font-size: 12px !important; min-width: 28px !important; }
+        }
+    </style>
     <section class="process-section" style="padding: 100px 0; background-color: #F6F6F6; overflow: hidden; position: relative;">
         
         <!-- Decorative Background Elements -->
@@ -93,9 +114,9 @@
 
                 <!-- Bottom Promise Banner with Button -->
                 <div style="margin-top: 60px; text-align: center; display: flex; justify-content: center; flex-wrap: wrap;">
-                    <div style="background: #ffffff; display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; padding: 15px 25px 15px 30px; border-radius: 50px; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05);">
-                        <div style="display: flex; align-items: center; gap: 20px;">
-                            <div style="width: 40px; height: 40px; background: #334C40; color: #4CAF50; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px;">
+                    <div class="promise-banner-inner" style="background: #ffffff; display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; padding: 15px 25px 15px 30px; border-radius: 50px; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05);">
+                        <div class="promise-banner-content" style="display: flex; align-items: center; gap: 20px;">
+                            <div class="promise-icon" style="width: 40px; height: 40px; background: #334C40; color: #4CAF50; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px;">
                                 <i class="fa-solid fa-shield-halved"></i>
                             </div>
                             <p style="margin: 0; font-size: 16px; color: #334C40; font-weight: 500;">

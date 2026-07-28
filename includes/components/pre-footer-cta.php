@@ -168,7 +168,7 @@
     </div>
 
     <div class="pfc-badge">Ready?</div>
-    <h2 class="pfc-heading">BEAUTIFUL SPACES HAPPEN.<br>WE MAKE THEM YOURS.</h2>
+    <h2 class="pfc-heading"><span style="font-family: var(--font-accent); color: var(--accent-color); text-transform: lowercase; font-weight: bold;">beautiful spaces</span> HAPPEN.<br>WE MAKE THEM YOURS.</h2>
     <p class="pfc-subtitle">Book a free design consultation. We'll review your space and show you exactly where the potential lies—no pressure.</p>
     
     <div class="pfc-actions">

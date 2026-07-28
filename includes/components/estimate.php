@@ -1,7 +1,7 @@
 <!-- Estimate Section -->
 <section class="estimate-section" style="padding: 100px 0; background-color: var(--bg-light);">
     <div class="container" style="max-width: 1200px;">
-        <div style="text-align: center; margin-bottom: 60px;">
+        <div class="estimate-header" style="text-align: center; margin-bottom: 60px;">
             <h2 class="section-title" style="font-size: 3rem; margin-bottom: 15px;">Get an estimate for your <span style="font-family: var(--font-accent); color: var(--accent-color); font-weight: 400; text-transform: lowercase;">villa</span></h2>
             <p style="color: var(--text-muted); font-size: 16px; max-width: 600px; margin: 0 auto;">
                 Select your property type to calculate the cost of your interiors.
@@ -76,7 +76,17 @@
 @media (max-width: 1024px) {
     .estimate-grid { grid-template-columns: repeat(2, 1fr) !important; }
 }
+@media (max-width: 768px) {
+    .estimate-section { padding: 60px 15px !important; }
+    .estimate-header { margin-bottom: 30px !important; }
+    .estimate-header .section-title { font-size: 2.2rem !important; margin-bottom: 10px !important; }
+    .estimate-header p { font-size: 15px !important; }
+    .estimate-grid { gap: 20px !important; }
+}
 @media (max-width: 576px) {
     .estimate-grid { grid-template-columns: 1fr !important; }
+    .estimate-card { padding: 30px 20px !important; }
+    .estimate-card h3 { font-size: 20px !important; margin-bottom: 10px !important; }
+    .estimate-card p { min-height: auto !important; margin-bottom: 25px !important; font-size: 13.5px !important; }
 }
 </style>

@@ -1,11 +1,24 @@
     <!-- Press & Achievements Accordion Section -->
+    <style>
+        @media (max-width: 768px) {
+            .awards-section { padding: 60px 15px !important; }
+            .awards-header .section-title { font-size: 2.2rem !important; margin-bottom: 30px !important; }
+            .awards-header .section-subtitle { font-size: 13px !important; margin-bottom: 15px !important; }
+            .press-panel-content { padding: 20px !important; }
+            .press-title { font-size: 1.4rem !important; }
+            .press-brand { font-size: 14px !important; }
+            .press-date { font-size: 12px !important; }
+        }
+    </style>
     <section class="awards-section" style="background-color: #111111; padding: 100px 0;">
         <div class="container" style="max-width: 1400px;">
-            <p class="section-subtitle" style="justify-content: center; margin-bottom: 20px; color: rgba(255,255,255,0.5);">
-                PRESS & ACHIEVEMENTS
-                <span style="display: inline-block; width: 40px; height: 1px; background-color: var(--accent-color); margin-left: 15px;"></span>
-            </p>
-            <h2 class="section-title" style="text-align: center; color: white; margin-bottom: 50px;">Featured <span class="accent-text">In The Press</span></h2>
+            <div class="awards-header">
+                <p class="section-subtitle" style="justify-content: center; margin-bottom: 20px; color: rgba(255,255,255,0.5);">
+                    PRESS & ACHIEVEMENTS
+                    <span style="display: inline-block; width: 40px; height: 1px; background-color: var(--accent-color); margin-left: 15px;"></span>
+                </p>
+                <h2 class="section-title" style="text-align: center; color: white; margin-bottom: 50px;">Featured <span class="accent-text">In The Press</span></h2>
+            </div>
             
             <div class="press-accordion-container">
                 <!-- Panel 1 (Active by default) -->

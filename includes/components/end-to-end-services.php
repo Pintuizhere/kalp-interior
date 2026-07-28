@@ -1,7 +1,7 @@
 <!-- End-to-End Solutions Section -->
 <section class="e2e-section" style="padding: 100px 0; background-color: var(--bg-white);">
     <div class="container" style="max-width: 1200px;">
-        <div style="text-align: center; margin-bottom: 60px;">
+        <div class="e2e-header" style="text-align: center; margin-bottom: 60px;">
             <h2 class="section-title" style="font-size: 3rem; margin-bottom: 20px;">End-to-end <span style="font-family: var(--font-accent); color: var(--accent-color); font-weight: 400; font-style: normal; text-transform: lowercase;">interior solutions</span></h2>
             
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px;">
@@ -54,11 +54,17 @@
 </section>
 
 <style>
-@media (max-width: 991px) {
+@media (max-width: 992px) {
     .e2e-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 40px 15px !important; }
 }
-@media (max-width: 767px) {
+@media (max-width: 768px) {
+    .e2e-section { padding: 60px 15px !important; }
+    .e2e-header { margin-bottom: 40px !important; }
+    .e2e-header .section-title { font-size: 2.2rem !important; margin-bottom: 15px !important; }
+    .e2e-header p { font-size: 14.5px !important; padding: 0 10px !important; }
     .e2e-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 30px 10px !important; }
+    .e2e-item h5 { font-size: 11.5px !important; }
+    .e2e-img { width: 40px !important; height: 40px !important; }
 }
 .e2e-item:hover {
     transform: translateY(-5px);

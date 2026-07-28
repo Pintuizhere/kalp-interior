@@ -1,4 +1,16 @@
     <!-- Contact Section -->
+    <style>
+        @media (max-width: 992px) {
+            .contact-container { flex-direction: column; gap: 40px; }
+        }
+        @media (max-width: 768px) {
+            .contact-section { padding: 60px 15px !important; }
+            .contact-form-wrapper .section-title { font-size: 2.2rem !important; }
+            .form-row { flex-direction: column; gap: 0; }
+            .form-group { margin-bottom: 20px !important; }
+            .contact-container { gap: 30px; }
+        }
+    </style>
     <section class="contact-section">
         <div class="container contact-container">
             <div class="contact-form-wrapper">

@@ -5,7 +5,7 @@
     
     <div class="container" style="position: relative; z-index: 2; max-width: 900px; margin: 0 auto;">
         <h2 style="font-family: var(--font-headline); font-size: 4.5rem; line-height: 1.1; font-weight: 800; text-transform: uppercase; margin-bottom: 25px;">
-            Beautiful Spaces Happen.<br>We Make Them Yours.
+            <span style="font-family: var(--font-accent); color: var(--accent-color); text-transform: lowercase; font-weight: bold; font-style: normal;">beautiful spaces</span> Happen.<br>We Make Them Yours.
         </h2>
         
         <p style="font-size: 1.2rem; line-height: 1.6; opacity: 0.9; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto;">

@@ -1,4 +1,24 @@
     <!-- About Intro Section -->
+    <style>
+        @media (max-width: 992px) {
+            .about-content-row { grid-template-columns: 1fr !important; gap: 40px !important; }
+            .experience-card { min-height: 300px !important; padding: 40px !important; }
+            .about-text-content { text-align: left; }
+            .stats-grid { justify-content: flex-start; text-align: left; }
+            .signature-block { align-items: center; }
+        }
+        @media (max-width: 768px) {
+            .about-intro-section { padding: 60px 20px !important; }
+            .about-text-content .section-title { font-size: 2.2rem !important; }
+            .exp-number-mask { font-size: 120px !important; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 30px 15px !important; padding-bottom: 30px !important; }
+            .stat-item h3 { font-size: 28px !important; }
+            .experience-card { min-height: 250px !important; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr !important; gap: 20px !important; }
+        }
+    </style>
     <section class="about-intro-section" style="padding: 100px 0; background-color: var(--bg-white);">
         <div class="container" style="max-width: 1100px;">
             
