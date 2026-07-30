@@ -225,4 +225,149 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 800);
         });
     }
+
+    // PDF Download Logic
+    const downloadPdfBtn = document.getElementById('download-pdf-btn');
+    if(downloadPdfBtn) {
+        downloadPdfBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const pdfTemplate = document.getElementById('pdf-export-template');
+            if(!pdfTemplate) return;
+
+            const originalText = downloadPdfBtn.innerHTML;
+            downloadPdfBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Generating...';
+
+            setTimeout(() => {
+                try {
+                    // Gather Selections
+                    const categoryEl = document.querySelector('input[name="property_category"]:checked');
+                    const typeEl = document.querySelector('input[name="property_type"]:checked');
+                    const styleEl = document.querySelector('input[name="design_style"]:checked');
+                    const finishEl = document.querySelector('input[name="finish_level"]:checked');
+
+                    const categoryText = categoryEl ? categoryEl.nextElementSibling.nextElementSibling.textContent.trim() : 'N/A';
+                    let typeText = 'N/A';
+                    if (typeEl) {
+                        if (typeEl.value === 'custom') {
+                            const sqftInput = document.getElementById('sqft-input');
+                            typeText = `Custom (${sqftInput.value || 0} sqft)`;
+                        } else {
+                            typeText = typeEl.nextElementSibling.nextElementSibling.textContent.trim();
+                        }
+                    }
+                    const styleText = styleEl ? styleEl.nextElementSibling.nextElementSibling.textContent.trim() : 'N/A';
+                    
+                    let packageText = 'N/A';
+                    let finishValue = '1200';
+                    if (finishEl) {
+                        finishValue = finishEl.value;
+                        const labelDiv = finishEl.nextElementSibling.nextElementSibling;
+                        if(labelDiv) {
+                            packageText = labelDiv.querySelector('span:first-child').textContent.trim();
+                        }
+                    }
+
+                    // Populate Selections
+                    document.getElementById('pdf-category').textContent = categoryText;
+                    document.getElementById('pdf-type').textContent = typeText;
+                    document.getElementById('pdf-style').textContent = styleText;
+                    document.getElementById('pdf-package').textContent = packageText;
+
+                    // Populate Quotation
+                    document.getElementById('pdf-bd-furniture').textContent = document.getElementById('bd-furniture').textContent;
+                    document.getElementById('pdf-bd-wardrobes').textContent = document.getElementById('bd-wardrobes').textContent;
+                    document.getElementById('pdf-bd-kitchen').textContent = document.getElementById('bd-kitchen').textContent;
+                    document.getElementById('pdf-bd-false-ceiling').textContent = document.getElementById('bd-false-ceiling').textContent;
+                    document.getElementById('pdf-bd-electrical').textContent = document.getElementById('bd-electrical').textContent;
+                    document.getElementById('pdf-bd-paint').textContent = document.getElementById('bd-paint').textContent;
+                    document.getElementById('pdf-bd-decorative').textContent = document.getElementById('bd-decorative').textContent;
+                    document.getElementById('pdf-bd-design').textContent = document.getElementById('bd-design').textContent;
+
+                    const addonIds = ['8', '10', '4'];
+                    addonIds.forEach(id => {
+                        const row = document.getElementById('li-addon-' + id);
+                        const pdfRow = document.getElementById('pdf-row-addon-' + id);
+                        if (row && row.style.display !== 'none') {
+                            if(pdfRow) pdfRow.style.display = 'table-row';
+                            const valEl = document.getElementById('bd-addon-' + id);
+                            const pdfValEl = document.getElementById('pdf-bd-addon-' + id);
+                            if(valEl && pdfValEl) pdfValEl.textContent = valEl.textContent;
+                        } else {
+                            if(pdfRow) pdfRow.style.display = 'none';
+                        }
+                    });
+
+                    document.getElementById('pdf-cost-total').textContent = document.getElementById('bd-total').textContent;
+
+                    // Populate Material Specs
+                    const specSource = document.getElementById('specs-' + finishValue);
+                    const specDest = document.getElementById('pdf-material-specs');
+                    const specTitle = document.getElementById('pdf-material-specs-title');
+                    
+                    if(specTitle && packageText !== 'N/A') {
+                        specTitle.textContent = packageText + ' Material Specification';
+                    }
+
+                    if (specSource && specDest) {
+                        specDest.innerHTML = specSource.innerHTML;
+                    } else {
+                        if(specDest) specDest.innerHTML = "Material specifications not available for this package.";
+                    }
+
+                    // Prepare element for html2pdf
+                    const originalParent = pdfTemplate.parentNode;
+                    document.body.appendChild(pdfTemplate);
+
+                    pdfTemplate.style.display = 'block';
+                    pdfTemplate.style.position = 'absolute';
+                    pdfTemplate.style.left = '0';
+                    pdfTemplate.style.top = '0';
+                    pdfTemplate.style.margin = '0';
+                    pdfTemplate.style.zIndex = '-9999';
+
+                    // html2canvas has a known bug where scroll position offsets the capture area.
+                    // We must physically scroll to 0,0 before capture.
+                    const originalScrollX = window.scrollX;
+                    const originalScrollY = window.scrollY;
+                    window.scrollTo(0, 0);
+
+                    // Allow browser 50ms to recalculate layout after moving the element to body
+                    setTimeout(() => {
+                        const opt = {
+                            margin:       0,
+                            filename:     'Kalp_Interior_Studio_Quotation.pdf',
+                            image:        { type: 'jpeg', quality: 1 },
+                            html2canvas:  { 
+                                scale: 2, 
+                                useCORS: true,
+                                scrollX: 0, 
+                                scrollY: 0,
+                                width: 794,
+                                height: 1123
+                            }, 
+                            jsPDF:        { unit: 'px', format: [794, 1123], orientation: 'portrait', hotfixes: ["px_scaling"] }
+                        };
+
+                        html2pdf().set(opt).from(pdfTemplate).save().then(() => {
+                            pdfTemplate.style.display = 'none';
+                            originalParent.appendChild(pdfTemplate);
+                            window.scrollTo(originalScrollX, originalScrollY);
+                            downloadPdfBtn.innerHTML = originalText;
+                        }).catch(err => {
+                            console.error('PDF Generation Error:', err);
+                            pdfTemplate.style.display = 'none';
+                            originalParent.appendChild(pdfTemplate);
+                            window.scrollTo(originalScrollX, originalScrollY);
+                            downloadPdfBtn.innerHTML = originalText;
+                        });
+                    }, 50);
+                } catch (error) {
+                    console.error('Error preparing PDF:', error);
+                    if(pdfTemplate) pdfTemplate.style.display = 'none';
+                    downloadPdfBtn.innerHTML = originalText;
+                }
+            }, 100);
+        });
+    }
 });
