@@ -141,7 +141,7 @@
                         <div class="calc-step-group" id="sqft-step-group" style="flex: 1; display: none;">
                             <div class="calc-step-label">
                                 <span class="step-num">2</span>
-                                <label>Enter Square Footage</label>
+                                <label>Enter Square Foot</label>
                             </div>
                             <div class="calc-input-wrapper">
                                 <input type="number" name="sqft" id="sqft-input" class="calc-input" placeholder="Enter Exact Area (sqft)" style="width: 100%; padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; font-family: inherit; font-size: 16px; outline: none; box-sizing: border-box;" min="1">
@@ -204,7 +204,12 @@
                             <div class="calc-options-grid finish-options">
                                 <label class="calc-option-card active" style="flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px;">
                                     <input type="radio" name="finish_level" value="1200" checked>
-                                    <i class="fa-solid fa-layer-group" style="margin-bottom: 0; margin-right: 15px; font-size: 20px;"></i>
+                                    <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 0; margin-right: 15px; flex-shrink: 0;">
+                                        <path d="M 15 20 L 50 10 L 85 20 L 85 50 C 85 75 50 90 50 90 C 50 90 15 75 15 50 Z" fill="#E67E22" stroke="#0F3D64" stroke-width="4" stroke-linejoin="round"/>
+                                        <path d="M 50 10 L 85 20 L 85 50 C 85 75 50 90 50 90 Z" fill="#D35400"/>
+                                        <path d="M 15 20 L 50 10 L 85 20 L 85 50 C 85 75 50 90 50 90 C 50 90 15 75 15 50 Z" fill="none" stroke="#0F3D64" stroke-width="4" stroke-linejoin="round"/>
+                                        <path d="M 35 50 L 45 60 L 65 40" fill="none" stroke="#FFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
                                     <div>
                                         <span style="display: block; font-weight: 600;">Essential</span>
                                         <span style="font-size: 11px; opacity: 0.7;">₹1200/sqft</span>
@@ -212,7 +217,12 @@
                                 </label>
                                 <label class="calc-option-card" style="flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px;">
                                     <input type="radio" name="finish_level" value="1450">
-                                    <i class="fa-solid fa-gem" style="margin-bottom: 0; margin-right: 15px; font-size: 20px;"></i>
+                                    <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 0; margin-right: 15px; flex-shrink: 0;">
+                                        <path d="M 25 10 L 40 45 L 50 35 L 60 45 L 75 10 L 50 25 Z" fill="#E74C3C" stroke="#0F3D64" stroke-width="4" stroke-linejoin="round"/>
+                                        <circle cx="50" cy="65" r="25" fill="#BDC3C7" stroke="#0F3D64" stroke-width="4"/>
+                                        <circle cx="50" cy="65" r="15" fill="#ECF0F1" stroke="#0F3D64" stroke-width="3"/>
+                                        <polygon points="50,55 53,62 60,62 55,67 57,74 50,70 43,74 45,67 40,62 47,62" fill="#F1C40F"/>
+                                    </svg>
                                     <div>
                                         <span style="display: block; font-weight: 600;">Premium</span>
                                         <span style="font-size: 11px; opacity: 0.7;">₹1450/sqft</span>
@@ -220,10 +230,54 @@
                                 </label>
                                 <label class="calc-option-card" style="flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px;">
                                     <input type="radio" name="finish_level" value="1650">
-                                    <i class="fa-regular fa-gem" style="margin-bottom: 0; margin-right: 15px; font-size: 20px;"></i>
+                                    <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 0; margin-right: 15px; flex-shrink: 0;">
+                                        <polygon points="20,25 35,40 5,40" fill="#E8DAEF"/>
+                                        <polygon points="20,25 50,25 35,40" fill="#C39BD3"/>
+                                        <polygon points="35,40 50,25 65,40" fill="#E8DAEF"/>
+                                        <polygon points="50,25 80,25 65,40" fill="#9B59B6"/>
+                                        <polygon points="80,25 95,40 65,40" fill="#6C3483"/>
+                                        <polygon points="5,40 35,40 50,80" fill="#C39BD3"/>
+                                        <polygon points="35,40 65,40 50,80" fill="#9B59B6"/>
+                                        <polygon points="65,40 95,40 50,80" fill="#6C3483"/>
+                                        <g stroke="#0F3D64" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                                            <polygon points="20,25 80,25 95,40 50,80 5,40" fill="none"/>
+                                            <line x1="5" y1="40" x2="95" y2="40"/>
+                                            <polyline points="20,25 35,40 50,25 65,40 80,25" fill="none"/>
+                                            <line x1="35" y1="40" x2="50" y2="80"/>
+                                            <line x1="65" y1="40" x2="50" y2="80"/>
+                                        </g>
+                                    </svg>
+                                    <div>
+                                        <span style="display: block; font-weight: 600;">Luxury</span>
+                                        <span style="font-size: 11px; opacity: 0.7;">₹1650/sqft</span>
+                                    </div>
+                                </label>
+                                <label class="calc-option-card" style="flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px;">
+                                    <input type="radio" name="finish_level" value="2100">
+                                    <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 0; margin-right: 15px; flex-shrink: 0;">
+                                        <!-- Crown -->
+                                        <path d="M 32 38 L 22 12 L 38 24 L 50 6 L 62 24 L 78 12 L 68 38 Z" fill="#F4B41A" stroke="#7A5214" stroke-width="4" stroke-linejoin="round"/>
+                                        <!-- Diamond Fills -->
+                                        <polygon points="20,40 35,55 5,55" fill="#C5E1F5"/>
+                                        <polygon points="20,40 50,40 35,55" fill="#8ECAE6"/>
+                                        <polygon points="35,55 50,40 65,55" fill="#C5E1F5"/>
+                                        <polygon points="50,40 80,40 65,55" fill="#4B95C4"/>
+                                        <polygon points="80,40 95,55 65,55" fill="#28699E"/>
+                                        <polygon points="5,55 35,55 50,95" fill="#8ECAE6"/>
+                                        <polygon points="35,55 65,55 50,95" fill="#4B95C4"/>
+                                        <polygon points="65,55 95,55 50,95" fill="#28699E"/>
+                                        <!-- Diamond Strokes -->
+                                        <g stroke="#0F3D64" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                                            <polygon points="20,40 80,40 95,55 50,95 5,55" fill="none"/>
+                                            <line x1="5" y1="55" x2="95" y2="55"/>
+                                            <polyline points="20,40 35,55 50,40 65,55 80,40" fill="none"/>
+                                            <line x1="35" y1="55" x2="50" y2="95"/>
+                                            <line x1="65" y1="55" x2="50" y2="95"/>
+                                        </g>
+                                    </svg>
                                     <div>
                                         <span style="display: block; font-weight: 600;">Luxury Plus</span>
-                                        <span style="font-size: 11px; opacity: 0.7;">₹1650/sqft</span>
+                                        <span style="font-size: 11px; opacity: 0.7;">₹2100/sqft</span>
                                     </div>
                                 </label>
                             </div>
@@ -269,7 +323,7 @@
                     <h3 class="results-main-title">Your Estimated Cost Range</h3>
                     
                     <div class="results-highlight">
-                        <p class="results-subtitle">Estimated Investment</p>
+                        <p class="results-subtitle">Estimated Cost</p>
                         <h2 class="results-price" id="calc-total-range">₹0</h2>
                         <p class="results-sqft-price" id="calc-sqft-price">(₹0 per sq.ft)</p>
                         <div class="results-sqft-badge" id="calc-sqft-badge" style="display: none;">
