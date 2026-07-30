@@ -5,7 +5,7 @@
             <!-- Left Side -->
             <div class="founder-image-col">
                 <div class="founder-pattern"></div>
-                <img src="assets/images/kalp-interior-founder.webp" alt="Reedam - Founder" class="founder-img">
+                <img src="assets/images/founder.jpeg" alt="Reedam - Founder" class="founder-img">
                 <div class="founder-card">
                     <h4>Reedam</h4>
                     <p class="founder-title">Founder & Managing Director</p>

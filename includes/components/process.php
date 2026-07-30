@@ -44,11 +44,12 @@
                 
                 <!-- Connecting Line -->
                 <div class="process-connecting-line" style="position: absolute; top: 75px; left: 10%; right: 10%; height: 2px; background-color: #e2dcd0; z-index: 1;">
-                    <div style="position: absolute; left: 33.33%; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: #334C40; transform: translateX(-50%);"></div>
-                    <div style="position: absolute; left: 66.66%; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: #334C40; transform: translateX(-50%);"></div>
+                    <div style="position: absolute; left: 25%; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: #334C40; transform: translateX(-50%);"></div>
+                    <div style="position: absolute; left: 50%; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: #334C40; transform: translateX(-50%);"></div>
+                    <div style="position: absolute; left: 75%; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: #334C40; transform: translateX(-50%);"></div>
                 </div>
 
-                <div class="new-process-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; position: relative; z-index: 2;">
+                <div class="new-process-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 30px; position: relative; z-index: 2;">
                     
                     <!-- Step 1 -->
                     <div class="np-step" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
@@ -99,6 +100,21 @@
                     <div class="np-step" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
                         <div class="np-icon-circle" style="width: 150px; height: 150px; background-color: #334C40; border-radius: 50%; border: 8px solid white; box-shadow: 0 0 0 2px #EAB136; display: flex; align-items: center; justify-content: center; font-size: 50px; color: #EAB136; position: relative; margin-bottom: 30px; z-index: 3;">
                             <div class="np-number" style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background-color: #EAB136; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; border: 4px solid #F6F6F6;">04</div>
+                            <i class="fa-solid fa-hammer"></i>
+                        </div>
+                        <div class="np-card" style="position: relative; background-image: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'); background-size: cover; background-position: center; border-radius: 20px; padding: 40px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); width: 100%; border-bottom: 4px solid #EAB136; flex-grow: 1; overflow: hidden;">
+                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(36, 53, 42, 0.85); z-index: 1;"></div>
+                            <div style="position: relative; z-index: 2;">
+                                <h4 style="color: white; font-size: 22px; margin-bottom: 15px;">Execution</h4>
+                                <p style="color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.6; margin: 0;">We bring the designs to life with our expert team, ensuring high-quality workmanship at every stage.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="np-step" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+                        <div class="np-icon-circle" style="width: 150px; height: 150px; background-color: #334C40; border-radius: 50%; border: 8px solid white; box-shadow: 0 0 0 2px #EAB136; display: flex; align-items: center; justify-content: center; font-size: 50px; color: #EAB136; position: relative; margin-bottom: 30px; z-index: 3;">
+                            <div class="np-number" style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background-color: #EAB136; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; border: 4px solid #F6F6F6;">05</div>
                             <i class="fa-solid fa-house-circle-check"></i>
                         </div>
                         <div class="np-card" style="position: relative; background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'); background-size: cover; background-position: center; border-radius: 20px; padding: 40px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); width: 100%; border-bottom: 4px solid #EAB136; flex-grow: 1; overflow: hidden;">

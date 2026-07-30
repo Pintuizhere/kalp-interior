@@ -50,46 +50,101 @@
                         <div class="calc-step-group" style="flex: 2;">
                             <div class="calc-step-label">
                                 <span class="step-num">1</span>
-                                <label>Select Property Type</label>
+                                <label>Select Property Category</label>
                             </div>
-                            <div class="calc-options-grid type-options">
-                                <label class="calc-option-card active">
-                                    <input type="radio" name="property_type" value="apartment" checked>
-                                    <i class="fa-regular fa-building"></i>
-                                    <span>Apartment</span>
-                                </label>
-                                <label class="calc-option-card">
-                                    <input type="radio" name="property_type" value="villa">
+                            <div class="calc-options-grid main-category-options" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 20px;">
+                                <label class="calc-option-card active" data-target="residential-options">
+                                    <input type="radio" name="property_category" value="residential" checked>
                                     <i class="fa-solid fa-house"></i>
-                                    <span>Villa</span>
+                                    <span>Residential</span>
+                                </label>
+                                <label class="calc-option-card" data-target="commercial-options">
+                                    <input type="radio" name="property_category" value="commercial">
+                                    <i class="fa-solid fa-building"></i>
+                                    <span>Commercial</span>
+                                </label>
+                            </div>
+
+                            <div class="calc-step-label">
+                                <span class="step-num"><i class="fa-solid fa-arrow-right"></i></span>
+                                <label>Select Specific Type</label>
+                            </div>
+                            
+                            <div id="residential-options" class="calc-options-grid type-options sub-options-group">
+                                <label class="calc-option-card active">
+                                    <input type="radio" name="property_type" value="900" checked>
+                                    <i class="fa-solid fa-house-chimney"></i>
+                                    <span>1 BHK</span>
+                                    <span style="font-size: 11px; opacity: 0.7;">less than 900 sqft</span>
                                 </label>
                                 <label class="calc-option-card">
-                                    <input type="radio" name="property_type" value="penthouse">
+                                    <input type="radio" name="property_type" value="1300">
+                                    <i class="fa-solid fa-building"></i>
+                                    <span>2 BHK</span>
+                                    <span style="font-size: 11px; opacity: 0.7;">less than 1300 sqft</span>
+                                </label>
+                                <label class="calc-option-card">
+                                    <input type="radio" name="property_type" value="1500">
+                                    <i class="fa-solid fa-building-user"></i>
+                                    <span>3 BHK</span>
+                                    <span style="font-size: 11px; opacity: 0.7;">less than 1500 sqft</span>
+                                </label>
+                                <label class="calc-option-card">
+                                    <input type="radio" name="property_type" value="2000">
                                     <i class="fa-solid fa-city"></i>
-                                    <span>Penthouse</span>
+                                    <span>4 BHK</span>
+                                    <span style="font-size: 11px; opacity: 0.7;">less than 2000 sqft</span>
                                 </label>
                                 <label class="calc-option-card">
-                                    <input type="radio" name="property_type" value="studio">
-                                    <i class="fa-solid fa-border-all"></i>
-                                    <span>Studio</span>
+                                    <input type="radio" name="property_type" value="2500">
+                                    <i class="fa-solid fa-tree-city"></i>
+                                    <span>5 BHK</span>
+                                    <span style="font-size: 11px; opacity: 0.7;">less than 2500 sqft</span>
+                                </label>
+                                <label class="calc-option-card">
+                                    <input type="radio" name="property_type" value="custom" data-custom="true">
+                                    <i class="fa-solid fa-pen-ruler"></i>
+                                    <span>Custom</span>
+                                </label>
+                            </div>
+
+                            <div id="commercial-options" class="calc-options-grid type-options sub-options-group" style="display: none;">
+                                <label class="calc-option-card">
+                                    <input type="radio" name="property_type" value="1000">
+                                    <i class="fa-solid fa-briefcase"></i>
+                                    <span>Office</span>
+                                </label>
+                                <label class="calc-option-card">
+                                    <input type="radio" name="property_type" value="1500">
+                                    <i class="fa-solid fa-store"></i>
+                                    <span>Retail Shop</span>
+                                </label>
+                                <label class="calc-option-card">
+                                    <input type="radio" name="property_type" value="2000">
+                                    <i class="fa-solid fa-utensils"></i>
+                                    <span>Restaurant</span>
+                                </label>
+                                <label class="calc-option-card">
+                                    <input type="radio" name="property_type" value="800">
+                                    <i class="fa-solid fa-stethoscope"></i>
+                                    <span>Clinic</span>
+                                </label>
+                                <label class="calc-option-card">
+                                    <input type="radio" name="property_type" value="custom" data-custom="true">
+                                    <i class="fa-solid fa-pen-ruler"></i>
+                                    <span>Custom</span>
                                 </label>
                             </div>
                         </div>
 
                         <!-- Step 2: Square Footage -->
-                        <div class="calc-step-group" style="flex: 1;">
+                        <div class="calc-step-group" id="sqft-step-group" style="flex: 1; display: none;">
                             <div class="calc-step-label">
                                 <span class="step-num">2</span>
-                                <label>Select Square Footage</label>
+                                <label>Enter Square Footage</label>
                             </div>
-                            <div class="calc-select-wrapper">
-                                <select name="sqft" id="sqft-select" class="calc-select">
-                                    <option value="1000">1000 - 1200 sq.ft</option>
-                                    <option value="1200" selected>1200 - 1500 sq.ft</option>
-                                    <option value="1500">1500 - 2000 sq.ft</option>
-                                    <option value="2000">2000+ sq.ft</option>
-                                </select>
-                                <p class="calc-select-hint">Super Built-up Area</p>
+                            <div class="calc-input-wrapper">
+                                <input type="number" name="sqft" id="sqft-input" class="calc-input" placeholder="Enter Exact Area (sqft)" style="width: 100%; padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; font-family: inherit; font-size: 16px; outline: none; box-sizing: border-box;" min="1">
                             </div>
                         </div>
                     </div>
@@ -102,29 +157,39 @@
                         </div>
                         <div class="calc-options-grid style-options">
                             <label class="calc-option-card active">
-                                <input type="radio" name="design_style" value="modern" checked>
+                                <input type="radio" name="design_style" value="8" checked>
                                 <i class="fa-solid fa-couch"></i>
-                                <span>Modern</span>
+                                <span>Modern (+8%)</span>
                             </label>
                             <label class="calc-option-card">
-                                <input type="radio" name="design_style" value="contemporary">
+                                <input type="radio" name="design_style" value="0">
                                 <i class="fa-solid fa-chair"></i>
                                 <span>Contemporary</span>
                             </label>
                             <label class="calc-option-card">
-                                <input type="radio" name="design_style" value="minimalist">
+                                <input type="radio" name="design_style" value="-8">
                                 <i class="fa-solid fa-leaf"></i>
-                                <span>Minimalist</span>
+                                <span>Minimalist (-8%)</span>
                             </label>
                             <label class="calc-option-card">
-                                <input type="radio" name="design_style" value="classic">
-                                <i class="fa-solid fa-building-columns"></i>
-                                <span>Classic</span>
+                                <input type="radio" name="design_style" value="-5">
+                                <i class="fa-solid fa-snowflake"></i>
+                                <span>Scandinavian (-5%)</span>
                             </label>
                             <label class="calc-option-card">
-                                <input type="radio" name="design_style" value="luxury">
-                                <i class="fa-solid fa-crown"></i>
-                                <span>Luxury</span>
+                                <input type="radio" name="design_style" value="20">
+                                <i class="fa-brands fa-pagelines"></i>
+                                <span>Japandi (+20%)</span>
+                            </label>
+                            <label class="calc-option-card">
+                                <input type="radio" name="design_style" value="15">
+                                <i class="fa-solid fa-campground"></i>
+                                <span>Boho (+15%)</span>
+                            </label>
+                            <label class="calc-option-card">
+                                <input type="radio" name="design_style" value="10">
+                                <i class="fa-solid fa-chess-rook"></i>
+                                <span>Traditional (+10%)</span>
                             </label>
                         </div>
                     </div>
@@ -134,90 +199,56 @@
                         <div class="calc-step-group" style="flex: 1.5;">
                             <div class="calc-step-label">
                                 <span class="step-num">4</span>
-                                <label>Select Finishing Level</label>
+                                <label>Select Package</label>
                             </div>
                             <div class="calc-options-grid finish-options">
                                 <label class="calc-option-card active" style="flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px;">
-                                    <input type="radio" name="finish_level" value="standard" checked>
+                                    <input type="radio" name="finish_level" value="1200" checked>
                                     <i class="fa-solid fa-layer-group" style="margin-bottom: 0; margin-right: 15px; font-size: 20px;"></i>
                                     <div>
-                                        <span style="display: block; font-weight: 600;">Standard</span>
-                                        <span style="font-size: 11px; opacity: 0.7;">Good Quality</span>
+                                        <span style="display: block; font-weight: 600;">Essential</span>
+                                        <span style="font-size: 11px; opacity: 0.7;">₹1200/sqft</span>
                                     </div>
                                 </label>
                                 <label class="calc-option-card" style="flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px;">
-                                    <input type="radio" name="finish_level" value="premium">
+                                    <input type="radio" name="finish_level" value="1450">
                                     <i class="fa-solid fa-gem" style="margin-bottom: 0; margin-right: 15px; font-size: 20px;"></i>
                                     <div>
                                         <span style="display: block; font-weight: 600;">Premium</span>
-                                        <span style="font-size: 11px; opacity: 0.7;">Better Quality</span>
+                                        <span style="font-size: 11px; opacity: 0.7;">₹1450/sqft</span>
                                     </div>
                                 </label>
                                 <label class="calc-option-card" style="flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px;">
-                                    <input type="radio" name="finish_level" value="luxury">
+                                    <input type="radio" name="finish_level" value="1650">
                                     <i class="fa-regular fa-gem" style="margin-bottom: 0; margin-right: 15px; font-size: 20px;"></i>
                                     <div>
-                                        <span style="display: block; font-weight: 600;">Luxury</span>
-                                        <span style="font-size: 11px; opacity: 0.7;">Top Quality</span>
+                                        <span style="display: block; font-weight: 600;">Luxury Plus</span>
+                                        <span style="font-size: 11px; opacity: 0.7;">₹1650/sqft</span>
                                     </div>
                                 </label>
                             </div>
                         </div>
 
-                        <!-- Step 5: Rooms -->
+                        <!-- Step 5: Add-ons -->
                         <div class="calc-step-group" style="flex: 1;">
                             <div class="calc-step-label">
                                 <span class="step-num">5</span>
-                                <label>Select Rooms</label>
+                                <label>Add-ons (Optional)</label>
                             </div>
-                            <div class="calc-checkbox-grid">
+                            <div class="calc-checkbox-grid addons">
                                 <label class="calc-checkbox">
-                                    <input type="checkbox" name="rooms" value="living_room" checked>
-                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> Living Room
+                                    <input type="checkbox" name="addons" value="8">
+                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> Civil work (+8%)
                                 </label>
                                 <label class="calc-checkbox">
-                                    <input type="checkbox" name="rooms" value="bedrooms" checked>
-                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> Bedrooms
+                                    <input type="checkbox" name="addons" value="10">
+                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> Flooring (+10%)
                                 </label>
                                 <label class="calc-checkbox">
-                                    <input type="checkbox" name="rooms" value="kitchen" checked>
-                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> Kitchen
-                                </label>
-                                <label class="calc-checkbox">
-                                    <input type="checkbox" name="rooms" value="bathrooms" checked>
-                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> Bathrooms
+                                    <input type="checkbox" name="addons" value="4">
+                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> Curtain/Soft Furnishing (+4%)
                                 </label>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Step 6: Add-ons -->
-                    <div class="calc-step-group">
-                        <div class="calc-step-label">
-                            <span class="step-num">6</span>
-                            <label>Add-ons (Optional)</label>
-                        </div>
-                        <div class="calc-checkbox-grid addons">
-                            <label class="calc-checkbox active">
-                                <input type="checkbox" name="addons" value="false_ceiling" checked>
-                                <span class="chk-box"><i class="fa-solid fa-check"></i></span> False Ceiling
-                            </label>
-                            <label class="calc-checkbox active">
-                                <input type="checkbox" name="addons" value="wardrobes" checked>
-                                <span class="chk-box"><i class="fa-solid fa-check"></i></span> Wardrobes
-                            </label>
-                            <label class="calc-checkbox active">
-                                <input type="checkbox" name="addons" value="modular_kitchen" checked>
-                                <span class="chk-box"><i class="fa-solid fa-check"></i></span> Modular Kitchen
-                            </label>
-                            <label class="calc-checkbox">
-                                <input type="checkbox" name="addons" value="study">
-                                <span class="chk-box"><i class="fa-solid fa-check"></i></span> Study / Home Office
-                            </label>
-                            <label class="calc-checkbox">
-                                <input type="checkbox" name="addons" value="balcony">
-                                <span class="chk-box"><i class="fa-solid fa-check"></i></span> Balcony Design
-                            </label>
                         </div>
                     </div>
 
@@ -239,10 +270,10 @@
                     
                     <div class="results-highlight">
                         <p class="results-subtitle">Estimated Investment</p>
-                        <h2 class="results-price" id="calc-total-range">$24,500 - $32,800</h2>
-                        <p class="results-sqft-price" id="calc-sqft-price">($20 - $27 per sq.ft)</p>
-                        <div class="results-sqft-badge" id="calc-sqft-badge">
-                            <i class="fa-regular fa-square-check"></i> 1200 - 1500 sq.ft
+                        <h2 class="results-price" id="calc-total-range">₹0</h2>
+                        <p class="results-sqft-price" id="calc-sqft-price">(₹0 per sq.ft)</p>
+                        <div class="results-sqft-badge" id="calc-sqft-badge" style="display: none;">
+                            <i class="fa-regular fa-square-check"></i> <span id="badge-sqft-text">0 sq.ft</span>
                         </div>
                     </div>
 
@@ -250,29 +281,54 @@
                         <h4 class="breakdown-title">Estimate Breakdown</h4>
                         <ul class="breakdown-list">
                             <li>
-                                <span>Design & Planning</span>
-                                <span id="bd-design">$2,500 - $3,200</span>
+                                <span>TV Unit, Crockery, Vanity & Other Furniture</span>
+                                <span id="bd-furniture">₹0</span>
                             </li>
                             <li>
-                                <span>Civil & Carpentry</span>
-                                <span id="bd-civil">$10,000 - $13,500</span>
-                            </li>
-                            <li>
-                                <span>Electrical & Lighting</span>
-                                <span id="bd-electrical">$3,200 - $4,200</span>
+                                <span>Wardrobes & Storage</span>
+                                <span id="bd-wardrobes">₹0</span>
                             </li>
                             <li>
                                 <span>Modular Kitchen</span>
-                                <span id="bd-kitchen">$4,000 - $5,500</span>
+                                <span id="bd-kitchen">₹0</span>
                             </li>
                             <li>
-                                <span>Finishes & Furnishing</span>
-                                <span id="bd-finishes">$4,800 - $6,800</span>
+                                <span>False Ceiling</span>
+                                <span id="bd-false-ceiling">₹0</span>
+                            </li>
+                            <li>
+                                <span>Electrical & Lighting</span>
+                                <span id="bd-electrical">₹0</span>
+                            </li>
+                            <li>
+                                <span>Design, Project Management & Site Supervision</span>
+                                <span id="bd-design">₹0</span>
+                            </li>
+                            <li>
+                                <span>Paint & Wall Finishes</span>
+                                <span id="bd-paint">₹0</span>
+                            </li>
+                            <li>
+                                <span>Decorative Lights & Accessories</span>
+                                <span id="bd-decorative">₹0</span>
+                            </li>
+                            <!-- Add-ons -->
+                            <li id="li-addon-8" style="display: none; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 10px; margin-top: 10px; color: var(--accent-color);">
+                                <span>+ Civil work</span>
+                                <span id="bd-addon-8">₹0</span>
+                            </li>
+                            <li id="li-addon-10" style="display: none; color: var(--accent-color);">
+                                <span>+ Flooring</span>
+                                <span id="bd-addon-10">₹0</span>
+                            </li>
+                            <li id="li-addon-4" style="display: none; color: var(--accent-color);">
+                                <span>+ Curtain/Soft Furnishing</span>
+                                <span id="bd-addon-4">₹0</span>
                             </li>
                         </ul>
                         <div class="breakdown-total">
-                            <span>Total Estimated Range</span>
-                            <span id="bd-total">$24,500 - $32,800</span>
+                            <span>Total Estimated Cost</span>
+                            <span id="bd-total">₹0</span>
                         </div>
                     </div>
 

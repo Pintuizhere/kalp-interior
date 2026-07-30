@@ -25,13 +25,13 @@
         
         <!-- Content -->
         <div style="position: relative; z-index: 2;">
-            <h2 class="statement-heading">
+            <h2 class="statement-heading" style="font-family: 'Poppins', sans-serif; font-weight: 500; line-height: 1.6; text-transform: lowercase;">
                 <i class="fa-solid fa-quote-left statement-quote" style="margin-right: 15px; font-size: 1.2em; vertical-align: text-top; transform: translateY(-10px);"></i>
-                KALP INTERIOR IS THE <span style="color: var(--accent-color);">DEDICATED DISCIPLINE</span> OF DESIGN FOCUSED ON 
+                kalp interior is the <span style="color: var(--accent-color);">dedicated discipline</span> of design focused on 
                 <span class="statement-capsule" style="background-image: url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'); border: 1px solid var(--accent-color); margin: 0 10px;">transforming</span> 
-                SPACES WHERE LIFE HAPPENS. WE SERVE HOMEOWNERS AND DEVELOPERS WHO UNDERSTAND THAT A BEAUTIFUL ENVIRONMENT 
+                spaces where life happens. we serve homeowners and developers who understand that a beautiful environment 
                 <span class="statement-capsule" style="background-image: url('https://images.unsplash.com/photo-1513694203232-719a280e022f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'); border: 1px solid var(--accent-color); margin: 0 10px;">elevates</span> 
-                EXPERIENCE.<i class="fa-solid fa-quote-right statement-quote" style="margin-left: 15px; font-size: 1.2em; vertical-align: text-bottom; transform: translateY(10px);"></i>
+                experience.<i class="fa-solid fa-quote-right statement-quote" style="margin-left: 15px; font-size: 1.2em; vertical-align: text-bottom; transform: translateY(10px);"></i>
             </h2>
             <div style="width: 60px; height: 2px; background-color: var(--accent-color); margin: 40px auto 0;"></div>
         </div>

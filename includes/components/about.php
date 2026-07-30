@@ -26,11 +26,16 @@
             <div class="about-content-row" style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; align-items: center;">
                 
                 <!-- Left: 18 Years Experience -->
-                <div class="experience-card" style="border: 2px solid var(--primary-color); border-radius: 80px 20px 80px 20px; padding: 50px; text-align: center; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-                    <div class="exp-number-mask" style="font-size: 200px; font-weight: 800; line-height: 1; background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'); background-size: cover; background-position: center; -webkit-background-clip: text; color: transparent; margin-bottom: 20px;">
-                        18
+                <div class="experience-card" style="border: 2px solid var(--primary-color); border-radius: 80px 20px 80px 20px; text-align: center; background: white; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; min-height: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; overflow: hidden; padding: 0;">
+                    <!-- Image from the user's workspace -->
+                    <img src="assets/images/awards.jpeg" alt="Awards Ceremony" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;">
+                    
+                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; background: linear-gradient(to top, rgba(26, 38, 30, 0.9), transparent); z-index: 1;"></div>
+                    
+                    <div style="position: relative; z-index: 2; padding: 40px 20px;">
+                        <h2 style="font-size: 80px; font-weight: 800; line-height: 1; color: white; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">18</h2>
+                        <h3 class="exp-text" style="font-size: 20px; color: rgba(255,255,255,0.9); margin: 0; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Years of Experience</h3>
                     </div>
-                    <h3 class="exp-text" style="font-size: 20px; color: var(--text-dark); margin: 0; font-weight: 600;">Years of Experience</h3>
                 </div>
 
                 <!-- Right: Text Content -->

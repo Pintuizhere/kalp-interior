@@ -2,7 +2,7 @@
 <section class="estimate-section" style="padding: 100px 0; background-color: var(--bg-light);">
     <div class="container" style="max-width: 1200px;">
         <div class="estimate-header" style="text-align: center; margin-bottom: 60px;">
-            <h2 class="section-title" style="font-size: 3rem; margin-bottom: 15px;">Get an estimate for your <span style="font-family: var(--font-accent); color: var(--accent-color); font-weight: 400; text-transform: lowercase;">villa</span></h2>
+            <h2 class="section-title" style="font-size: 3rem; margin-bottom: 15px;">Get an estimate for your <span style="font-family: var(--font-accent); color: var(--accent-color); font-weight: 400; text-transform: lowercase;">home</span></h2>
             <p style="color: var(--text-muted); font-size: 16px; max-width: 600px; margin: 0 auto;">
                 Select your property type to calculate the cost of your interiors.
             </p>
