@@ -668,6 +668,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                         typeText = typeEl.nextElementSibling.nextElementSibling.textContent.trim();
                                         if (customSqft) {
                                             typeText += ` (${label}: ${customSqft} sqft)`;
+                                        } else if (sqftInput && sqftInput.value) {
+                                            typeText += ` (${sqftInput.value} sqft)`;
                                         }
                                     }
                                 }
