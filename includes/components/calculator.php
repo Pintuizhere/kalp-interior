@@ -118,39 +118,22 @@
                             
                             <div id="residential-options" class="calc-options-grid type-options sub-options-group">
                                 <label class="calc-option-card active">
-                                    <input type="radio" name="property_type" value="900" checked>
+                                    <input type="radio" name="property_type" value="700" checked>
                                     <i class="fa-solid fa-house-chimney" style="color: #E67E22;"></i>
                                     <span>1 BHK</span>
-                                    <span style="font-size: 11px; opacity: 0.7;">less than 900 sqft</span>
+                                    <span style="font-size: 11px; opacity: 0.7;">700 sq ft</span>
                                 </label>
                                 <label class="calc-option-card">
-                                    <input type="radio" name="property_type" value="1300">
+                                    <input type="radio" name="property_type" value="1200">
                                     <i class="fa-solid fa-building" style="color: #D35400;"></i>
                                     <span>2 BHK</span>
-                                    <span style="font-size: 11px; opacity: 0.7;">less than 1300 sqft</span>
+                                    <span style="font-size: 11px; opacity: 0.7;">1200 sq ft</span>
                                 </label>
                                 <label class="calc-option-card">
-                                    <input type="radio" name="property_type" value="1500">
+                                    <input type="radio" name="property_type" value="1350">
                                     <i class="fa-solid fa-building-user" style="color: #C0392B;"></i>
                                     <span>3 BHK</span>
-                                    <span style="font-size: 11px; opacity: 0.7;">less than 1500 sqft</span>
-                                </label>
-                                <label class="calc-option-card">
-                                    <input type="radio" name="property_type" value="2000">
-                                    <i class="fa-solid fa-city" style="color: #8E44AD;"></i>
-                                    <span>4 BHK</span>
-                                    <span style="font-size: 11px; opacity: 0.7;">less than 2000 sqft</span>
-                                </label>
-                                <label class="calc-option-card">
-                                    <input type="radio" name="property_type" value="2500">
-                                    <i class="fa-solid fa-tree-city" style="color: #2980B9;"></i>
-                                    <span>5 BHK</span>
-                                    <span style="font-size: 11px; opacity: 0.7;">less than 2500 sqft</span>
-                                </label>
-                                <label class="calc-option-card">
-                                    <input type="radio" name="property_type" value="custom" data-custom="true">
-                                    <i class="fa-solid fa-pen-ruler" style="color: #16A085;"></i>
-                                    <span>Custom</span>
+                                    <span style="font-size: 11px; opacity: 0.7;">1350 sq ft</span>
                                 </label>
                             </div>
 
@@ -175,24 +158,22 @@
                                     <i class="fa-solid fa-stethoscope" style="color: #E74C3C;"></i>
                                     <span>Clinic</span>
                                 </label>
-                                <label class="calc-option-card">
-                                    <input type="radio" name="property_type" value="custom" data-custom="true">
-                                    <i class="fa-solid fa-pen-ruler" style="color: #16A085;"></i>
-                                    <span>Custom</span>
-                                </label>
                             </div>
                         </div>
 
                     </div>
 
                     <!-- Step 2: Square Footage -->
-                    <div class="calc-step-group" id="sqft-step-group" style="display: none; margin-bottom: 30px;">
+                    <div class="calc-step-group" id="sqft-step-group" style="margin-bottom: 30px;">
                         <div class="calc-step-label">
                             <span class="step-num">2</span>
                             <label>Enter Square Foot</label>
                         </div>
                         <div class="calc-input-wrapper">
-                            <input type="number" name="sqft" id="sqft-input" class="calc-input" placeholder="Enter Exact Area (sqft)" style="width: 100%; padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; font-family: inherit; font-size: 16px; outline: none; box-sizing: border-box;" min="1">
+                            <input type="number" name="sqft" id="sqft-input" class="calc-input" placeholder="Enter Exact Area (sqft)" value="700" style="width: 100%; padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; font-family: inherit; font-size: 16px; outline: none; box-sizing: border-box;" min="1">
+                        </div>
+                        <div id="sqft-error" style="color: #E74C3C; font-size: 13px; margin-top: 8px; display: none; font-weight: 500;">
+                            <i class="fa-solid fa-circle-exclamation"></i> Square footage must be at least 400 sqft.
                         </div>
                     </div>
 
@@ -204,39 +185,39 @@
                         </div>
                         <div class="calc-options-grid style-options">
                             <label class="calc-option-card active">
-                                <input type="radio" name="design_style" value="0" checked>
+                                <input type="radio" name="design_style" value="-8" checked>
+                                <i class="fa-solid fa-leaf" style="color: #2ECC71;"></i>
+                                <span>Minimalist</span>
+                            </label>
+                            <label class="calc-option-card">
+                                <input type="radio" name="design_style" value="-5">
+                                <i class="fa-solid fa-snowflake" style="color: #A9CCE3;"></i>
+                                <span>Scandinavian</span>
+                            </label>
+                            <label class="calc-option-card">
+                                <input type="radio" name="design_style" value="0">
                                 <i class="fa-solid fa-chair" style="color: #F1C40F;"></i>
                                 <span>Contemporary</span>
                             </label>
                             <label class="calc-option-card">
                                 <input type="radio" name="design_style" value="8">
                                 <i class="fa-solid fa-couch" style="color: #3498DB;"></i>
-                                <span>Modern (+8%)</span>
-                            </label>
-                            <label class="calc-option-card">
-                                <input type="radio" name="design_style" value="-8">
-                                <i class="fa-solid fa-leaf" style="color: #2ECC71;"></i>
-                                <span>Minimalist (-8%)</span>
-                            </label>
-                            <label class="calc-option-card">
-                                <input type="radio" name="design_style" value="-5">
-                                <i class="fa-solid fa-snowflake" style="color: #A9CCE3;"></i>
-                                <span>Scandinavian (-5%)</span>
-                            </label>
-                            <label class="calc-option-card">
-                                <input type="radio" name="design_style" value="20">
-                                <i class="fa-brands fa-pagelines" style="color: #1ABC9C;"></i>
-                                <span>Japandi (+20%)</span>
-                            </label>
-                            <label class="calc-option-card">
-                                <input type="radio" name="design_style" value="15">
-                                <i class="fa-solid fa-campground" style="color: #E67E22;"></i>
-                                <span>Boho (+15%)</span>
+                                <span>Modern</span>
                             </label>
                             <label class="calc-option-card">
                                 <input type="radio" name="design_style" value="10">
                                 <i class="fa-solid fa-chess-rook" style="color: #9B59B6;"></i>
-                                <span>Traditional (+10%)</span>
+                                <span>Traditional</span>
+                            </label>
+                            <label class="calc-option-card">
+                                <input type="radio" name="design_style" value="15">
+                                <i class="fa-solid fa-campground" style="color: #E67E22;"></i>
+                                <span>Boho</span>
+                            </label>
+                            <label class="calc-option-card">
+                                <input type="radio" name="design_style" value="20">
+                                <i class="fa-brands fa-pagelines" style="color: #1ABC9C;"></i>
+                                <span>Japandi</span>
                             </label>
                         </div>
                     </div>
@@ -259,7 +240,7 @@
                                     </svg>
                                     <div>
                                         <span style="display: block; font-weight: 600;">Essential</span>
-                                        <span style="font-size: 11px; opacity: 0.7;">₹1200/sqft</span>
+                                        <span style="font-size: 11px; opacity: 0.7; display: none;">₹1200/sqft</span>
                                     </div>
                                 </label>
                                 <label class="calc-option-card" style="flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px;">
@@ -284,7 +265,7 @@
                                     </svg>
                                     <div>
                                         <span style="display: block; font-weight: 600;">Premium</span>
-                                        <span style="font-size: 11px; opacity: 0.7;">₹1450/sqft</span>
+                                        <span style="font-size: 11px; opacity: 0.7; display: none;">₹1450/sqft</span>
                                     </div>
                                 </label>
                                 <label class="calc-option-card" style="flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px;">
@@ -312,7 +293,7 @@
                                     </svg>
                                     <div>
                                         <span style="display: block; font-weight: 600;">Luxury</span>
-                                        <span style="font-size: 11px; opacity: 0.7;">₹1650/sqft</span>
+                                        <span style="font-size: 11px; opacity: 0.7; display: none;">₹1650/sqft</span>
                                     </div>
                                 </label>
                             </div>
@@ -327,15 +308,15 @@
                             <div class="calc-checkbox-grid addons">
                                 <label class="calc-checkbox">
                                     <input type="checkbox" name="addons" value="8">
-                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> Civil work (+8%)
+                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> Civil work
                                 </label>
                                 <label class="calc-checkbox">
                                     <input type="checkbox" name="addons" value="10">
-                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> Flooring (+10%)
+                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> Flooring
                                 </label>
                                 <label class="calc-checkbox">
                                     <input type="checkbox" name="addons" value="4">
-                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> Curtain/Soft Furnishing (+4%)
+                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> Curtain/Soft Furnishing
                                 </label>
                             </div>
                         </div>
@@ -558,7 +539,7 @@
                                 <input type="checkbox" name="k_accessories" value="15000" data-name="Wicker Basket" style="margin-right: 15px; margin-top: 5px;">
                                 <div>
                                     <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Wicker Basket</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px;">₹15,000/-</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹15,000/-</div>
                                 </div>
                             </label>
                             
@@ -566,7 +547,7 @@
                                 <input type="checkbox" name="k_accessories" value="20000" data-name="Corner Solution" style="margin-right: 15px; margin-top: 5px;">
                                 <div>
                                     <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Corner Solution</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px;">₹20,000/-</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹20,000/-</div>
                                 </div>
                             </label>
 
@@ -574,7 +555,7 @@
                                 <input type="checkbox" name="k_accessories" value="39000" data-name="Pantry Unit" style="margin-right: 15px; margin-top: 5px;">
                                 <div>
                                     <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Pantry Unit</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px;">₹39,000/-</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹39,000/-</div>
                                 </div>
                             </label>
 
@@ -582,7 +563,7 @@
                                 <input type="checkbox" name="k_accessories" value="3000" data-name="Pan Hanger Pack & Lid Holder" style="margin-right: 15px; margin-top: 5px;">
                                 <div>
                                     <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Pan Hanger Pack & Lid Holder</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px;">₹3,000/-</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹3,000/-</div>
                                 </div>
                             </label>
 
@@ -590,7 +571,7 @@
                                 <input type="checkbox" name="k_accessories" value="5000" data-name="Kitchen Midway Pack" style="margin-right: 15px; margin-top: 5px;">
                                 <div>
                                     <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Kitchen Midway Pack</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px;">₹5,000/-</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹5,000/-</div>
                                 </div>
                             </label>
 
@@ -598,7 +579,7 @@
                                 <input type="checkbox" name="k_accessories" value="2000" data-name="Wire Glass Holder" style="margin-right: 15px; margin-top: 5px;">
                                 <div>
                                     <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Wire Glass Holder</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px;">₹2,000/-</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹2,000/-</div>
                                 </div>
                             </label>
 
@@ -606,7 +587,7 @@
                                 <input type="checkbox" name="k_accessories" value="1500" data-name="Shelf Tray" style="margin-right: 15px; margin-top: 5px;">
                                 <div>
                                     <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Shelf Tray</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px;">₹1,500/-</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹1,500/-</div>
                                 </div>
                             </label>
 
@@ -614,7 +595,7 @@
                                 <input type="checkbox" name="k_accessories" value="4000" data-name="Pull Out / Swing Out Waste Bin" style="margin-right: 15px; margin-top: 5px;">
                                 <div>
                                     <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Pull/Swing Out Waste Bin</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px;">₹4,000/-</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹4,000/-</div>
                                 </div>
                             </label>
                         </div>
@@ -648,7 +629,7 @@
                         </div>
                     </div>
 
-                    <div class="results-breakdown">
+                    <div class="results-breakdown" id="estimate-breakdown-section" style="display: none;">
                         <h4 class="breakdown-title">Estimate Breakdown</h4>
                         <ul class="breakdown-list">
                             <li>

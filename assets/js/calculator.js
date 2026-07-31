@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle property type selection to show/hide custom sqft input
+    // Handle property type selection to update sqft input
     const propertyTypeCards = document.querySelectorAll('.type-options .calc-option-card');
     const sqftStepGroup = document.getElementById('sqft-step-group');
     const sqftInput = document.getElementById('sqft-input');
@@ -85,13 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
         card.addEventListener('click', function() {
             const input = this.querySelector('input[type="radio"]');
             if(input) {
-                if(input.getAttribute('data-custom') === 'true' || input.value === 'custom') {
-                    sqftStepGroup.style.display = 'block';
-                    sqftInput.value = ''; // clear or leave as is
-                } else {
-                    sqftStepGroup.style.display = 'none';
-                    sqftInput.value = input.value; // set the predefined value
-                }
+                sqftInput.value = input.value;
             }
         });
     });
@@ -394,8 +388,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     document.getElementById('calc-total-range').innerText = formatNum(totalCost);
                     document.getElementById('bd-total').innerText = formatNum(totalCost);
-                    document.getElementById('calc-sqft-price').innerText = `(${formatNum(rate)} per rft)`;
+                    document.getElementById('calc-sqft-price').style.display = 'none';
                     
+                    document.getElementById('estimate-breakdown-section').style.display = 'block';                    
                     document.getElementById('calc-sqft-badge').style.display = 'inline-block';
                     document.getElementById('badge-sqft-text').innerText = `${totalFt.toFixed(1)} rft`;
 
@@ -451,9 +446,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 sqft = sqft || 0;
                 
-                if(sqft <= 0) {
-                    alert("Please enter a valid area.");
+                const sqftInputEl = document.getElementById('sqft-input');
+                const sqftErrorEl = document.getElementById('sqft-error');
+                
+                if(sqft < 400) {
+                    if (sqftErrorEl) sqftErrorEl.style.display = 'block';
+                    if (sqftInputEl) sqftInputEl.style.borderColor = '#E74C3C';
                     return;
+                } else {
+                    if (sqftErrorEl) sqftErrorEl.style.display = 'none';
+                    if (sqftInputEl) sqftInputEl.style.borderColor = 'rgba(255,255,255,0.1)';
                 }
                 
                 // Get selected rate (Package)
@@ -520,8 +522,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('bd-paint').innerText = `${formatNum(paintCost)}`;
                 document.getElementById('bd-decorative').innerText = `${formatNum(decorativeCost)}`;
                 
-                // Update sqft price text
-                document.getElementById('calc-sqft-price').innerText = `(${formatNum(rate)} per sq.ft)`;
+                // Hide sqft price text
+                document.getElementById('calc-sqft-price').style.display = 'none';
+
+                // Show estimate breakdown section
+                document.getElementById('estimate-breakdown-section').style.display = 'block';
 
                 // Show other breakdowns
                 ['bd-furniture', 'bd-wardrobes', 'bd-kitchen', 'bd-false-ceiling', 'bd-electrical', 'bd-design', 'bd-paint', 'bd-decorative'].forEach(id => {
@@ -558,198 +563,261 @@ document.addEventListener('DOMContentLoaded', function() {
             downloadPdfBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Generating...';
 
             setTimeout(() => {
-                try {
-                    // Inject Date and Time
-                    const now = new Date();
-                    const dateOpts = { day: '2-digit', month: 'short', year: 'numeric' };
-                    const timeOpts = { hour: '2-digit', minute: '2-digit', hour12: true };
-                    
-                    const dateStr = now.toLocaleDateString('en-GB', dateOpts).toUpperCase();
-                    const timeStr = now.toLocaleTimeString('en-US', timeOpts).toUpperCase();
-                    
-                    const pdfDateEl = document.getElementById('pdf-export-date');
-                    const pdfTimeEl = document.getElementById('pdf-export-time');
-                    if(pdfDateEl) pdfDateEl.textContent = dateStr;
-                    if(pdfTimeEl) pdfTimeEl.textContent = timeStr;
-
-                    // Gather Selections
-                    const categoryEl = document.querySelector('input[name="property_category"]:checked');
-                    const typeEl = document.querySelector('input[name="property_type"]:checked');
-                    const styleEl = document.querySelector('input[name="design_style"]:checked');
-                    const finishEl = document.querySelector('input[name="finish_level"]:checked');
-
-                    const categoryText = categoryEl ? categoryEl.nextElementSibling.nextElementSibling.textContent.trim() : 'N/A';
-                    let typeText = 'N/A';
-                    let styleText = 'N/A';
-                    let packageText = 'N/A';
-                    let finishValue = '1200';
-                    const isKitchen = categoryEl && categoryEl.value === 'kitchen';
-
-                    if (isKitchen) {
-                        const layoutEl = document.querySelector('input[name="k_layout"]:checked');
-                        if(layoutEl) typeText = layoutEl.nextElementSibling.nextElementSibling.textContent.trim();
-                        
-                        let totalFt = 0;
-                        ['A', 'B', 'C'].forEach(label => {
-                            const ftInput = document.getElementById(`k_measure_${label}_ft`);
-                            const inInput = document.getElementById(`k_measure_${label}_in`);
-                            if(ftInput) {
-                                totalFt += parseFloat(ftInput.value || 0);
-                                if(inInput) totalFt += (parseFloat(inInput.value || 0) / 12);
-                            }
-                        });
-                        typeText += ` (${totalFt.toFixed(1)} rft)`;
-                        
-                        styleText = 'Modular Kitchen Custom Design';
-                        
-                        const packageEl = document.querySelector('input[name="k_package"]:checked');
-                        if (packageEl) {
-                            finishValue = packageEl.value;
-                            if (finishValue == 1500) packageText = 'Essentials';
-                            else if (finishValue == 2000) packageText = 'Premium';
-                            else packageText = 'Luxury';
-                        }
-                    } else {
-                        if (typeEl) {
-                            if (typeEl.value === 'custom') {
-                                const sqftInput = document.getElementById('sqft-input');
-                                typeText = `Custom (${sqftInput.value || 0} sqft)`;
-                            } else {
-                                typeText = typeEl.nextElementSibling.nextElementSibling.textContent.trim();
-                            }
-                        }
-                        styleText = styleEl ? styleEl.nextElementSibling.nextElementSibling.textContent.trim() : 'N/A';
-                        
-                        if (finishEl) {
-                            finishValue = finishEl.value;
-                            const labelDiv = finishEl.nextElementSibling.nextElementSibling;
-                            if(labelDiv) {
-                                packageText = labelDiv.querySelector('span:first-child').textContent.trim();
-                            }
-                        }
+                const typeEl = document.querySelector('input[name="property_type"]:checked');
+                const sqftInput = document.getElementById('sqft-input');
+                const isKitchen = document.querySelector('input[name="property_category"]:checked')?.value === 'kitchen';
+                
+                let ranges = [];
+                if (!isKitchen && typeEl && typeEl.value !== 'custom' && !sqftInput.value) {
+                    const min = typeEl.getAttribute('data-min');
+                    const max = typeEl.getAttribute('data-max');
+                    if (min && max) {
+                        ranges = [
+                            { sqft: parseInt(min), label: 'Min' },
+                            { sqft: parseInt(max), label: 'Max' }
+                        ];
                     }
+                }
 
-                    // Populate Selections
-                    document.getElementById('pdf-category').textContent = categoryText;
-                    document.getElementById('pdf-type').textContent = typeText;
-                    document.getElementById('pdf-style').textContent = styleText;
-                    document.getElementById('pdf-package').textContent = packageText;
+                if (ranges.length === 0) {
+                    // Single PDF standard generation
+                    generatePdfForRange(null, null).then(() => {
+                        downloadPdfBtn.innerHTML = originalText;
+                    }).catch(err => {
+                        console.error(err);
+                        downloadPdfBtn.innerHTML = originalText;
+                    });
+                } else {
+                    // Two PDFs generation
+                    generatePdfForRange(ranges[0].sqft, ranges[0].label).then(() => {
+                        return generatePdfForRange(ranges[1].sqft, ranges[1].label);
+                    }).then(() => {
+                        downloadPdfBtn.innerHTML = originalText;
+                    }).catch(err => {
+                        console.error(err);
+                        downloadPdfBtn.innerHTML = originalText;
+                    });
+                }
 
-                    // Populate Quotation (only visible ones)
-                    const items = ['furniture', 'wardrobes', 'kitchen', 'false-ceiling', 'electrical', 'paint', 'decorative', 'design'];
-                    items.forEach(item => {
-                        const el = document.getElementById(`bd-${item}`);
-                        const pdfEl = document.getElementById(`pdf-bd-${item}`);
-                        const li = el ? el.closest('li') : null;
-                        if(pdfEl && li) {
-                            if(li.style.display !== 'none') {
-                                pdfEl.textContent = el.textContent;
-                                pdfEl.closest('tr').style.display = 'table-row';
+                function generatePdfForRange(customSqft, label) {
+                    return new Promise((resolve, reject) => {
+                        try {
+                            // Inject Date and Time
+                            const now = new Date();
+                            const dateOpts = { day: '2-digit', month: 'short', year: 'numeric' };
+                            const timeOpts = { hour: '2-digit', minute: '2-digit', hour12: true };
+                            
+                            const dateStr = now.toLocaleDateString('en-GB', dateOpts).toUpperCase();
+                            const timeStr = now.toLocaleTimeString('en-US', timeOpts).toUpperCase();
+                            
+                            const pdfDateEl = document.getElementById('pdf-export-date');
+                            const pdfTimeEl = document.getElementById('pdf-export-time');
+                            if(pdfDateEl) pdfDateEl.textContent = dateStr;
+                            if(pdfTimeEl) pdfTimeEl.textContent = timeStr;
+
+                            // Gather Selections
+                            const categoryEl = document.querySelector('input[name="property_category"]:checked');
+                            const finishEl = document.querySelector('input[name="finish_level"]:checked');
+                            const styleEl = document.querySelector('input[name="design_style"]:checked');
+
+                            const categoryText = categoryEl ? categoryEl.nextElementSibling.nextElementSibling.textContent.trim() : 'N/A';
+                            let typeText = 'N/A';
+                            let styleText = 'N/A';
+                            let packageText = 'N/A';
+                            let finishValue = '1200';
+
+                            if (isKitchen) {
+                                const layoutEl = document.querySelector('input[name="k_layout"]:checked');
+                                if(layoutEl) typeText = layoutEl.nextElementSibling.nextElementSibling.textContent.trim();
+                                
+                                let totalFt = 0;
+                                ['A', 'B', 'C'].forEach(lbl => {
+                                    const ftInput = document.getElementById(`k_measure_${lbl}_ft`);
+                                    const inInput = document.getElementById(`k_measure_${lbl}_in`);
+                                    if(ftInput) {
+                                        totalFt += parseFloat(ftInput.value || 0);
+                                        if(inInput) totalFt += (parseFloat(inInput.value || 0) / 12);
+                                    }
+                                });
+                                typeText += ` (${totalFt.toFixed(1)} rft)`;
+                                styleText = 'Modular Kitchen Custom Design';
+                                
+                                const packageEl = document.querySelector('input[name="k_package"]:checked');
+                                if (packageEl) {
+                                    finishValue = packageEl.value;
+                                    if (finishValue == 1500) packageText = 'Essentials';
+                                    else if (finishValue == 2000) packageText = 'Premium';
+                                    else packageText = 'Luxury';
+                                }
                             } else {
-                                pdfEl.closest('tr').style.display = 'none';
+                                if (typeEl) {
+                                    if (typeEl.value === 'custom') {
+                                        typeText = `Custom (${sqftInput.value || 0} sqft)`;
+                                    } else {
+                                        typeText = typeEl.nextElementSibling.nextElementSibling.textContent.trim();
+                                        if (customSqft) {
+                                            typeText += ` (${label}: ${customSqft} sqft)`;
+                                        }
+                                    }
+                                }
+                                styleText = styleEl ? styleEl.nextElementSibling.nextElementSibling.textContent.trim() : 'N/A';
+                                
+                                if (finishEl) {
+                                    finishValue = finishEl.value;
+                                    const labelDiv = finishEl.nextElementSibling.nextElementSibling;
+                                    if(labelDiv) {
+                                        packageText = labelDiv.querySelector('span:first-child').textContent.trim();
+                                    }
+                                }
                             }
-                        }
-                    });
 
-                    // Addons
-                    const addonIds = ['8', '10', '4'];
-                    addonIds.forEach(id => {
-                        const row = document.getElementById('li-addon-' + id);
-                        const pdfRow = document.getElementById('pdf-row-addon-' + id);
-                        if (row && row.style.display !== 'none') {
-                            if(pdfRow) pdfRow.style.display = 'table-row';
-                            const valEl = document.getElementById('bd-addon-' + id);
-                            const pdfValEl = document.getElementById('pdf-bd-addon-' + id);
-                            if(valEl && pdfValEl) pdfValEl.textContent = valEl.textContent;
-                        } else {
-                            if(pdfRow) pdfRow.style.display = 'none';
-                        }
-                    });
+                            document.getElementById('pdf-category').textContent = categoryText;
+                            document.getElementById('pdf-type').textContent = typeText;
+                            document.getElementById('pdf-style').textContent = styleText;
+                            document.getElementById('pdf-package').textContent = packageText;
 
-                    document.getElementById('pdf-cost-total').textContent = document.getElementById('bd-total').textContent;
-
-                    // Kitchen Accessories
-                    const pdfKAccList = document.getElementById('pdf-kitchen-accessories-list');
-                    if (pdfKAccList) {
-                        pdfKAccList.innerHTML = '';
-                        if (isKitchen) {
+                            let computedCosts = null;
                             const formatNum = (num) => '₹' + Math.round(num).toLocaleString('en-IN');
-                            const checkedAccs = document.querySelectorAll('input[name="k_accessories"]:checked');
-                            checkedAccs.forEach(acc => {
-                                const cost = parseFloat(acc.value);
-                                pdfKAccList.innerHTML += `<tr><td style="padding-bottom: 4px; color:#F4B41A;">+ ${acc.getAttribute('data-name')}</td><td style="text-align: right; color:#F4B41A;">${formatNum(cost)}</td></tr>`;
+                            
+                            if (customSqft && !isKitchen) {
+                                const rate = parseInt(finishValue);
+                                let baseCost = customSqft * rate;
+                                const designStylePct = parseInt(styleEl ? styleEl.value : 0);
+                                const designStyleCost = baseCost * (designStylePct / 100);
+                                let addonsCost = 0;
+                                const checkedAddons = document.querySelectorAll('input[name="addons"]:checked');
+                                if (checkedAddons) {
+                                    checkedAddons.forEach(addon => {
+                                        addonsCost += baseCost * (parseInt(addon.value || 0) / 100);
+                                    });
+                                }
+                                const subtotal = Math.round(baseCost + designStyleCost);
+                                const totalCost = Math.round(subtotal + addonsCost);
+                                computedCosts = {
+                                    'furniture': Math.round(subtotal * 0.29),
+                                    'wardrobes': Math.round(subtotal * 0.21),
+                                    'kitchen': Math.round(subtotal * 0.15),
+                                    'false-ceiling': Math.round(subtotal * 0.10),
+                                    'electrical': Math.round(subtotal * 0.09),
+                                    'design': Math.round(subtotal * 0.06),
+                                    'paint': Math.round(subtotal * 0.04),
+                                    'total': totalCost
+                                };
+                                computedCosts['decorative'] = subtotal - (computedCosts['furniture'] + computedCosts['wardrobes'] + computedCosts['kitchen'] + computedCosts['false-ceiling'] + computedCosts['electrical'] + computedCosts['design'] + computedCosts['paint']);
+                                
+                                if (checkedAddons) {
+                                    checkedAddons.forEach(addon => {
+                                        computedCosts['addon-' + addon.value] = Math.round(baseCost * (parseInt(addon.value || 0) / 100));
+                                    });
+                                }
+                            }
+
+                            // Populate Quotation
+                            const items = ['furniture', 'wardrobes', 'kitchen', 'false-ceiling', 'electrical', 'paint', 'decorative', 'design'];
+                            items.forEach(item => {
+                                const el = document.getElementById(`bd-${item}`);
+                                const pdfEl = document.getElementById(`pdf-bd-${item}`);
+                                const li = el ? el.closest('li') : null;
+                                if(pdfEl && li) {
+                                    if(li.style.display !== 'none' || computedCosts) {
+                                        pdfEl.textContent = computedCosts ? formatNum(computedCosts[item]) : el.textContent;
+                                        pdfEl.closest('tr').style.display = 'table-row';
+                                    } else {
+                                        pdfEl.closest('tr').style.display = 'none';
+                                    }
+                                }
                             });
+
+                            const addonIds = ['8', '10', '4'];
+                            addonIds.forEach(id => {
+                                const row = document.getElementById('li-addon-' + id);
+                                const pdfRow = document.getElementById('pdf-row-addon-' + id);
+                                if (row && (row.style.display !== 'none' || (computedCosts && computedCosts['addon-'+id]))) {
+                                    if(pdfRow) pdfRow.style.display = 'table-row';
+                                    const valEl = document.getElementById('bd-addon-' + id);
+                                    const pdfValEl = document.getElementById('pdf-bd-addon-' + id);
+                                    if(pdfValEl) pdfValEl.textContent = computedCosts ? formatNum(computedCosts['addon-'+id]) : (valEl ? valEl.textContent : '');
+                                } else {
+                                    if(pdfRow) pdfRow.style.display = 'none';
+                                }
+                            });
+
+                            document.getElementById('pdf-cost-total').textContent = computedCosts ? formatNum(computedCosts['total']) : document.getElementById('bd-total').textContent;
+
+                            // Kitchen Accessories
+                            const pdfKAccList = document.getElementById('pdf-kitchen-accessories-list');
+                            if (pdfKAccList) {
+                                pdfKAccList.innerHTML = '';
+                                if (isKitchen) {
+                                    const checkedAccs = document.querySelectorAll('input[name="k_accessories"]:checked');
+                                    checkedAccs.forEach(acc => {
+                                        const cost = parseFloat(acc.value);
+                                        pdfKAccList.innerHTML += `<tr><td style="padding-bottom: 4px; color:#F4B41A;">+ ${acc.getAttribute('data-name')}</td><td style="text-align: right; color:#F4B41A;">${formatNum(cost)}</td></tr>`;
+                                    });
+                                }
+                            }
+
+                            // Material Specs
+                            const specSource = document.getElementById('specs-' + finishValue);
+                            const specDest = document.getElementById('pdf-material-specs');
+                            const specTitle = document.getElementById('pdf-material-specs-title');
+                            
+                            if(specTitle && packageText !== 'N/A') {
+                                specTitle.textContent = packageText + ' Material Specification';
+                            }
+                            if (specSource && specDest && !isKitchen) {
+                                specDest.innerHTML = specSource.innerHTML;
+                                specTitle.style.display = 'block';
+                            } else {
+                                if(specDest) specDest.innerHTML = "";
+                                if(specTitle) specTitle.style.display = 'none';
+                            }
+
+                            // Prepare html2pdf
+                            const originalParent = pdfTemplate.parentNode;
+                            document.body.appendChild(pdfTemplate);
+                            pdfTemplate.style.display = 'block';
+                            pdfTemplate.style.position = 'absolute';
+                            pdfTemplate.style.left = '0';
+                            pdfTemplate.style.top = '0';
+                            pdfTemplate.style.margin = '0';
+                            pdfTemplate.style.zIndex = '-9999';
+
+                            const originalScrollX = window.scrollX;
+                            const originalScrollY = window.scrollY;
+                            window.scrollTo(0, 0);
+
+                            setTimeout(() => {
+                                let filename = 'Kalp_Interior_Studio_Quotation.pdf';
+                                if (label) {
+                                    filename = `Kalp_Interior_Studio_${label}_Estimate.pdf`;
+                                }
+
+                                const opt = {
+                                    margin:       0,
+                                    filename:     filename,
+                                    image:        { type: 'jpeg', quality: 1 },
+                                    html2canvas:  { scale: 2, useCORS: true, scrollX: 0, scrollY: 0, width: 794, height: 2246 }, 
+                                    jsPDF:        { unit: 'px', format: [794, 1123], orientation: 'portrait', hotfixes: ["px_scaling"] }
+                                };
+
+                                html2pdf().set(opt).from(pdfTemplate).save().then(() => {
+                                    pdfTemplate.style.display = 'none';
+                                    originalParent.appendChild(pdfTemplate);
+                                    window.scrollTo(originalScrollX, originalScrollY);
+                                    resolve();
+                                }).catch(err => {
+                                    console.error('PDF Generation Error:', err);
+                                    pdfTemplate.style.display = 'none';
+                                    originalParent.appendChild(pdfTemplate);
+                                    window.scrollTo(originalScrollX, originalScrollY);
+                                    reject(err);
+                                });
+                            }, 50);
+                        } catch (error) {
+                            reject(error);
                         }
-                    }
-
-                    // Populate Material Specs (only if standard package selected)
-                    const specSource = document.getElementById('specs-' + finishValue);
-                    const specDest = document.getElementById('pdf-material-specs');
-                    const specTitle = document.getElementById('pdf-material-specs-title');
-                    
-                    if(specTitle && packageText !== 'N/A') {
-                        specTitle.textContent = packageText + ' Material Specification';
-                    }
-
-                    if (specSource && specDest && !document.getElementById('cat-kitchen').querySelector('input').checked) {
-                        specDest.innerHTML = specSource.innerHTML;
-                        specTitle.style.display = 'block';
-                    } else {
-                        if(specDest) specDest.innerHTML = "";
-                        if(specTitle) specTitle.style.display = 'none';
-                    }
-
-                    // Prepare element for html2pdf
-                    const originalParent = pdfTemplate.parentNode;
-                    document.body.appendChild(pdfTemplate);
-
-                    pdfTemplate.style.display = 'block';
-                    pdfTemplate.style.position = 'absolute';
-                    pdfTemplate.style.left = '0';
-                    pdfTemplate.style.top = '0';
-                    pdfTemplate.style.margin = '0';
-                    pdfTemplate.style.zIndex = '-9999';
-
-                    // html2canvas has a known bug where scroll position offsets the capture area.
-                    // We must physically scroll to 0,0 before capture.
-                    const originalScrollX = window.scrollX;
-                    const originalScrollY = window.scrollY;
-                    window.scrollTo(0, 0);
-
-                    // Allow browser 50ms to recalculate layout after moving the element to body
-                    setTimeout(() => {
-                        const opt = {
-                            margin:       0,
-                            filename:     'Kalp_Interior_Studio_Quotation.pdf',
-                            image:        { type: 'jpeg', quality: 1 },
-                            html2canvas:  { 
-                                scale: 2, 
-                                useCORS: true,
-                                scrollX: 0, 
-                                scrollY: 0,
-                                width: 794,
-                                height: 2246
-                            }, 
-                            jsPDF:        { unit: 'px', format: [794, 1123], orientation: 'portrait', hotfixes: ["px_scaling"] }
-                        };
-
-                        html2pdf().set(opt).from(pdfTemplate).save().then(() => {
-                            pdfTemplate.style.display = 'none';
-                            originalParent.appendChild(pdfTemplate);
-                            window.scrollTo(originalScrollX, originalScrollY);
-                            downloadPdfBtn.innerHTML = originalText;
-                        }).catch(err => {
-                            console.error('PDF Generation Error:', err);
-                            pdfTemplate.style.display = 'none';
-                            originalParent.appendChild(pdfTemplate);
-                            window.scrollTo(originalScrollX, originalScrollY);
-                            downloadPdfBtn.innerHTML = originalText;
-                        });
-                    }, 50);
-                } catch (error) {
-                    console.error('Error preparing PDF:', error);
-                    if(pdfTemplate) pdfTemplate.style.display = 'none';
-                    downloadPdfBtn.innerHTML = originalText;
+                    });
                 }
             }, 100);
         });
