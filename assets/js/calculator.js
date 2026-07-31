@@ -38,6 +38,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                 }
+                
+                // Toggle entire form if category is kitchen
+                if (this.closest('.main-category-options')) {
+                    const mainForm = document.getElementById('estimate-calculator-form');
+                    const kitchenForm = document.getElementById('kitchen-calculator-form');
+                    if (this.getAttribute('data-target') === 'kitchen-options' || this.id === 'cat-kitchen') {
+                        mainForm.style.display = 'none';
+                        kitchenForm.style.display = 'block';
+                    } else {
+                        mainForm.style.display = 'block';
+                        kitchenForm.style.display = 'none';
+                    }
+                }
             });
         });
     });
@@ -98,7 +111,304 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Calculation Logic Simulation
+    // --- Modular Kitchen Wizard Logic ---
+    const kitchenForm = document.getElementById('kitchen-calculator-form');
+    if (kitchenForm) {
+        let currentKStep = 1;
+        const totalKSteps = 5;
+        const kNextBtns = document.querySelectorAll('.k-next-btn');
+        const kPrevBtns = document.querySelectorAll('.k-prev-btn');
+        const kIndicators = document.querySelectorAll('.k-step-indicator');
+        const kContents = document.querySelectorAll('.kitchen-step-content');
+        const kProgressFill = document.getElementById('kitchen-progress-fill');
+        
+        function updateKStep() {
+            // Update contents
+            kContents.forEach((c, index) => {
+                if (index + 1 === currentKStep) {
+                    c.style.display = 'block';
+                } else {
+                    c.style.display = 'none';
+                }
+            });
+            
+            // Update indicators and progress bar
+            kIndicators.forEach((ind, index) => {
+                const circle = ind.querySelector('.k-step-circle');
+                const text = ind.querySelector('span');
+                if (index + 1 < currentKStep) {
+                    circle.style.background = '#2ECC71';
+                    circle.style.borderColor = '#2ECC71';
+                    circle.style.color = 'white';
+                    text.style.color = 'white';
+                } else if (index + 1 === currentKStep) {
+                    circle.style.background = '#2ECC71';
+                    circle.style.borderColor = '#2ECC71';
+                    circle.style.color = 'white';
+                    text.style.color = 'white';
+                } else {
+                    circle.style.background = '#334C40';
+                    circle.style.borderColor = 'rgba(255,255,255,0.2)';
+                    circle.style.color = 'rgba(255,255,255,0.5)';
+                    text.style.color = 'rgba(255,255,255,0.5)';
+                }
+            });
+            
+            // Update progress line
+            if (currentKStep === 1) kProgressFill.style.width = '0%';
+            else if (currentKStep === 2) kProgressFill.style.width = '25%';
+            else if (currentKStep === 3) kProgressFill.style.width = '50%';
+            else if (currentKStep === 4) kProgressFill.style.width = '75%';
+            else if (currentKStep === 5) kProgressFill.style.width = '100%';
+        }
+        
+        kNextBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (currentKStep < totalKSteps) {
+                    currentKStep++;
+                    if(currentKStep === 2) generateKMeasurements();
+                    updateKStep();
+                }
+            });
+        });
+        
+        kPrevBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (currentKStep > 1) {
+                    currentKStep--;
+                    updateKStep();
+                }
+            });
+        });
+        
+        const kBackToMainBtn = document.querySelector('.k-back-to-main-btn');
+        if (kBackToMainBtn) {
+            kBackToMainBtn.addEventListener('click', () => {
+                document.getElementById('kitchen-calculator-form').style.display = 'none';
+                document.getElementById('estimate-calculator-form').style.display = 'block';
+            });
+        }
+
+        function generateKMeasurements() {
+            const layout = document.querySelector('input[name="k_layout"]:checked').value;
+            const diagram = document.getElementById('k-measure-diagram');
+            const inputsContainer = document.getElementById('k-measure-inputs');
+            
+            let htmlInputs = '';
+            let htmlDiagram = '';
+            
+            // Common input template
+            const inputTpl = (label) => `
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+                    <div style="width: 20px; font-weight: bold; color: white;">${label}:</div>
+                    <div style="display: flex; gap: 10px; flex: 1; margin-left: 15px;">
+                        <div style="flex: 1; position: relative;">
+                            <input type="number" id="k_measure_${label}_ft" value="10" min="0" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: white; outline: none;">
+                            <span style="position: absolute; right: 10px; top: 12px; color: rgba(255,255,255,0.5); font-size: 14px;">ft.</span>
+                        </div>
+                        <div style="flex: 1; position: relative;">
+                            <input type="number" id="k_measure_${label}_in" value="0" min="0" max="11" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: white; outline: none;">
+                            <span style="position: absolute; right: 10px; top: 12px; color: rgba(255,255,255,0.5); font-size: 14px;">In.</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            if (layout === 'l-shaped') {
+                htmlDiagram = `
+                    <div style="position: relative; width: 240px; height: 180px; margin: 0 auto;">
+                        <svg width="100%" height="100%" viewBox="0 0 160 120">
+                            <path d="M 10 110 L 10 10 L 150 10 L 150 110" stroke="#BDBDBD" stroke-width="4" fill="none" stroke-linecap="square"/>
+                            <rect x="12" y="12" width="136" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                            <rect x="123" y="37" width="25" height="71" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                            <text x="80" y="24.5" font-size="14" fill="#000" font-weight="bold" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">A</text>
+                            <text x="135.5" y="72" font-size="14" fill="#000" font-weight="bold" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">B</text>
+                        </svg>
+                    </div>`;
+                htmlInputs = inputTpl('A') + inputTpl('B');
+            } else if (layout === 'u-shaped') {
+                htmlDiagram = `
+                    <div style="position: relative; width: 240px; height: 180px; margin: 0 auto;">
+                        <svg width="100%" height="100%" viewBox="0 0 160 120">
+                            <path d="M 10 110 L 10 10 L 150 10 L 150 110" stroke="#BDBDBD" stroke-width="4" fill="none" stroke-linecap="square"/>
+                            <rect x="12" y="12" width="136" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                            <rect x="12" y="37" width="25" height="71" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                            <rect x="123" y="37" width="25" height="71" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                            <text x="24.5" y="72" font-size="14" fill="#000" font-weight="bold" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">A</text>
+                            <text x="80" y="24.5" font-size="14" fill="#000" font-weight="bold" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">B</text>
+                            <text x="135.5" y="72" font-size="14" fill="#000" font-weight="bold" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">C</text>
+                        </svg>
+                    </div>`;
+                htmlInputs = inputTpl('A') + inputTpl('B') + inputTpl('C');
+            } else if (layout === 'straight') {
+                htmlDiagram = `
+                    <div style="position: relative; width: 240px; height: 180px; margin: 0 auto;">
+                        <svg width="100%" height="100%" viewBox="0 0 160 120">
+                            <path d="M 10 90 L 10 10 L 150 10 L 150 90" stroke="#BDBDBD" stroke-width="4" fill="none" stroke-linecap="square"/>
+                            <rect x="12" y="12" width="136" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                            <text x="80" y="24.5" font-size="14" fill="#000" font-weight="bold" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">A</text>
+                        </svg>
+                    </div>`;
+                htmlInputs = inputTpl('A');
+            } else if (layout === 'parallel') {
+                htmlDiagram = `
+                    <div style="position: relative; width: 240px; height: 180px; margin: 0 auto;">
+                        <svg width="100%" height="100%" viewBox="0 0 160 120">
+                            <path d="M 10 40 L 10 10 L 150 10 L 150 40 M 10 80 L 10 110 L 150 110 L 150 80" stroke="#BDBDBD" stroke-width="4" fill="none" stroke-linecap="square"/>
+                            <rect x="12" y="12" width="136" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                            <rect x="12" y="83" width="136" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                            <text x="80" y="24.5" font-size="14" fill="#000" font-weight="bold" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">A</text>
+                            <text x="80" y="95.5" font-size="14" fill="#000" font-weight="bold" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">B</text>
+                        </svg>
+                    </div>`;
+                htmlInputs = inputTpl('A') + inputTpl('B');
+            } else if (layout === 'peninsula') {
+                htmlDiagram = `
+                    <div style="position: relative; width: 240px; height: 180px; margin: 0 auto;">
+                        <svg width="100%" height="100%" viewBox="0 0 160 120">
+                            <path d="M 10 110 L 10 10 L 150 10 L 150 110" stroke="#BDBDBD" stroke-width="4" fill="none" stroke-linecap="square"/>
+                            <rect x="12" y="12" width="136" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                            <rect x="123" y="37" width="25" height="71" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                            <rect x="12" y="83" width="70" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                            <text x="80" y="24.5" font-size="14" fill="#000" font-weight="bold" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">A</text>
+                            <text x="135.5" y="72" font-size="14" fill="#000" font-weight="bold" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">B</text>
+                            <text x="47" y="95.5" font-size="14" fill="#000" font-weight="bold" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">C</text>
+                        </svg>
+                    </div>`;
+                htmlInputs = inputTpl('A') + inputTpl('B') + inputTpl('C');
+            } else if (layout === 'island') {
+                htmlDiagram = `
+                    <div style="position: relative; width: 240px; height: 180px; margin: 0 auto;">
+                        <svg width="100%" height="100%" viewBox="0 0 160 120">
+                            <path d="M 10 110 L 10 10 L 150 10 L 150 110" stroke="#BDBDBD" stroke-width="4" fill="none" stroke-linecap="square"/>
+                            <rect x="12" y="12" width="136" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                            <rect x="123" y="37" width="25" height="71" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                            <rect x="35" y="70" width="50" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                            <text x="80" y="24.5" font-size="14" fill="#000" font-weight="bold" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">A</text>
+                            <text x="135.5" y="72" font-size="14" fill="#000" font-weight="bold" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">B</text>
+                            <text x="60" y="82.5" font-size="14" fill="#000" font-weight="bold" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">C</text>
+                        </svg>
+                    </div>`;
+                htmlInputs = inputTpl('A') + inputTpl('B') + inputTpl('C');
+            }
+            
+            diagram.innerHTML = htmlDiagram;
+            inputsContainer.innerHTML = htmlInputs;
+        }
+
+        // Package selection visual
+        const pkgCards = document.querySelectorAll('.k-package-card');
+        pkgCards.forEach(card => {
+            card.addEventListener('click', function() {
+                pkgCards.forEach(c => {
+                    c.classList.remove('active');
+                    c.querySelector('.k-pkg-radio').style.borderColor = 'rgba(255,255,255,0.3)';
+                });
+                this.classList.add('active');
+                this.querySelector('.k-pkg-radio').style.borderColor = 'white';
+            });
+        });
+        
+        // Accessory checkbox visual
+        const accCards = document.querySelectorAll('.calc-checkbox-card');
+        accCards.forEach(card => {
+            const input = card.querySelector('input');
+            card.addEventListener('click', (e) => {
+                if(e.target !== input) {
+                    input.checked = !input.checked;
+                }
+                if(input.checked) {
+                    card.style.background = 'rgba(244, 180, 26, 0.1)';
+                    card.style.borderColor = '#F4B41A';
+                } else {
+                    card.style.background = 'rgba(255,255,255,0.05)';
+                    card.style.borderColor = 'rgba(255,255,255,0.1)';
+                }
+            });
+        });
+
+        const kCalcBtn = document.getElementById('kitchen-calculate-btn');
+        if (kCalcBtn) {
+            kCalcBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                currentKStep = 5;
+                updateKStep();
+                
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Calculating...';
+                this.style.pointerEvents = 'none';
+                
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.style.pointerEvents = 'auto';
+                    
+                    const layout = document.querySelector('input[name="k_layout"]:checked').value;
+                    let totalFt = 0;
+                    ['A', 'B', 'C'].forEach(label => {
+                        const ftInput = document.getElementById(`k_measure_${label}_ft`);
+                        const inInput = document.getElementById(`k_measure_${label}_in`);
+                        if(ftInput) {
+                            totalFt += parseFloat(ftInput.value || 0);
+                            if(inInput) totalFt += (parseFloat(inInput.value || 0) / 12);
+                        }
+                    });
+                    
+                    const rate = parseFloat(document.querySelector('input[name="k_package"]:checked').value);
+                    const baseCost = totalFt * rate;
+                    
+                    let addonsCost = 0;
+                    const accList = document.getElementById('kitchen-accessories-list');
+                    accList.innerHTML = '';
+                    accList.style.display = 'block';
+                    
+                    const checkedAccs = document.querySelectorAll('input[name="k_accessories"]:checked');
+                    if(checkedAccs.length === 0) accList.style.display = 'none';
+                    
+                    const formatNum = (num) => '₹' + Math.round(num).toLocaleString('en-IN');
+                    
+                    checkedAccs.forEach(acc => {
+                        const cost = parseFloat(acc.value);
+                        addonsCost += cost;
+                        accList.innerHTML += `
+                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                                <span>+ ${acc.getAttribute('data-name')}</span>
+                                <span>${formatNum(cost)}</span>
+                            </div>
+                        `;
+                    });
+                    
+                    const totalCost = baseCost + addonsCost;
+                    
+                    // Reset all other breakdowns
+                    ['bd-furniture', 'bd-wardrobes', 'bd-false-ceiling', 'bd-electrical', 'bd-design', 'bd-paint', 'bd-decorative'].forEach(id => {
+                        document.getElementById(id).innerText = '₹0';
+                        document.getElementById(id).closest('li').style.display = 'none';
+                    });
+                    ['8', '10', '4'].forEach(val => {
+                        const li = document.getElementById(`li-addon-${val}`);
+                        if(li) li.style.display = 'none';
+                    });
+                    
+                    document.getElementById('bd-kitchen').closest('li').style.display = 'flex';
+                    document.getElementById('bd-kitchen').innerText = formatNum(baseCost);
+                    
+                    document.getElementById('calc-total-range').innerText = formatNum(totalCost);
+                    document.getElementById('bd-total').innerText = formatNum(totalCost);
+                    document.getElementById('calc-sqft-price').innerText = `(${formatNum(rate)} per rft)`;
+                    
+                    document.getElementById('calc-sqft-badge').style.display = 'inline-block';
+                    document.getElementById('badge-sqft-text').innerText = `${totalFt.toFixed(1)} rft`;
+
+                    const resultsCard = document.querySelector('.calc-results-card');
+                    if (window.innerWidth <= 1200) {
+                        resultsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 800);
+            });
+        }
+    }
+
+    // Calculation Logic Simulation (Standard)
     const calcBtn = document.getElementById('calc-estimate-btn');
     
     if(calcBtn) {
@@ -213,6 +523,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Update sqft price text
                 document.getElementById('calc-sqft-price').innerText = `(${formatNum(rate)} per sq.ft)`;
 
+                // Show other breakdowns
+                ['bd-furniture', 'bd-wardrobes', 'bd-kitchen', 'bd-false-ceiling', 'bd-electrical', 'bd-design', 'bd-paint', 'bd-decorative'].forEach(id => {
+                    document.getElementById(id).closest('li').style.display = 'flex';
+                });
+                
+                // Hide kitchen accessories
+                const kAccList = document.getElementById('kitchen-accessories-list');
+                if(kAccList) kAccList.style.display = 'none';
+
                 setTimeout(() => {
                     resultsCard.style.transform = 'scale(1)';
                 }, 300);
@@ -240,6 +559,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
             setTimeout(() => {
                 try {
+                    // Inject Date and Time
+                    const now = new Date();
+                    const dateOpts = { day: '2-digit', month: 'short', year: 'numeric' };
+                    const timeOpts = { hour: '2-digit', minute: '2-digit', hour12: true };
+                    
+                    const dateStr = now.toLocaleDateString('en-GB', dateOpts).toUpperCase();
+                    const timeStr = now.toLocaleTimeString('en-US', timeOpts).toUpperCase();
+                    
+                    const pdfDateEl = document.getElementById('pdf-export-date');
+                    const pdfTimeEl = document.getElementById('pdf-export-time');
+                    if(pdfDateEl) pdfDateEl.textContent = dateStr;
+                    if(pdfTimeEl) pdfTimeEl.textContent = timeStr;
+
                     // Gather Selections
                     const categoryEl = document.querySelector('input[name="property_category"]:checked');
                     const typeEl = document.querySelector('input[name="property_type"]:checked');
@@ -248,23 +580,52 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     const categoryText = categoryEl ? categoryEl.nextElementSibling.nextElementSibling.textContent.trim() : 'N/A';
                     let typeText = 'N/A';
-                    if (typeEl) {
-                        if (typeEl.value === 'custom') {
-                            const sqftInput = document.getElementById('sqft-input');
-                            typeText = `Custom (${sqftInput.value || 0} sqft)`;
-                        } else {
-                            typeText = typeEl.nextElementSibling.nextElementSibling.textContent.trim();
-                        }
-                    }
-                    const styleText = styleEl ? styleEl.nextElementSibling.nextElementSibling.textContent.trim() : 'N/A';
-                    
+                    let styleText = 'N/A';
                     let packageText = 'N/A';
                     let finishValue = '1200';
-                    if (finishEl) {
-                        finishValue = finishEl.value;
-                        const labelDiv = finishEl.nextElementSibling.nextElementSibling;
-                        if(labelDiv) {
-                            packageText = labelDiv.querySelector('span:first-child').textContent.trim();
+                    const isKitchen = categoryEl && categoryEl.value === 'kitchen';
+
+                    if (isKitchen) {
+                        const layoutEl = document.querySelector('input[name="k_layout"]:checked');
+                        if(layoutEl) typeText = layoutEl.nextElementSibling.nextElementSibling.textContent.trim();
+                        
+                        let totalFt = 0;
+                        ['A', 'B', 'C'].forEach(label => {
+                            const ftInput = document.getElementById(`k_measure_${label}_ft`);
+                            const inInput = document.getElementById(`k_measure_${label}_in`);
+                            if(ftInput) {
+                                totalFt += parseFloat(ftInput.value || 0);
+                                if(inInput) totalFt += (parseFloat(inInput.value || 0) / 12);
+                            }
+                        });
+                        typeText += ` (${totalFt.toFixed(1)} rft)`;
+                        
+                        styleText = 'Modular Kitchen Custom Design';
+                        
+                        const packageEl = document.querySelector('input[name="k_package"]:checked');
+                        if (packageEl) {
+                            finishValue = packageEl.value;
+                            if (finishValue == 1500) packageText = 'Essentials';
+                            else if (finishValue == 2000) packageText = 'Premium';
+                            else packageText = 'Luxury';
+                        }
+                    } else {
+                        if (typeEl) {
+                            if (typeEl.value === 'custom') {
+                                const sqftInput = document.getElementById('sqft-input');
+                                typeText = `Custom (${sqftInput.value || 0} sqft)`;
+                            } else {
+                                typeText = typeEl.nextElementSibling.nextElementSibling.textContent.trim();
+                            }
+                        }
+                        styleText = styleEl ? styleEl.nextElementSibling.nextElementSibling.textContent.trim() : 'N/A';
+                        
+                        if (finishEl) {
+                            finishValue = finishEl.value;
+                            const labelDiv = finishEl.nextElementSibling.nextElementSibling;
+                            if(labelDiv) {
+                                packageText = labelDiv.querySelector('span:first-child').textContent.trim();
+                            }
                         }
                     }
 
@@ -274,16 +635,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('pdf-style').textContent = styleText;
                     document.getElementById('pdf-package').textContent = packageText;
 
-                    // Populate Quotation
-                    document.getElementById('pdf-bd-furniture').textContent = document.getElementById('bd-furniture').textContent;
-                    document.getElementById('pdf-bd-wardrobes').textContent = document.getElementById('bd-wardrobes').textContent;
-                    document.getElementById('pdf-bd-kitchen').textContent = document.getElementById('bd-kitchen').textContent;
-                    document.getElementById('pdf-bd-false-ceiling').textContent = document.getElementById('bd-false-ceiling').textContent;
-                    document.getElementById('pdf-bd-electrical').textContent = document.getElementById('bd-electrical').textContent;
-                    document.getElementById('pdf-bd-paint').textContent = document.getElementById('bd-paint').textContent;
-                    document.getElementById('pdf-bd-decorative').textContent = document.getElementById('bd-decorative').textContent;
-                    document.getElementById('pdf-bd-design').textContent = document.getElementById('bd-design').textContent;
+                    // Populate Quotation (only visible ones)
+                    const items = ['furniture', 'wardrobes', 'kitchen', 'false-ceiling', 'electrical', 'paint', 'decorative', 'design'];
+                    items.forEach(item => {
+                        const el = document.getElementById(`bd-${item}`);
+                        const pdfEl = document.getElementById(`pdf-bd-${item}`);
+                        const li = el ? el.closest('li') : null;
+                        if(pdfEl && li) {
+                            if(li.style.display !== 'none') {
+                                pdfEl.textContent = el.textContent;
+                                pdfEl.closest('tr').style.display = 'table-row';
+                            } else {
+                                pdfEl.closest('tr').style.display = 'none';
+                            }
+                        }
+                    });
 
+                    // Addons
                     const addonIds = ['8', '10', '4'];
                     addonIds.forEach(id => {
                         const row = document.getElementById('li-addon-' + id);
@@ -300,7 +668,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     document.getElementById('pdf-cost-total').textContent = document.getElementById('bd-total').textContent;
 
-                    // Populate Material Specs
+                    // Kitchen Accessories
+                    const pdfKAccList = document.getElementById('pdf-kitchen-accessories-list');
+                    if (pdfKAccList) {
+                        pdfKAccList.innerHTML = '';
+                        if (isKitchen) {
+                            const formatNum = (num) => '₹' + Math.round(num).toLocaleString('en-IN');
+                            const checkedAccs = document.querySelectorAll('input[name="k_accessories"]:checked');
+                            checkedAccs.forEach(acc => {
+                                const cost = parseFloat(acc.value);
+                                pdfKAccList.innerHTML += `<tr><td style="padding-bottom: 4px; color:#F4B41A;">+ ${acc.getAttribute('data-name')}</td><td style="text-align: right; color:#F4B41A;">${formatNum(cost)}</td></tr>`;
+                            });
+                        }
+                    }
+
+                    // Populate Material Specs (only if standard package selected)
                     const specSource = document.getElementById('specs-' + finishValue);
                     const specDest = document.getElementById('pdf-material-specs');
                     const specTitle = document.getElementById('pdf-material-specs-title');
@@ -309,10 +691,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         specTitle.textContent = packageText + ' Material Specification';
                     }
 
-                    if (specSource && specDest) {
+                    if (specSource && specDest && !document.getElementById('cat-kitchen').querySelector('input').checked) {
                         specDest.innerHTML = specSource.innerHTML;
+                        specTitle.style.display = 'block';
                     } else {
-                        if(specDest) specDest.innerHTML = "Material specifications not available for this package.";
+                        if(specDest) specDest.innerHTML = "";
+                        if(specTitle) specTitle.style.display = 'none';
                     }
 
                     // Prepare element for html2pdf

@@ -104,6 +104,11 @@
                                     <i class="fa-solid fa-building" style="color: #4B95C4;"></i>
                                     <span>Commercial</span>
                                 </label>
+                                <label class="calc-option-card" data-target="kitchen-options" id="cat-kitchen">
+                                    <input type="radio" name="property_category" value="kitchen">
+                                    <i class="fa-solid fa-kitchen-set" style="color: #E74C3C;"></i>
+                                    <span>Modular Kitchen</span>
+                                </label>
                             </div>
 
                             <div class="calc-step-label">
@@ -345,6 +350,282 @@
                     </p>
 
                 </form>
+
+                <!-- Modular Kitchen Wizard Form -->
+                <form id="kitchen-calculator-form" style="display: none;">
+                    
+                    <!-- Progress Bar for Kitchen -->
+                    <div class="kitchen-progress-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; position: relative;">
+                        <div style="position: absolute; top: 15px; left: 10%; right: 10%; height: 2px; background: rgba(255,255,255,0.2); z-index: 1;">
+                            <div id="kitchen-progress-fill" style="height: 100%; width: 0%; background: #2ECC71; transition: width 0.3s ease;"></div>
+                        </div>
+                        
+                        <div class="k-step-indicator active" data-step="1" style="position: relative; z-index: 2; text-align: center; width: 20%;">
+                            <div class="k-step-circle" style="width: 32px; height: 32px; border-radius: 50%; background: #2ECC71; color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold; border: 2px solid #2ECC71;">1</div>
+                            <span style="font-size: 12px; color: white;">Kitchen Layout</span>
+                        </div>
+                        <div class="k-step-indicator" data-step="2" style="position: relative; z-index: 2; text-align: center; width: 20%;">
+                            <div class="k-step-circle" style="width: 32px; height: 32px; border-radius: 50%; background: #334C40; color: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold; border: 2px solid rgba(255,255,255,0.2);">2</div>
+                            <span style="font-size: 12px; color: rgba(255,255,255,0.5);">Measurements</span>
+                        </div>
+                        <div class="k-step-indicator" data-step="3" style="position: relative; z-index: 2; text-align: center; width: 20%;">
+                            <div class="k-step-circle" style="width: 32px; height: 32px; border-radius: 50%; background: #334C40; color: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold; border: 2px solid rgba(255,255,255,0.2);">3</div>
+                            <span style="font-size: 12px; color: rgba(255,255,255,0.5);">Package</span>
+                        </div>
+                        <div class="k-step-indicator" data-step="4" style="position: relative; z-index: 2; text-align: center; width: 20%;">
+                            <div class="k-step-circle" style="width: 32px; height: 32px; border-radius: 50%; background: #334C40; color: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold; border: 2px solid rgba(255,255,255,0.2);">4</div>
+                            <span style="font-size: 12px; color: rgba(255,255,255,0.5);">Accessories</span>
+                        </div>
+                        <div class="k-step-indicator" data-step="5" style="position: relative; z-index: 2; text-align: center; width: 20%;">
+                            <div class="k-step-circle" style="width: 32px; height: 32px; border-radius: 50%; background: #334C40; color: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold; border: 2px solid rgba(255,255,255,0.2);">5</div>
+                            <span style="font-size: 12px; color: rgba(255,255,255,0.5);">Get Quote</span>
+                        </div>
+                    </div>
+
+                    <!-- Kitchen Step 1: Layout -->
+                    <div id="kitchen-step-1" class="kitchen-step-content active">
+                        <h3 style="text-align: center; color: white; margin-bottom: 25px;">Select the layout of your kitchen</h3>
+                        <div class="calc-options-grid" style="grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                            
+                            <label class="calc-option-card kitchen-layout-card">
+                                <input type="radio" name="k_layout" value="straight">
+                                <div style="width: 100%; height: 120px; background: #FFFFFF; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; position: relative; overflow: hidden;">
+                                    <svg width="100%" height="100%" viewBox="0 0 160 120">
+                                        <path d="M 10 90 L 10 10 L 150 10 L 150 90" stroke="#BDBDBD" stroke-width="4" fill="none" stroke-linecap="square"/>
+                                        <rect x="12" y="12" width="136" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                                        <g transform="translate(20, 14)"><rect width="20" height="20" fill="#fff" stroke="#000" stroke-width="1"/><circle cx="6" cy="6" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="14" cy="6" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="6" cy="14" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="14" cy="14" r="3" fill="none" stroke="#000" stroke-width="1"/></g>
+                                        <g transform="translate(68, 14)"><rect width="24" height="20" rx="2" fill="#fff" stroke="#000" stroke-width="1"/><rect x="2" y="2" width="20" height="12" rx="1" fill="none" stroke="#000" stroke-width="1"/><path d="M 12 14 L 12 18" stroke="#000" stroke-width="1"/></g>
+                                        <text x="130" y="27" font-size="20" fill="#000" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">*</text>
+                                    </svg>
+                                </div>
+                                <span>Single Wall</span>
+                            </label>
+
+                            <label class="calc-option-card kitchen-layout-card">
+                                <input type="radio" name="k_layout" value="parallel">
+                                <div style="width: 100%; height: 120px; background: #FFFFFF; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; position: relative; overflow: hidden;">
+                                    <svg width="100%" height="100%" viewBox="0 0 160 120">
+                                        <path d="M 10 40 L 10 10 L 150 10 L 150 40 M 10 80 L 10 110 L 150 110 L 150 80" stroke="#BDBDBD" stroke-width="4" fill="none" stroke-linecap="square"/>
+                                        <rect x="12" y="12" width="136" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                                        <rect x="12" y="83" width="136" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                                        <g transform="translate(20, 14)"><rect width="20" height="20" fill="#fff" stroke="#000" stroke-width="1"/><circle cx="6" cy="6" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="14" cy="6" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="6" cy="14" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="14" cy="14" r="3" fill="none" stroke="#000" stroke-width="1"/></g>
+                                        <g transform="translate(68, 14)"><rect width="24" height="20" rx="2" fill="#fff" stroke="#000" stroke-width="1"/><rect x="2" y="2" width="20" height="12" rx="1" fill="none" stroke="#000" stroke-width="1"/><path d="M 12 14 L 12 18" stroke="#000" stroke-width="1"/></g>
+                                        <text x="130" y="98" font-size="20" fill="#000" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">*</text>
+                                    </svg>
+                                </div>
+                                <span>Double Galley</span>
+                            </label>
+
+                            <label class="calc-option-card active kitchen-layout-card">
+                                <input type="radio" name="k_layout" value="l-shaped" checked>
+                                <div style="width: 100%; height: 120px; background: #FFFFFF; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; position: relative; overflow: hidden;">
+                                    <svg width="100%" height="100%" viewBox="0 0 160 120">
+                                        <path d="M 10 110 L 10 10 L 150 10 L 150 110" stroke="#BDBDBD" stroke-width="4" fill="none" stroke-linecap="square"/>
+                                        <rect x="12" y="12" width="136" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                                        <rect x="123" y="37" width="25" height="71" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                                        <g transform="translate(20, 14)"><rect width="20" height="20" fill="#fff" stroke="#000" stroke-width="1"/><circle cx="6" cy="6" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="14" cy="6" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="6" cy="14" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="14" cy="14" r="3" fill="none" stroke="#000" stroke-width="1"/></g>
+                                        <g transform="translate(68, 14)"><rect width="24" height="20" rx="2" fill="#fff" stroke="#000" stroke-width="1"/><rect x="2" y="2" width="20" height="12" rx="1" fill="none" stroke="#000" stroke-width="1"/><path d="M 12 14 L 12 18" stroke="#000" stroke-width="1"/></g>
+                                        <text x="135" y="80" font-size="20" fill="#000" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">*</text>
+                                    </svg>
+                                </div>
+                                <span>L-Shape</span>
+                            </label>
+                            
+                            <label class="calc-option-card kitchen-layout-card">
+                                <input type="radio" name="k_layout" value="u-shaped">
+                                <div style="width: 100%; height: 120px; background: #FFFFFF; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; position: relative; overflow: hidden;">
+                                    <svg width="100%" height="100%" viewBox="0 0 160 120">
+                                        <path d="M 10 110 L 10 10 L 150 10 L 150 110" stroke="#BDBDBD" stroke-width="4" fill="none" stroke-linecap="square"/>
+                                        <rect x="12" y="12" width="136" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                                        <rect x="12" y="37" width="25" height="71" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                                        <rect x="123" y="37" width="25" height="71" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                                        <g transform="translate(45, 14)"><rect width="20" height="20" fill="#fff" stroke="#000" stroke-width="1"/><circle cx="6" cy="6" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="14" cy="6" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="6" cy="14" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="14" cy="14" r="3" fill="none" stroke="#000" stroke-width="1"/></g>
+                                        <g transform="translate(90, 14)"><rect width="24" height="20" rx="2" fill="#fff" stroke="#000" stroke-width="1"/><rect x="2" y="2" width="20" height="12" rx="1" fill="none" stroke="#000" stroke-width="1"/><path d="M 12 14 L 12 18" stroke="#000" stroke-width="1"/></g>
+                                        <text x="135" y="80" font-size="20" fill="#000" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">*</text>
+                                    </svg>
+                                </div>
+                                <span>U-Shape</span>
+                            </label>
+
+                            <label class="calc-option-card kitchen-layout-card">
+                                <input type="radio" name="k_layout" value="peninsula">
+                                <div style="width: 100%; height: 120px; background: #FFFFFF; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; position: relative; overflow: hidden;">
+                                    <svg width="100%" height="100%" viewBox="0 0 160 120">
+                                        <path d="M 10 110 L 10 10 L 150 10 L 150 110" stroke="#BDBDBD" stroke-width="4" fill="none" stroke-linecap="square"/>
+                                        <rect x="12" y="12" width="136" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                                        <rect x="123" y="37" width="25" height="71" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                                        <rect x="12" y="83" width="70" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                                        <g transform="translate(20, 14)"><rect width="20" height="20" fill="#fff" stroke="#000" stroke-width="1"/><circle cx="6" cy="6" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="14" cy="6" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="6" cy="14" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="14" cy="14" r="3" fill="none" stroke="#000" stroke-width="1"/></g>
+                                        <g transform="translate(68, 14)"><rect width="24" height="20" rx="2" fill="#fff" stroke="#000" stroke-width="1"/><rect x="2" y="2" width="20" height="12" rx="1" fill="none" stroke="#000" stroke-width="1"/><path d="M 12 14 L 12 18" stroke="#000" stroke-width="1"/></g>
+                                        <text x="135" y="80" font-size="20" fill="#000" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">*</text>
+                                    </svg>
+                                </div>
+                                <span>Peninsula</span>
+                            </label>
+
+                            <label class="calc-option-card kitchen-layout-card">
+                                <input type="radio" name="k_layout" value="island">
+                                <div style="width: 100%; height: 120px; background: #FFFFFF; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; position: relative; overflow: hidden;">
+                                    <svg width="100%" height="100%" viewBox="0 0 160 120">
+                                        <path d="M 10 110 L 10 10 L 150 10 L 150 110" stroke="#BDBDBD" stroke-width="4" fill="none" stroke-linecap="square"/>
+                                        <rect x="12" y="12" width="136" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                                        <rect x="123" y="37" width="25" height="71" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                                        <rect x="35" y="70" width="50" height="25" fill="#C2E7F3" stroke="#000" stroke-width="2"/>
+                                        <g transform="translate(20, 14)"><rect width="20" height="20" fill="#fff" stroke="#000" stroke-width="1"/><circle cx="6" cy="6" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="14" cy="6" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="6" cy="14" r="3" fill="none" stroke="#000" stroke-width="1"/><circle cx="14" cy="14" r="3" fill="none" stroke="#000" stroke-width="1"/></g>
+                                        <g transform="translate(68, 14)"><rect width="24" height="20" rx="2" fill="#fff" stroke="#000" stroke-width="1"/><rect x="2" y="2" width="20" height="12" rx="1" fill="none" stroke="#000" stroke-width="1"/><path d="M 12 14 L 12 18" stroke="#000" stroke-width="1"/></g>
+                                        <text x="135" y="80" font-size="20" fill="#000" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">*</text>
+                                    </svg>
+                                </div>
+                                <span>Island</span>
+                            </label>
+
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                            <button type="button" class="calc-submit-btn k-back-to-main-btn" style="width: auto; padding: 10px 30px; background: rgba(255,255,255,0.1);"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                            <button type="button" class="calc-submit-btn k-next-btn" style="width: auto; padding: 10px 30px;">Next <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Kitchen Step 2: Measurements -->
+                    <div id="kitchen-step-2" class="kitchen-step-content" style="display: none;">
+                        <h3 style="text-align: center; color: white; margin-bottom: 25px;">Now review the measurements for accuracy</h3>
+                        
+                        <div id="k-measure-diagram" style="background: #FAF0E6; padding: 30px; border-radius: 12px; display: flex; justify-content: center; margin-bottom: 30px;">
+                            <!-- Diagram drawn dynamically based on layout -->
+                        </div>
+
+                        <div style="background: rgba(244, 180, 26, 0.2); color: #F4B41A; padding: 10px; text-align: center; border-radius: 5px; margin-bottom: 20px; font-size: 14px;">
+                            Standard size has been set for your convenience
+                        </div>
+
+                        <div id="k-measure-inputs" style="max-width: 400px; margin: 0 auto;">
+                            <!-- Inputs added dynamically -->
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                            <button type="button" class="calc-submit-btn k-prev-btn" style="width: auto; padding: 10px 30px; background: rgba(255,255,255,0.1);"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                            <button type="button" class="calc-submit-btn k-next-btn" style="width: auto; padding: 10px 30px;">Next <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Kitchen Step 3: Package -->
+                    <div id="kitchen-step-3" class="kitchen-step-content" style="display: none;">
+                        <h3 style="text-align: center; color: white; margin-bottom: 25px;">Pick your package</h3>
+                        
+                        <div class="calc-options-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                            <label class="calc-option-card active k-package-card" style="padding: 20px; text-align: left; display: block;">
+                                <input type="radio" name="k_package" value="1500" checked>
+                                <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <div class="k-pkg-radio" style="width:16px; height:16px; border-radius:50%; border:2px solid white; display:inline-block; margin-right:10px;"></div>
+                                    Essentials
+                                </div>
+                                <p style="font-size: 12px; margin-bottom: 15px; text-align: center; opacity: 0.8;">A range of basic units and accessories for a comfortable kitchen.</p>
+                                <ul style="font-size: 11px; padding-left: 15px; opacity: 0.9; margin-bottom: 0;">
+                                    <li style="margin-bottom: 5px;">Century Sainik BWP 710 Grade Ply</li>
+                                    <li style="margin-bottom: 5px;">1mm Premium Quality Laminate</li>
+                                    <li style="margin-bottom: 5px;">Hettich Innotech Tandem Boxes</li>
+                                </ul>
+                            </label>
+                            
+                            <label class="calc-option-card k-package-card" style="padding: 20px; text-align: left; display: block;">
+                                <input type="radio" name="k_package" value="2000">
+                                <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <div class="k-pkg-radio" style="width:16px; height:16px; border-radius:50%; border:2px solid rgba(255,255,255,0.3); display:inline-block; margin-right:10px;"></div>
+                                    Premium
+                                </div>
+                                <p style="font-size: 12px; margin-bottom: 15px; text-align: center; opacity: 0.8;">An exquisite offering with sleek fixtures and hardware.</p>
+                                <ul style="font-size: 11px; padding-left: 15px; opacity: 0.9; margin-bottom: 0;">
+                                    <li style="margin-bottom: 5px;">Century Bond BWP 710 Grade Ply</li>
+                                    <li style="margin-bottom: 5px;">1.5mm Acrylic (Color of choice)</li>
+                                    <li style="margin-bottom: 5px;">Hettich Innotech Tandem Boxes (8pcs)</li>
+                                </ul>
+                            </label>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                            <button type="button" class="calc-submit-btn k-prev-btn" style="width: auto; padding: 10px 30px; background: rgba(255,255,255,0.1);"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                            <button type="button" class="calc-submit-btn k-next-btn" style="width: auto; padding: 10px 30px;">Next <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Kitchen Step 4: Accessories -->
+                    <div id="kitchen-step-4" class="kitchen-step-content" style="display: none;">
+                        <h3 style="text-align: center; color: white; margin-bottom: 10px;">Additional Accessories</h3>
+                        <p style="text-align: center; color: rgba(255,255,255,0.7); font-size: 13px; margin-bottom: 25px;">The prices are indicative only, actual cost will be provided after hardware finalization</p>
+                        
+                        <div class="calc-options-grid k-accessories-grid" style="grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                            <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
+                                <input type="checkbox" name="k_accessories" value="15000" data-name="Wicker Basket" style="margin-right: 15px; margin-top: 5px;">
+                                <div>
+                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Wicker Basket</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px;">₹15,000/-</div>
+                                </div>
+                            </label>
+                            
+                            <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
+                                <input type="checkbox" name="k_accessories" value="20000" data-name="Corner Solution" style="margin-right: 15px; margin-top: 5px;">
+                                <div>
+                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Corner Solution</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px;">₹20,000/-</div>
+                                </div>
+                            </label>
+
+                            <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
+                                <input type="checkbox" name="k_accessories" value="39000" data-name="Pantry Unit" style="margin-right: 15px; margin-top: 5px;">
+                                <div>
+                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Pantry Unit</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px;">₹39,000/-</div>
+                                </div>
+                            </label>
+
+                            <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
+                                <input type="checkbox" name="k_accessories" value="3000" data-name="Pan Hanger Pack & Lid Holder" style="margin-right: 15px; margin-top: 5px;">
+                                <div>
+                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Pan Hanger Pack & Lid Holder</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px;">₹3,000/-</div>
+                                </div>
+                            </label>
+
+                            <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
+                                <input type="checkbox" name="k_accessories" value="5000" data-name="Kitchen Midway Pack" style="margin-right: 15px; margin-top: 5px;">
+                                <div>
+                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Kitchen Midway Pack</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px;">₹5,000/-</div>
+                                </div>
+                            </label>
+
+                            <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
+                                <input type="checkbox" name="k_accessories" value="2000" data-name="Wire Glass Holder" style="margin-right: 15px; margin-top: 5px;">
+                                <div>
+                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Wire Glass Holder</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px;">₹2,000/-</div>
+                                </div>
+                            </label>
+
+                            <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
+                                <input type="checkbox" name="k_accessories" value="1500" data-name="Shelf Tray" style="margin-right: 15px; margin-top: 5px;">
+                                <div>
+                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Shelf Tray</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px;">₹1,500/-</div>
+                                </div>
+                            </label>
+
+                            <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
+                                <input type="checkbox" name="k_accessories" value="4000" data-name="Pull Out / Swing Out Waste Bin" style="margin-right: 15px; margin-top: 5px;">
+                                <div>
+                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Pull/Swing Out Waste Bin</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px;">₹4,000/-</div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                            <button type="button" class="calc-submit-btn k-prev-btn" style="width: auto; padding: 10px 30px; background: rgba(255,255,255,0.1);"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                            <button type="button" id="kitchen-calculate-btn" class="calc-submit-btn" style="width: auto; padding: 10px 30px;"><i class="fa-solid fa-calculator"></i> Get Quote</button>
+                        </div>
+                    </div>
+
+                </form>
             </div>
             
             <!-- Right Column: Results -->
@@ -415,6 +696,10 @@
                                 <span>+ Curtain/Soft Furnishing</span>
                                 <span id="bd-addon-4">₹0</span>
                             </li>
+                            <!-- Kitchen Accessories -->
+                            <div id="kitchen-accessories-list" style="display: none; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 10px; margin-top: 10px; color: #F4B41A;">
+                                <!-- Dynamically populated -->
+                            </div>
                         </ul>
                         <div class="breakdown-total">
                             <span>Total Estimated Cost</span>
@@ -498,47 +783,61 @@
 <div id="pdf-export-template" style="display: none; width: 794px; height: 2246px; font-family: 'Inter', sans-serif; background: #ffffff; color: #333333; overflow: hidden; box-sizing: border-box;">
     <div style="display: flex; width: 100%; height: 100%;">
         <!-- Left Sidebar -->
-        <div style="width: 35%; flex-shrink: 0; background-color: #a49375; color: #ffffff; padding: 40px 30px; box-sizing: border-box; display: flex; flex-direction: column;">
-            <!-- Logo -->
-            <div style="margin-bottom: 60px;">
-                <img src="assets/images/logo.png" style="max-width: 180px; height: auto; filter: brightness(0) invert(1);" alt="KALP Logo">
-            </div>
-
-            <div style="margin-bottom: 30px;">
-                <div style="font-size: 14px; margin-bottom: 5px;">Online Estimation</div>
-                <div style="font-size: 14px;">info@kalpinteriors.com</div>
-            </div>
-
-            <div style="margin-bottom: 40px; font-size: 14px; line-height: 1.6;">
-                KALP INTERIOR DESIGN STUDIO.<br>
-                ISM CHOWK ROAD, OPP<br>
-                SR.DAV SCHOOL , PUNDAG,<br>
-                RANCHI - 834001
-            </div>
-
-            <div style="margin-bottom: auto;">
-                <div style="font-weight: 600; font-size: 14px; margin-bottom: 15px; border-top: 2px solid white; padding-top: 15px; width: 50px;">CONTACT:</div>
-                <div style="font-size: 14px; margin-bottom: 15px;">
-                    <strong>Office :</strong><br>
-                    +91 9472745288
+        <div style="width: 35%; flex-shrink: 0; display: flex; flex-direction: column; background: #ffffff;">
+            <!-- Brown Top Section -->
+            <div style="background-color: #a49375; color: #ffffff; padding: 40px 30px; box-sizing: border-box; flex-grow: 0; min-height: 60%;">
+                <!-- Logo -->
+                <div style="margin-bottom: 60px;">
+                    <img src="assets/images/logo.png" style="max-width: 180px; height: auto; filter: brightness(0) invert(1);" alt="KALP Logo">
                 </div>
-                <div style="font-size: 14px;">
-                    <strong>Studio head :</strong><br>
-                    +91 9234772288
+
+                <div style="margin-bottom: 30px;">
+                    <div style="font-size: 14px; margin-bottom: 5px;">Online Quotation.</div>
+                    <div style="font-size: 14px;">info@kalpinteriors.com</div>
+                </div>
+
+                <div style="margin-bottom: 40px; font-size: 14px; line-height: 1.6;">
+                    KALP INTERIOR DESIGN STUDIO.<br>
+                    ISM CHOWK ROAD, OPP<br>
+                    SR.DAV SCHOOL , PUNDAG,<br>
+                    RANCHI - 834004
+                </div>
+
+                <div style="margin-bottom: auto;">
+                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 15px; border-top: 2px solid white; padding-top: 15px; width: 50px;">CONTACT:</div>
+                    <div style="font-size: 14px; margin-bottom: 15px;">
+                        <strong>Office :</strong><br>
+                        +91 9472745288
+                    </div>
+                    <div style="font-size: 14px;">
+                        <strong>Studio Head :</strong><br>
+                        +91 9234772288
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 15px;">BUDGET DISCLAIMER</div>
+                    <div style="font-size: 11px; line-height: 1.5; opacity: 0.9;">
+                        The cost mentioned in this quotation is an estimated budget based on the current project scope and preliminary requirements. It is not the final project cost. The actual project budget will be finalized only after the design is approved, detailed measurements are completed, material selections are confirmed, and the final BOQ (Bill of Quantities) is prepared. Any changes in design, specifications, materials, finishes, or scope of work may result in a revision of the final project cost.
+                    </div>
                 </div>
             </div>
-
-            <div style="margin-top: 40px;">
-                <div style="font-weight: 600; font-size: 14px; margin-bottom: 15px;">BUDGET DISCLAIMER</div>
-                <div style="font-size: 11px; line-height: 1.5; opacity: 0.9;">
-                    The cost mentioned in this quotation is an estimated budget based on the current project scope and preliminary requirements. It is not the final project cost. The actual project budget will be finalized only after the design is approved, detailed measurements are completed, material selections are confirmed, and the final BOQ (Bill of Quantities) is prepared. Any changes in design, specifications, materials, finishes, or scope of work may result in a revision of the final project cost.
-                </div>
+            
+            <!-- Our Clients White Section -->
+            <div style="padding: 10px 10px; background-color: #ffffff; box-sizing: border-box; flex-grow: 1; text-align: center;">
+                <img src="assets/images/our_clients_collage.png" style="width: 100%; height: auto; object-fit: contain;">
             </div>
         </div>
 
         <!-- Right Content Area -->
-        <div style="width: 65%; padding: 40px 50px; box-sizing: border-box; display: flex; flex-direction: column;">
-        <h1 style="color: #a49375; font-size: 42px; font-weight: 500; letter-spacing: 2px; line-height: 1.2; margin: 0 0 40px 0;">ONLINE<br>ESTIMATE</h1>
+        <div style="width: 65%; padding: 40px 50px; box-sizing: border-box; display: flex; flex-direction: column; position: relative;">
+            
+            <div style="position: absolute; top: 40px; right: 50px; text-align: left; font-size: 14px; color: #a49375; font-family: sans-serif; letter-spacing: 1px;">
+                <div style="margin-bottom: 8px;">DATE : <span id="pdf-export-date" style="color: #666; font-weight: 300;"></span></div>
+                <div>TIME : <span id="pdf-export-time" style="color: #666; font-weight: 300;"></span></div>
+            </div>
+
+            <h1 style="color: #a49375; font-size: 42px; font-weight: 500; letter-spacing: 2px; line-height: 1.2; margin: 0 0 40px 0;">ONLINE<br>QUOTATION</h1>
 
         <!-- User Selections -->
         <div style="margin-bottom: 30px; border-bottom: 1px solid #eeeeee; padding-bottom: 20px;">
@@ -567,10 +866,12 @@
                 <tr id="pdf-row-addon-8" style="display: none;"><td style="padding-bottom: 4px; color:#e8591c;">+ Civil work</td><td id="pdf-bd-addon-8" style="text-align: right; color:#e8591c;">...</td></tr>
                 <tr id="pdf-row-addon-10" style="display: none;"><td style="padding-bottom: 4px; color:#e8591c;">+ Flooring</td><td id="pdf-bd-addon-10" style="text-align: right; color:#e8591c;">...</td></tr>
                 <tr id="pdf-row-addon-4" style="display: none;"><td style="padding-bottom: 4px; color:#e8591c;">+ Curtain/Soft Furnishing</td><td id="pdf-bd-addon-4" style="text-align: right; color:#e8591c;">...</td></tr>
+                
+                <tbody id="pdf-kitchen-accessories-list"></tbody>
 
                 <tr>
                     <td style="padding-top: 10px; border-top: 1px solid #ddd; font-weight: 700; font-size: 14px; color: #0F3D64;">Total Estimated Cost</td>
-                    <td id="pdf-cost-total" style="padding-top: 10px; border-top: 1px solid #ddd; font-weight: 700; font-size: 16px; color: #e8591c; text-align: right;">...</td>
+                    <td id="pdf-cost-total" style="padding-top: 10px; border-top: 1px solid #ddd; font-weight: 700; font-size: 16px; color: #4CAF50; text-align: right;">...</td>
                 </tr>
             </table>
         </div>
