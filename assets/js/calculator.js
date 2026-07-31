@@ -662,7 +662,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                             } else {
                                 if (typeEl) {
-                                    if (typeEl.value === 'custom') {
+                                    if (typeEl.value === 'custom' || (sqftInput && sqftInput.value && sqftInput.value !== typeEl.value)) {
                                         typeText = `Custom (${sqftInput.value || 0} sqft)`;
                                     } else {
                                         typeText = typeEl.nextElementSibling.nextElementSibling.textContent.trim();
