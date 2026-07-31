@@ -623,7 +623,7 @@
                     <div class="results-highlight">
                         <p class="results-subtitle">Estimated Cost</p>
                         <h2 class="results-price" id="calc-total-range">₹0</h2>
-                        <p class="results-sqft-price" id="calc-sqft-price">(₹0 per sq.ft)</p>
+                        <p class="results-sqft-price" id="calc-sqft-price" style="display: none;">(₹0 per sq.ft)</p>
                         <div class="results-sqft-badge" id="calc-sqft-badge" style="display: none;">
                             <i class="fa-regular fa-square-check"></i> <span id="badge-sqft-text">0 sq.ft</span>
                         </div>
@@ -688,7 +688,7 @@
                         </div>
                     </div>
 
-                    <button id="download-pdf-btn" type="button" class="results-pdf-btn" style="margin-bottom: 20px; width: 100%; padding: 12px 15px; background: linear-gradient(to right, #e8591c, #d13615); border: none; color: white; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: 0 4px 10px rgba(209, 54, 21, 0.3);">
+                    <button id="download-pdf-btn" type="button" class="results-pdf-btn" style="margin-bottom: 20px; width: 100%; padding: 12px 15px; background: linear-gradient(to right, #e8591c, #d13615); border: none; color: white; border-radius: 10px; cursor: pointer; display: none; align-items: center; justify-content: center; gap: 10px; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: 0 4px 10px rgba(209, 54, 21, 0.3);">
                         <svg width="34" height="34" viewBox="-4 -2 64 68" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
                             <!-- Document Base (White Fill) -->
                             <path d="M16 0 C 11.5 0, 8 3.5, 8 8 V 56 C 8 60.5, 11.5 64, 16 64 H 48 C 52.5 64, 56 60.5, 56 56 V 18 L 38 0 Z" fill="white"/>

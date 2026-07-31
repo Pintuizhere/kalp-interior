@@ -391,6 +391,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('calc-sqft-price').style.display = 'none';
                     
                     document.getElementById('estimate-breakdown-section').style.display = 'block';                    
+                    document.getElementById('download-pdf-btn').style.display = 'flex';
                     document.getElementById('calc-sqft-badge').style.display = 'inline-block';
                     document.getElementById('badge-sqft-text').innerText = `${totalFt.toFixed(1)} rft`;
 
@@ -527,6 +528,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Show estimate breakdown section
                 document.getElementById('estimate-breakdown-section').style.display = 'block';
+                document.getElementById('download-pdf-btn').style.display = 'flex';
 
                 // Show other breakdowns
                 ['bd-furniture', 'bd-wardrobes', 'bd-kitchen', 'bd-false-ceiling', 'bd-electrical', 'bd-design', 'bd-paint', 'bd-decorative'].forEach(id => {
@@ -561,6 +563,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const originalText = downloadPdfBtn.innerHTML;
             downloadPdfBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Generating...';
+            downloadPdfBtn.style.pointerEvents = 'none';
 
             setTimeout(() => {
                 const typeEl = document.querySelector('input[name="property_type"]:checked');
@@ -583,9 +586,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Single PDF standard generation
                     generatePdfForRange(null, null).then(() => {
                         downloadPdfBtn.innerHTML = originalText;
+                        downloadPdfBtn.style.pointerEvents = 'auto';
                     }).catch(err => {
                         console.error(err);
                         downloadPdfBtn.innerHTML = originalText;
+                        downloadPdfBtn.style.pointerEvents = 'auto';
                     });
                 } else {
                     // Two PDFs generation
@@ -593,9 +598,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         return generatePdfForRange(ranges[1].sqft, ranges[1].label);
                     }).then(() => {
                         downloadPdfBtn.innerHTML = originalText;
+                        downloadPdfBtn.style.pointerEvents = 'auto';
                     }).catch(err => {
                         console.error(err);
                         downloadPdfBtn.innerHTML = originalText;
+                        downloadPdfBtn.style.pointerEvents = 'auto';
                     });
                 }
 
@@ -604,11 +611,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         try {
                             // Inject Date and Time
                             const now = new Date();
-                            const dateOpts = { day: '2-digit', month: 'short', year: 'numeric' };
-                            const timeOpts = { hour: '2-digit', minute: '2-digit', hour12: true };
+                            const pad = (n) => (n < 10 ? '0' + n : n);
+                            const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+                            const dateStr = `${pad(now.getDate())} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
                             
-                            const dateStr = now.toLocaleDateString('en-GB', dateOpts).toUpperCase();
-                            const timeStr = now.toLocaleTimeString('en-US', timeOpts).toUpperCase();
+                            let hours = now.getHours();
+                            const ampm = hours >= 12 ? 'PM' : 'AM';
+                            hours = hours % 12;
+                            hours = hours ? hours : 12;
+                            const timeStr = `${pad(hours)}:${pad(now.getMinutes())} ${ampm}`;
                             
                             const pdfDateEl = document.getElementById('pdf-export-date');
                             const pdfTimeEl = document.getElementById('pdf-export-time');
