@@ -761,7 +761,7 @@
 
     </div>
 <!-- Hidden PDF Export Template -->
-<div id="pdf-export-template" style="display: none; width: 794px; height: 2246px; font-family: 'Inter', sans-serif; background: #ffffff; color: #333333; overflow: hidden; box-sizing: border-box;">
+<div id="pdf-export-template" style="display: none; width: 794px; height: auto; font-family: 'Inter', sans-serif; background: #ffffff; color: #333333; overflow: hidden; box-sizing: border-box;">
     <div style="display: flex; width: 100%; height: 100%;">
         <!-- Left Sidebar -->
         <div style="width: 35%; flex-shrink: 0; display: flex; flex-direction: column; background: #ffffff;">
@@ -857,8 +857,7 @@
             </table>
         </div>
 
-        <!-- Spacer to push content exactly to the start of Page 2 -->
-        <div style="height: 450px;"></div>
+        <!-- Removed Spacer for single page PDF -->
 
         <!-- Material Specification -->
         <div style="flex-grow: 1;">
@@ -894,7 +893,7 @@
 </div>
 
 <div id="specs-1450" style="display:none;">
-    <strong>Material Composition:</strong> 50% Non-Branded + 50% Branded<br>
+    <strong>Material Composition:</strong> 10% non branded + 90% branded<br>
     <strong>Plywood:</strong> Century Sainik 710, Green Ecotec, Austin, Green HDHMR<br>
     <strong>Laminate:</strong> 0.8 mm &amp; 1.0 mm<br>
     <strong>Brands:</strong> Advance, Century Laminates, Greenlam, Skydecor<br>
