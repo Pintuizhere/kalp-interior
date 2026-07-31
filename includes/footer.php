@@ -66,44 +66,7 @@
         </div>
     </footer>
 
-    <!-- Sticky Instagram Button -->
-    <a href="https://www.instagram.com/kalp__interiors/" target="_blank" class="sticky-instagram">
-        <i class="fa-brands fa-instagram"></i>
-    </a>
-    <style>
-        .sticky-instagram {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            z-index: 9999;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        .sticky-instagram:hover {
-            transform: scale(1.1) translateY(-5px);
-            color: white;
-            box-shadow: 0 8px 25px rgba(220, 39, 67, 0.4);
-        }
-        @media (max-width: 768px) {
-            .sticky-instagram {
-                width: 50px;
-                height: 50px;
-                font-size: 26px;
-                bottom: 20px;
-                right: 20px;
-            }
-        }
-    </style>
+
 
     <!-- Custom JS -->
     <script src="assets/js/main.js"></script>

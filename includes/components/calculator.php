@@ -773,11 +773,11 @@
                 </div>
 
                 <div style="margin-bottom: 30px;">
-                    <div style="font-size: 14px; margin-bottom: 5px;">Online Quotation.</div>
-                    <div style="font-size: 14px;">info@kalpinteriors.com</div>
+                    <div style="font-size: 11px; margin-bottom: 5px;">Online Quotation.</div>
+                    <div style="font-size: 11px;">info@kalpinteriors.com</div>
                 </div>
 
-                <div style="margin-bottom: 40px; font-size: 14px; line-height: 1.6;">
+                <div style="margin-bottom: 40px; font-size: 11px; line-height: 1.6;">
                     KALP INTERIOR DESIGN STUDIO.<br>
                     ISM CHOWK ROAD, OPP<br>
                     SR.DAV SCHOOL , PUNDAG,<br>
@@ -785,20 +785,20 @@
                 </div>
 
                 <div style="margin-bottom: auto;">
-                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 15px; border-top: 2px solid white; padding-top: 15px; width: 50px;">CONTACT:</div>
-                    <div style="font-size: 14px; margin-bottom: 15px;">
+                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 15px; border-top: 2px solid white; padding-top: 15px; width: 50px;">CONTACT:</div>
+                    <div style="font-size: 11px; margin-bottom: 15px;">
                         <strong>Office :</strong><br>
                         +91 9472745288
                     </div>
-                    <div style="font-size: 14px;">
+                    <div style="font-size: 11px;">
                         <strong>Studio Head :</strong><br>
                         +91 9234772288
                     </div>
                 </div>
 
                 <div style="margin-top: 40px;">
-                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 15px;">BUDGET DISCLAIMER</div>
-                    <div style="font-size: 11px; line-height: 1.5; opacity: 0.9;">
+                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 15px;">BUDGET DISCLAIMER</div>
+                    <div style="font-size: 9px; line-height: 1.5; opacity: 0.9;">
                         The cost mentioned in this quotation is an estimated budget based on the current project scope and preliminary requirements. It is not the final project cost. The actual project budget will be finalized only after the design is approved, detailed measurements are completed, material selections are confirmed, and the final BOQ (Bill of Quantities) is prepared. Any changes in design, specifications, materials, finishes, or scope of work may result in a revision of the final project cost.
                     </div>
                 </div>
@@ -813,17 +813,17 @@
         <!-- Right Content Area -->
         <div style="width: 65%; padding: 40px 50px; box-sizing: border-box; display: flex; flex-direction: column; position: relative;">
             
-            <div style="position: absolute; top: 40px; right: 50px; text-align: left; font-size: 14px; color: #a49375; font-family: sans-serif; letter-spacing: 1px;">
+            <div style="position: absolute; top: 40px; right: 50px; text-align: left; font-size: 11px; color: #a49375; font-family: sans-serif; letter-spacing: 1px;">
                 <div style="margin-bottom: 8px;">DATE : <span id="pdf-export-date" style="color: #666; font-weight: 300;"></span></div>
                 <div>TIME : <span id="pdf-export-time" style="color: #666; font-weight: 300;"></span></div>
             </div>
 
-            <h1 style="color: #a49375; font-size: 42px; font-weight: 500; letter-spacing: 2px; line-height: 1.2; margin: 0 0 40px 0;">ONLINE<br>QUOTATION</h1>
+            <h1 style="color: #a49375; font-size: 32px; font-weight: 500; letter-spacing: 2px; line-height: 1.2; margin: 0 0 40px 0;">ONLINE<br>QUOTATION</h1>
 
         <!-- User Selections -->
         <div style="margin-bottom: 30px; border-bottom: 1px solid #eeeeee; padding-bottom: 20px;">
-            <h2 style="font-size: 16px; color: #a49375; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Project Details</h2>
-            <table style="width: 100%; font-size: 14px; line-height: 1.8; border-collapse: collapse;">
+            <h2 style="font-size: 13px; color: #a49375; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Project Details</h2>
+            <table style="width: 100%; font-size: 11px; line-height: 1.8; border-collapse: collapse;">
                 <tr><td style="font-weight: 600; width: 40%;">Property Category</td><td id="pdf-category">...</td></tr>
                 <tr><td style="font-weight: 600;">Specific Type</td><td id="pdf-type">...</td></tr>
                 <tr><td style="font-weight: 600;">Design Style</td><td id="pdf-style">...</td></tr>
@@ -833,8 +833,8 @@
 
         <!-- Quotation Breakdown -->
         <div style="margin-bottom: 30px; background: #f9f9f9; padding: 20px; border-radius: 8px;">
-            <h2 style="font-size: 16px; color: #a49375; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Cost Breakdown</h2>
-            <table style="width: 100%; font-size: 12px; line-height: 1.6; border-collapse: collapse;">
+            <h2 style="font-size: 13px; color: #a49375; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Cost Breakdown</h2>
+            <table style="width: 100%; font-size: 10px; line-height: 1.6; border-collapse: collapse;">
                 <tr><td style="padding-bottom: 4px;">Furniture</td><td id="pdf-bd-furniture" style="text-align: right;">...</td></tr>
                 <tr><td style="padding-bottom: 4px;">Wardrobes & Storage</td><td id="pdf-bd-wardrobes" style="text-align: right;">...</td></tr>
                 <tr><td style="padding-bottom: 4px;">Modular Kitchen</td><td id="pdf-bd-kitchen" style="text-align: right;">...</td></tr>
@@ -851,8 +851,8 @@
                 <tbody id="pdf-kitchen-accessories-list"></tbody>
 
                 <tr>
-                    <td style="padding-top: 10px; border-top: 1px solid #ddd; font-weight: 700; font-size: 14px; color: #0F3D64;">Total Estimated Cost</td>
-                    <td id="pdf-cost-total" style="padding-top: 10px; border-top: 1px solid #ddd; font-weight: 700; font-size: 16px; color: #4CAF50; text-align: right;">...</td>
+                    <td style="padding-top: 10px; border-top: 1px solid #ddd; font-weight: 700; font-size: 11px; color: #0F3D64;">Total Estimated Cost</td>
+                    <td id="pdf-cost-total" style="padding-top: 10px; border-top: 1px solid #ddd; font-weight: 700; font-size: 13px; color: #4CAF50; text-align: right;">...</td>
                 </tr>
             </table>
         </div>
@@ -861,8 +861,8 @@
 
         <!-- Material Specification -->
         <div style="flex-grow: 1;">
-            <h2 id="pdf-material-specs-title" style="font-size: 16px; color: #a49375; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Material Specifications</h2>
-            <div id="pdf-material-specs" style="font-size: 11px; line-height: 1.6;">
+            <h2 id="pdf-material-specs-title" style="font-size: 13px; color: #a49375; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Material Specifications</h2>
+            <div id="pdf-material-specs" style="font-size: 9px; line-height: 1.6;">
                 <!-- Filled dynamically -->
             </div>
         </div>

@@ -800,21 +800,18 @@ document.addEventListener('DOMContentLoaded', function() {
                             const originalScrollY = window.scrollY;
                             window.scrollTo(0, 0);
 
-                                setTimeout(() => {
+                            setTimeout(() => {
                                 let filename = 'Kalp_Interior_Studio_Quotation.pdf';
                                 if (label) {
                                     filename = `Kalp_Interior_Studio_${label}_Estimate.pdf`;
                                 }
 
-                                const elementHeight = pdfTemplate.scrollHeight || pdfTemplate.offsetHeight || 1123;
-                                const heightInMm = (elementHeight * 25.4) / 96; // convert px to mm at 96 DPI
-
                                 const opt = {
                                     margin:       0,
                                     filename:     filename,
                                     image:        { type: 'jpeg', quality: 1 },
-                                    html2canvas:  { scale: 2, useCORS: true, scrollX: 0, scrollY: 0, width: 794, height: elementHeight }, 
-                                    jsPDF:        { unit: 'mm', format: [210, heightInMm], orientation: 'portrait', hotfixes: ["px_scaling"] }
+                                    html2canvas:  { scale: 2, useCORS: true, scrollX: 0, scrollY: 0, width: 794, height: 2246 }, 
+                                    jsPDF:        { unit: 'px', format: [794, 1123], orientation: 'portrait', hotfixes: ["px_scaling"] }
                                 };
 
                                 html2pdf().set(opt).from(pdfTemplate).save().then(() => {
