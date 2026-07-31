@@ -1,17 +1,55 @@
 <?php
 session_start();
 
-// Handle login logic here if needed
+// If user is already logged in, redirect to dashboard
+if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
+    header('Location: index.php');
+    exit;
+}
+
+require_once 'config/db.php';
+
+$error = null;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? '';
+    $email = trim($_POST['username'] ?? ''); // Form uses 'username' name attribute for the email field
     $password = $_POST['password'] ?? '';
     
-    // Example logic - customize as needed
-    // if ($username === 'admin' && $password === 'admin123') {
-    //     $_SESSION['admin_logged_in'] = true;
-    //     header('Location: index.php');
-    //     exit;
-    // }
+    if (empty($email) || empty($password)) {
+        $error = "Please enter both email and password.";
+    } else {
+        try {
+            // Prepare statement to prevent SQL injection
+            $stmt = $pdo->prepare("SELECT * FROM admin_users WHERE email = :email");
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+            
+            // Check if user exists
+            if ($stmt->rowCount() == 1) {
+                if ($user = $stmt->fetch()) {
+                    // Verify password
+                    if (password_verify($password, $user['password'])) {
+                        // Password is correct, start a new session
+                        session_regenerate_id();
+                        $_SESSION['admin_logged_in'] = true;
+                        $_SESSION['admin_id'] = $user['id'];
+                        $_SESSION['admin_email'] = $user['email'];
+                        
+                        // Redirect to admin dashboard
+                        header('Location: index.php');
+                        exit;
+                    } else {
+                        $error = "The password you entered was not valid.";
+                    }
+                }
+            } else {
+                $error = "No account found with that email address.";
+            }
+        } catch (PDOException $e) {
+            $error = "Oops! Something went wrong. Please try again later.";
+            // $error = "Database Error: " . $e->getMessage(); // Uncomment for debugging
+        }
+    }
 }
 ?>
 <!DOCTYPE html>

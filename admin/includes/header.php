@@ -3,7 +3,12 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-// Add authentication check here later
+
+// Authentication check: redirect to login if not logged in
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header('Location: login.php');
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

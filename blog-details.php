@@ -97,14 +97,7 @@ include 'includes/header.php';
                     <h3>Integrating technology into home office setup</h3>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
 
-                    <!-- Author Bio Box -->
-                    <div class="author-bio-box">
-                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Jenny Alexander">
-                        <div>
-                            <h4>Jenny Alexander</h4>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
-                        </div>
-                    </div>
+
                 </div>
 
                 <!-- Right Sidebar -->
@@ -138,7 +131,7 @@ include 'includes/header.php';
                             </ul>
                         </div>
 
-                        <div class="sidebar-promo" style="background-image: url('https://images.unsplash.com/photo-1556910103-1c02745a8728?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80');">
+                        <div class="sidebar-promo" style="background-image: url('assets/images/sidebar_promo_bg.png');">
                             <div class="promo-overlay"></div>
                             <div class="promo-content">
                                 <h4>— Get A Quote</h4>

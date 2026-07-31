@@ -47,22 +47,26 @@
                 <img src="assets/images/brand-logo3.png" alt="Brand 3" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="assets/images/brand-logo4.png" alt="Brand 4" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="assets/images/brand-logo5.png" alt="Brand 5" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo6.png" alt="Brand 6" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="assets/images/brand-logo1.webp" alt="Brand 1" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="assets/images/brand-logo2.webp" alt="Brand 2" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="assets/images/brand-logo3.png" alt="Brand 3" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="assets/images/brand-logo4.png" alt="Brand 4" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="assets/images/brand-logo5.png" alt="Brand 5" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo6.png" alt="Brand 6" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <!-- Set 2 (Duplicate for continuous loop) -->
                 <img src="assets/images/brand-logo1.webp" alt="Brand 1" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="assets/images/brand-logo2.webp" alt="Brand 2" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="assets/images/brand-logo3.png" alt="Brand 3" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="assets/images/brand-logo4.png" alt="Brand 4" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="assets/images/brand-logo5.png" alt="Brand 5" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo6.png" alt="Brand 6" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="assets/images/brand-logo1.webp" alt="Brand 1" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="assets/images/brand-logo2.webp" alt="Brand 2" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="assets/images/brand-logo3.png" alt="Brand 3" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="assets/images/brand-logo4.png" alt="Brand 4" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="assets/images/brand-logo5.png" alt="Brand 5" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="assets/images/brand-logo6.png" alt="Brand 6" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
             </div>
         </div>
         

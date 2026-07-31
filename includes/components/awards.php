@@ -1,5 +1,52 @@
     <!-- Press & Achievements Accordion Section -->
     <style>
+        /* Modal Styles */
+        .press-modal {
+            display: none; 
+            position: fixed; 
+            z-index: 10000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0,0,0,0.9);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+        .press-modal-content {
+            display: block;
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: pressZoomIn 0.3s ease;
+        }
+        @keyframes pressZoomIn {
+            from {transform:scale(0.9); opacity:0;}
+            to {transform:scale(1); opacity:1;}
+        }
+        .press-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            z-index: 10001;
+        }
+        .press-modal-close:hover,
+        .press-modal-close:focus {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        .press-panel.active {
+            cursor: zoom-in;
+        }
+        
         @media (max-width: 768px) {
             .awards-section { padding: 60px 15px !important; }
             .awards-header .section-title { font-size: 2.2rem !important; margin-bottom: 30px !important; }
@@ -22,24 +69,24 @@
             
             <div class="press-accordion-container">
                 <!-- Panel 1 (Active by default) -->
-                <div class="press-panel active" style="background-image: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');">
+                <div class="press-panel active" style="background-image: url('assets/images/banner-1.webp');">
                     <div class="press-panel-overlay"></div>
                     <div class="press-panel-content">
                         <div class="press-brand">
-                            <i class="fa-solid fa-award" style="color: var(--accent-color);"></i> Design Excellence
+                            <i class="fa-solid fa-award" style="color: var(--accent-color);"></i> Ranchi Express
                         </div>
                         <div class="press-bottom">
-                            <h3 class="press-title">Interior Design of the Year 2025</h3>
+                            <h3 class="press-title">Featured: Ranchi Express</h3>
                             <div class="press-date">
-                                <span>Tuesday</span>
-                                <span>Nov 04, 2025</span>
+                                <span>Sunday</span>
+                                <span>Oct 02, 2022</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Panel 2 -->
-                <div class="press-panel" style="background-image: url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');">
+                <div class="press-panel" style="background-image: url('assets/images/banner-3.webp');">
                     <div class="press-panel-overlay"></div>
                     <div class="press-panel-content">
                         <div class="press-brand">
@@ -56,7 +103,7 @@
                 </div>
 
                 <!-- Panel 3 -->
-                <div class="press-panel" style="background-image: url('https://images.unsplash.com/photo-1513694203232-719a280e022f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');">
+                <div class="press-panel" style="background-image: url('assets/images/banner-2.jpeg');">
                     <div class="press-panel-overlay"></div>
                     <div class="press-panel-content">
                         <div class="press-brand">
@@ -73,7 +120,7 @@
                 </div>
 
                 <!-- Panel 4 -->
-                <div class="press-panel" style="background-image: url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');">
+                <div class="press-panel" style="background-image: url('assets/images/banner-4.webp');">
                     <div class="press-panel-overlay"></div>
                     <div class="press-panel-content">
                         <div class="press-brand">
@@ -90,7 +137,7 @@
                 </div>
 
                 <!-- Panel 5 -->
-                <div class="press-panel" style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');">
+                <div class="press-panel" style="background-image: url('assets/images/banner-5.webp');">
                     <div class="press-panel-overlay"></div>
                     <div class="press-panel-content">
                         <div class="press-brand">
@@ -105,22 +152,69 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Panel 6 -->
+                <div class="press-panel" style="background-image: url('assets/images/banner-6.webp');">
+                    <div class="press-panel-overlay"></div>
+                    <div class="press-panel-content">
+                        <div class="press-brand">
+                            <i class="fa-solid fa-crown" style="color: var(--accent-color);"></i> Industry Leader
+                        </div>
+                        <div class="press-bottom">
+                            <h3 class="press-title">Outstanding Contribution to Design</h3>
+                            <div class="press-date">
+                                <span>Friday</span>
+                                <span>Aug 15, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- JavaScript for Accordion Interactivity -->
+    <!-- Image Modal -->
+    <div id="pressImageModal" class="press-modal">
+        <span class="press-modal-close">&times;</span>
+        <img class="press-modal-content" id="pressModalImg">
+    </div>
+
+    <!-- JavaScript for Accordion Interactivity & Modal -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const panels = document.querySelectorAll('.press-panel');
+            const modal = document.getElementById('pressImageModal');
+            const modalImg = document.getElementById('pressModalImg');
+            const closeBtn = document.querySelector('.press-modal-close');
             
             panels.forEach(panel => {
                 panel.addEventListener('click', () => {
-                    // Remove active class from all panels
-                    panels.forEach(p => p.classList.remove('active'));
-                    // Add active class to the clicked panel
-                    panel.classList.add('active');
+                    if (panel.classList.contains('active')) {
+                        // Open full image popup
+                        const bgImage = window.getComputedStyle(panel).backgroundImage;
+                        const url = bgImage.slice(4, -1).replace(/"/g, "").replace(/'/g, "");
+                        if(url && url !== 'none') {
+                            modal.style.display = "flex";
+                            modalImg.src = url;
+                        }
+                    } else {
+                        // Remove active class from all panels
+                        panels.forEach(p => p.classList.remove('active'));
+                        // Add active class to the clicked panel
+                        panel.classList.add('active');
+                    }
                 });
             });
+
+            // Close modal when clicking X
+            closeBtn.onclick = function() {
+                modal.style.display = "none";
+            }
+            // Close modal when clicking outside image
+            modal.onclick = function(e) {
+                if (e.target !== modalImg) {
+                    modal.style.display = "none";
+                }
+            }
         });
     </script>

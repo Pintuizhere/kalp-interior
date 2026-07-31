@@ -94,11 +94,12 @@
             </li>
         </ul>
 
-        <div class="upgrade-card">
-            <i class="fa-solid fa-crown"></i>
-            <h4>Upgrade to Pro</h4>
-            <p>Unlock exclusive features</p>
-            <a href="#" class="upgrade-btn">Upgrade Now</a>
-        </div>
+        <ul class="menu-list" style="margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+            <li>
+                <a href="logout.php" style="color: #ef4444; font-weight: 500;">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+                </a>
+            </li>
+        </ul>
     </div>
 </aside>

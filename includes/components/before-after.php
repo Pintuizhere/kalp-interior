@@ -10,27 +10,20 @@
                         See Our <span class="accent-text">Design</span><br>Transformations
                     </h2>
                 </div>
-                
-                <a href="projects.php" class="view-all-pill ba-view-all">
-                    <span class="icon-circle"><i class="fa-solid fa-arrow-right"></i></span>
-                    <span class="text-pill">View All</span>
-                </a>
             </div>
             
             <!-- Slider Area -->
             <div class="ba-slider-area">
                 
-                <button class="ba-nav-arrow" style="position: absolute; left: 0; z-index: 10;"><i class="fa-solid fa-arrow-left"></i></button>
-                
                 <div class="ba-slider-container">
                     <!-- After Image (Background) -->
-                    <div class="ba-image ba-image-after" style="background-image: url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');">
-                        <span class="ba-label">After</span>
+                    <div class="ba-image ba-image-after" style="background-image: url('assets/images/before.webp');">
+                        <span class="ba-label">Before</span>
                     </div>
                     
                     <!-- Before Image (Foreground overlay) -->
-                    <div class="ba-image ba-image-before" style="background-image: url('https://images.unsplash.com/photo-1513694203232-719a280e022f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');">
-                        <span class="ba-label">Before</span>
+                    <div class="ba-image ba-image-before" style="background-image: url('assets/images/after.webp');">
+                        <span class="ba-label">After</span>
                     </div>
                     
                     <!-- Slider Input -->
@@ -42,8 +35,6 @@
                         <i class="fa-solid fa-angle-right"></i>
                     </div>
                 </div>
-                
-                <button class="ba-nav-arrow" style="position: absolute; right: 0; z-index: 10;"><i class="fa-solid fa-arrow-right"></i></button>
                 
             </div>
             

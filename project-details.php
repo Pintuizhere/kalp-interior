@@ -32,7 +32,7 @@ include 'includes/header.php';
                         <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=300&q=80" class="active" alt="Thumb 1">
                         <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=300&q=80" alt="Thumb 2">
                         <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=300&q=80" alt="Thumb 3">
-                        <img src="https://images.unsplash.com/photo-1556910103-1c02745a8728?w=300&q=80" alt="Thumb 4">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300&q=80" alt="Thumb 4">
                         <img src="https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=300&q=80" alt="Thumb 5">
                     </div>
                 </div>
@@ -209,7 +209,7 @@ include 'includes/header.php';
                     
                     <!-- Bottom Row: 4 images (span 3 columns each) -->
                     <div class="gallery-item item-small" style="grid-column: span 3; border-radius: 12px; overflow: hidden; height: 260px;">
-                        <img src="https://images.unsplash.com/photo-1556910103-1c02745a8728?w=600&q=80" alt="Kitchen" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Kitchen" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
                     </div>
                     <div class="gallery-item item-small" style="grid-column: span 3; border-radius: 12px; overflow: hidden; height: 260px;">
                         <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&q=80" alt="Bedroom" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">

@@ -8,28 +8,23 @@
             </p>
         </div>
         
-        <div class="estimate-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px;">
+        <div class="estimate-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
             <?php
             $estimate_options = [
                 [
                     'icon' => 'house-line-thin',
-                    'title' => '2 BHK',
-                    'desc' => 'Perfect for small families. Get a tailored estimate for your cozy space.'
+                    'title' => 'Residential',
+                    'desc' => 'Perfect for homes, apartments, and villas. Get a tailored estimate for your cozy space.'
                 ],
                 [
                     'icon' => 'buildings-thin',
-                    'title' => '3 BHK',
-                    'desc' => 'Ideal for growing families needing that extra room and spacious layout.'
+                    'title' => 'Commercial',
+                    'desc' => 'Ideal for offices, retail stores, and commercial layouts needing professional design.'
                 ],
                 [
-                    'icon' => 'city-thin',
-                    'title' => '4 BHK',
-                    'desc' => 'Luxurious space with plenty of room for guests, a home office, and more.'
-                ],
-                [
-                    'icon' => 'castle-turret-thin',
-                    'title' => 'Home',
-                    'desc' => 'Ultimate premium living. Calculate interiors for expansive, multi-floor spaces.'
+                    'icon' => 'cooking-pot-thin',
+                    'title' => 'Modular Kitchen',
+                    'desc' => 'Modern, smart, and space-efficient kitchens designed to fit your lifestyle.'
                 ]
             ];
 
