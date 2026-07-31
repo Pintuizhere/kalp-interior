@@ -54,7 +54,7 @@ include 'includes/header.php';
                     <div class="blog-content">
                         <h3>Modern Living Room Design: Sleek and Stylish...</h3>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="#" class="read-more">Read More</a>
+                        <a href="blog-details.php" class="read-more">Read More</a>
                     </div>
                 </div>
 
@@ -70,7 +70,7 @@ include 'includes/header.php';
                     <div class="blog-content">
                         <h3>Kitchen Layout Ideas: Optimizing Space and Fu...</h3>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="#" class="read-more">Read More</a>
+                        <a href="blog-details.php" class="read-more">Read More</a>
                     </div>
                 </div>
 
@@ -86,7 +86,7 @@ include 'includes/header.php';
                     <div class="blog-content">
                         <h3>Master Bedroom Design Tips: Creating Your Pers...</h3>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="#" class="read-more">Read More</a>
+                        <a href="blog-details.php" class="read-more">Read More</a>
                     </div>
                 </div>
                 
@@ -102,7 +102,7 @@ include 'includes/header.php';
                     <div class="blog-content">
                         <h3>Small Kitchen Design Tips: Making the Most of Lim...</h3>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="#" class="read-more">Read More</a>
+                        <a href="blog-details.php" class="read-more">Read More</a>
                     </div>
                 </div>
 
@@ -118,7 +118,7 @@ include 'includes/header.php';
                     <div class="blog-content">
                         <h3>Minimalist Bedroom Design: Streamlined Simplicity f...</h3>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="#" class="read-more">Read More</a>
+                        <a href="blog-details.php" class="read-more">Read More</a>
                     </div>
                 </div>
 
@@ -134,7 +134,7 @@ include 'includes/header.php';
                     <div class="blog-content">
                         <h3>Maximizing Natural Light: Brightening Your Living R...</h3>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="#" class="read-more">Read More</a>
+                        <a href="blog-details.php" class="read-more">Read More</a>
                     </div>
                 </div>
 
@@ -150,7 +150,7 @@ include 'includes/header.php';
                     <div class="blog-content">
                         <h3>Modern Office Design Trends: Sleek and Funct...</h3>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="#" class="read-more">Read More</a>
+                        <a href="blog-details.php" class="read-more">Read More</a>
                     </div>
                 </div>
 
@@ -166,7 +166,7 @@ include 'includes/header.php';
                     <div class="blog-content">
                         <h3>Remote Work Design: Creating Home Offices f...</h3>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="#" class="read-more">Read More</a>
+                        <a href="blog-details.php" class="read-more">Read More</a>
                     </div>
                 </div>
 
@@ -182,7 +182,7 @@ include 'includes/header.php';
                     <div class="blog-content">
                         <h3>Salon Interior Design Trends: Creating Stylish a...</h3>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="#" class="read-more">Read More</a>
+                        <a href="blog-details.php" class="read-more">Read More</a>
                     </div>
                 </div>
             </div>

@@ -28,7 +28,7 @@
                 ],
                 [
                     'icon' => 'castle-turret-thin',
-                    'title' => 'Villa',
+                    'title' => 'Home',
                     'desc' => 'Ultimate premium living. Calculate interiors for expansive, multi-floor spaces.'
                 ]
             ];

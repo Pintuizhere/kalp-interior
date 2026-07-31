@@ -162,18 +162,63 @@ include 'includes/header.php';
             </div>
 
             <!-- 4. Project Gallery -->
-            <div class="project-gallery-section">
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px;">
-                    <span style="display: block; width: 40px; height: 2px; background: var(--accent-color);"></span>
-                    <p class="section-subtitle" style="margin-bottom: 0;">PROJECT GALLERY</p>
+            <style>
+                @media (max-width: 992px) {
+                    .masonry-gallery-grid .item-large { grid-column: span 12 !important; height: 300px !important; }
+                    .masonry-gallery-grid .item-medium { grid-column: span 12 !important; height: 300px !important; }
+                    .masonry-gallery-grid .item-small { grid-column: span 6 !important; height: 200px !important; }
+                }
+                @media (max-width: 576px) {
+                    .masonry-gallery-grid .item-small { grid-column: span 12 !important; height: 250px !important; }
+                    .gallery-header { flex-direction: column; align-items: flex-start !important; }
+                }
+                .gallery-filter-btn { transition: all 0.3s ease; }
+                .gallery-filter-btn:hover { background: var(--primary-color) !important; color: white !important; border-color: var(--primary-color) !important; }
+            </style>
+            
+            <div class="project-gallery-section" style="margin-bottom: 60px;">
+                <div class="gallery-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; margin-bottom: 30px;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <h2 class="section-title" style="margin-bottom: 0; font-size: 2.5rem; font-family: 'Playfair Display', serif;">Gallery</h2>
+                    </div>
+                    
+                    <div class="gallery-filters" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="gallery-filter-btn active" style="background: var(--primary-color); color: white; border: 1px solid var(--primary-color); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">All</button>
+                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">Living Room</button>
+                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">Bedroom</button>
+                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">Kitchen</button>
+                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">Dining</button>
+                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">Bathroom</button>
+                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">Other Spaces</button>
+                    </div>
                 </div>
-                <div class="project-gallery-horizontal">
-                    <div class="pg-item"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80" alt="Gallery 1"></div>
-                    <div class="pg-item"><img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&q=80" alt="Gallery 2"></div>
-                    <div class="pg-item"><img src="https://images.unsplash.com/photo-1556910103-1c02745a8728?w=800&q=80" alt="Gallery 3"></div>
-                    <div class="pg-item has-nav">
-                        <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80" alt="Gallery 4">
-                        <button class="gallery-next-arrow"><i class="fa-solid fa-arrow-right"></i></button>
+
+                <div class="masonry-gallery-grid" style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 15px;">
+                    <!-- Top Left Image (spans 7 columns) -->
+                    <div class="gallery-item item-large" style="grid-column: span 7; position: relative; border-radius: 12px; overflow: hidden; height: 450px;">
+                        <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80" alt="Living Room" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
+                        <div class="play-button-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 70px; height: 70px; background: rgba(0,0,0,0.4); border: 2px solid var(--accent-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.3s ease;">
+                            <i class="fa-solid fa-play" style="color: var(--accent-color); font-size: 24px; margin-left: 5px;"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Top Right Image (spans 5 columns) -->
+                    <div class="gallery-item item-medium" style="grid-column: span 5; border-radius: 12px; overflow: hidden; height: 450px;">
+                        <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80" alt="Dining Room" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
+                    </div>
+                    
+                    <!-- Bottom Row: 4 images (span 3 columns each) -->
+                    <div class="gallery-item item-small" style="grid-column: span 3; border-radius: 12px; overflow: hidden; height: 260px;">
+                        <img src="https://images.unsplash.com/photo-1556910103-1c02745a8728?w=600&q=80" alt="Kitchen" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
+                    </div>
+                    <div class="gallery-item item-small" style="grid-column: span 3; border-radius: 12px; overflow: hidden; height: 260px;">
+                        <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&q=80" alt="Bedroom" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
+                    </div>
+                    <div class="gallery-item item-small" style="grid-column: span 3; border-radius: 12px; overflow: hidden; height: 260px;">
+                        <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&q=80" alt="Bathroom" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
+                    </div>
+                    <div class="gallery-item item-small" style="grid-column: span 3; border-radius: 12px; overflow: hidden; height: 260px;">
+                        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=600&q=80" alt="Balcony" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
                     </div>
                 </div>
             </div>

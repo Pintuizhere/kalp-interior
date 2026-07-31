@@ -9,10 +9,10 @@
                 <div class="bento-quote-overlay">
                     <p class="bento-quote-text">"In design, we find the delicate balance between function and beauty, where every space whispers the stories of those who dwell within. At Kalp, our passion lies in crafting these narratives with elegance and purpose."</p>
                     <div class="bento-author">
-                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Author">
+                        <img src="assets/images/founder.jpeg" alt="Reedam Kumar - Founder">
                         <div class="bento-author-info">
-                            <strong>Real Mehedi</strong>
-                            <span>Founder, Kalp Design Studio</span>
+                            <strong>Reedam Kumar</strong>
+                            <span>Kalp Interior Design Studio, Founder</span>
                         </div>
                     </div>
                 </div>
@@ -20,7 +20,7 @@
 
             <!-- Card 2: Logo Text -->
             <div class="bento-card bento-card-logo">
-                <h2 class="bento-logo-text">Kalp interior group</h2>
+                <h2 class="bento-logo-text">Kalp Group</h2>
             </div>
 
             <!-- Card 3: Happy Clients -->

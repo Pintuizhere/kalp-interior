@@ -14,7 +14,7 @@
                     <a href="index.php" class="footer-logo" style="display: block; margin-bottom: 20px;">
                         <img src="assets/images/logo.png" alt="Kalp Interior Studio" style="max-height: 50px; width: auto; object-fit: contain;">
                     </a>
-                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">A home is built with emotions before it is built with materials.</p>
                     
                     <div class="social-links" style="display: flex; gap: 10px;">
                         <a href="#" style="width: 35px; height: 35px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white;"><i class="fa-brands fa-x-twitter"></i></a>
@@ -49,8 +49,8 @@
                     <h4 style="font-size: 16px; margin-bottom: 25px; color: white;">Contact Us</h4>
                     <ul class="footer-links">
                         <li>+91 9234772288</li>
-                        <li>team.kalpinteriors@gmail.com</li>
-                        <li style="line-height: 1.6;">Second Floor, Bhagwati Trade Centre,<br>Upper Bazar Ranchi, Jharkhand, India</li>
+                        <li>info@kalpinteriors.com</li>
+                        <li style="line-height: 1.6;">KALP INTERIOR DESIGN STUDIO,<br>ISM ROAD, opp. SRDAV, Pundag,<br>Ranchi, Jharkhand 834001</li>
                     </ul>
                 </div>
             </div>
@@ -65,6 +65,45 @@
             </div>
         </div>
     </footer>
+
+    <!-- Sticky Instagram Button -->
+    <a href="https://www.instagram.com/kalp__interiors/" target="_blank" class="sticky-instagram">
+        <i class="fa-brands fa-instagram"></i>
+    </a>
+    <style>
+        .sticky-instagram {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            z-index: 9999;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .sticky-instagram:hover {
+            transform: scale(1.1) translateY(-5px);
+            color: white;
+            box-shadow: 0 8px 25px rgba(220, 39, 67, 0.4);
+        }
+        @media (max-width: 768px) {
+            .sticky-instagram {
+                width: 50px;
+                height: 50px;
+                font-size: 26px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+    </style>
 
     <!-- Custom JS -->
     <script src="assets/js/main.js"></script>

@@ -149,8 +149,59 @@ include 'includes/header.php';
                         <a href="service-details.php" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </div>
-            </div>\n        </div>\n    </section>
+    </section>
+    <section class="services-features" style="background-color: var(--bg-light); padding-bottom: 80px;">
+        <div class="container" style="max-width: 1300px;">
+            <!-- Features block -->
+            <div class="portfolio-features new-features-bar" style="display: flex; justify-content: space-between; align-items: center; padding: 30px 40px; background-color: white; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.03);">
+                <div class="pf-item" style="display: flex; align-items: center; gap: 15px;">
+                    <div class="pf-icon" style="width: 50px; height: 50px; background-color: #fcf1db; color: #EAB136; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                        <i class="fa-solid fa-users-gear"></i>
+                    </div>
+                    <div class="pf-text">
+                        <strong style="display: block; font-size: 16px; color: var(--text-dark); margin-bottom: 2px;">Client Focused</strong>
+                        <span style="font-size: 13px; color: var(--text-muted);">Your vision, our priority.</span>
+                    </div>
+                </div>
+                
+                <div style="width: 1px; height: 40px; background-color: rgba(0,0,0,0.05);"></div>
+                
+                <div class="pf-item" style="display: flex; align-items: center; gap: 15px;">
+                    <div class="pf-icon" style="width: 50px; height: 50px; background-color: #fcf1db; color: #EAB136; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                        <i class="fa-regular fa-lightbulb"></i>
+                    </div>
+                    <div class="pf-text">
+                        <strong style="display: block; font-size: 16px; color: var(--text-dark); margin-bottom: 2px;">Innovative Solutions</strong>
+                        <span style="font-size: 13px; color: var(--text-muted);">Creative ideas for unique spaces.</span>
+                    </div>
+                </div>
 
+                <div style="width: 1px; height: 40px; background-color: rgba(0,0,0,0.05);"></div>
+
+                <div class="pf-item" style="display: flex; align-items: center; gap: 15px;">
+                    <div class="pf-icon" style="width: 50px; height: 50px; background-color: #fcf1db; color: #EAB136; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <div class="pf-text">
+                        <strong style="display: block; font-size: 16px; color: var(--text-dark); margin-bottom: 2px;">Quality & Excellence</strong>
+                        <span style="font-size: 13px; color: var(--text-muted);">Commitment to highest standards.</span>
+                    </div>
+                </div>
+
+                <div style="width: 1px; height: 40px; background-color: rgba(0,0,0,0.05);"></div>
+
+                <div class="pf-item" style="display: flex; align-items: center; gap: 15px;">
+                    <div class="pf-icon" style="width: 50px; height: 50px; background-color: #fcf1db; color: #EAB136; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                        <i class="fa-regular fa-clock"></i>
+                    </div>
+                    <div class="pf-text">
+                        <strong style="display: block; font-size: 16px; color: var(--text-dark); margin-bottom: 2px;">On-Time Delivery</strong>
+                        <span style="font-size: 13px; color: var(--text-muted);">Reliable service, every time.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <!-- Include Contact and Marquee from components -->
     <?php include 'includes/components/contact.php'; ?>
 

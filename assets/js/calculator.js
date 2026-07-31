@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 scrollX: 0, 
                                 scrollY: 0,
                                 width: 794,
-                                height: 1123
+                                height: 2246
                             }, 
                             jsPDF:        { unit: 'px', format: [794, 1123], orientation: 'portrait', hotfixes: ["px_scaling"] }
                         };

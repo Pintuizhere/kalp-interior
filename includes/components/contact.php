@@ -46,12 +46,12 @@
             <div class="contact-info-block">
                 <div class="info-item">
                     <h4>Address</h4>
-                    <p>Second Floor, Bhagwati Trade Centre,<br>Upper Bazar Ranchi, Jharkhand, India</p>
+                    <p>KALP INTERIOR DESIGN STUDIO,<br>ISM ROAD, opp. SRDAV, Pundag,<br>Ranchi, Jharkhand 834001</p>
                 </div>
 
                 <div class="info-item">
                     <h4>Contact</h4>
-                    <p>Phone : +91 9234772288<br>Email : team.kalpinteriors@gmail.com</p>
+                    <p>Phone : +91 9234772288<br>Email : info@kalpinteriors.com</p>
                 </div>
                 <div class="info-item">
                     <h4>Open Time</h4>

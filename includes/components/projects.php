@@ -40,7 +40,7 @@
                 <h2 class="section-title" style="font-size: 3.5rem; color: var(--text-dark);">Explore <span class="accent-text">Our Portfolio</span></h2>
                 <p style="color: var(--text-muted); max-width: 500px; font-size: 1.1rem; line-height: 1.6; margin-top: 15px;">Discover a selection of our finest interior design projects crafted with creativity, functionality, and elegance.</p>
             </div>
-            <a href="#" class="btn hero-btn desktop-view-all" style="background: var(--text-dark); padding: 8px 30px 8px 8px; border-radius: 40px; align-self: center;">
+            <a href="projects.php" class="btn hero-btn desktop-view-all" style="background: var(--text-dark); padding: 8px 30px 8px 8px; border-radius: 40px; align-self: center;">
                 <span class="btn-icon" style="background: var(--accent-color); color: var(--text-dark); width: 40px; height: 40px;"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></span>
                 <span class="btn-text" style="background: transparent; color: white; padding: 0 10px; font-weight: 500;">View All Projects</span>
             </a>
@@ -66,7 +66,7 @@
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
-                        <a href="#" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                         <div class="project-bottom-info">
                             <h3>Modern 4 BHK Apartment</h3>
                             <p><i class="fa-solid fa-location-dot"></i> Mumbai, India</p>
@@ -87,7 +87,7 @@
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
-                        <a href="#" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                         <div class="project-bottom-info">
                             <h3>Luxury 6 BHK Bungalow</h3>
                             <p><i class="fa-solid fa-location-dot"></i> Pune, India</p>
@@ -108,7 +108,7 @@
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
-                        <a href="#" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                         <div class="project-bottom-info">
                             <h3>Corporate Office Space</h3>
                             <p><i class="fa-solid fa-location-dot"></i> Bengaluru, India</p>
@@ -129,7 +129,7 @@
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
-                        <a href="#" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                         <div class="project-bottom-info">
                             <h3>Minimalist Kitchen Design</h3>
                             <p><i class="fa-solid fa-location-dot"></i> Delhi, India</p>
@@ -150,7 +150,7 @@
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
-                        <a href="#" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                         <div class="project-bottom-info">
                             <h3>Contemporary Living Room</h3>
                             <p><i class="fa-solid fa-location-dot"></i> Hyderabad, India</p>
@@ -171,7 +171,7 @@
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
-                        <a href="#" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                         <div class="project-bottom-info">
                             <h3>Elegant Master Bedroom</h3>
                             <p><i class="fa-solid fa-location-dot"></i> Chennai, India</p>
@@ -187,7 +187,7 @@
 
         <!-- Mobile View All Button -->
         <div class="mobile-view-all">
-            <a href="#" class="btn hero-btn" style="background: var(--text-dark); padding: 8px 30px 8px 8px; border-radius: 40px;">
+            <a href="projects.php" class="btn hero-btn" style="background: var(--text-dark); padding: 8px 30px 8px 8px; border-radius: 40px;">
                 <span class="btn-icon" style="background: var(--accent-color); color: var(--text-dark); width: 40px; height: 40px;"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></span>
                 <span class="btn-text" style="background: transparent; color: white; padding: 0 10px; font-weight: 500;">View All Projects</span>
             </a>

@@ -7,11 +7,14 @@
                 <div class="founder-pattern"></div>
                 <img src="assets/images/founder.jpeg" alt="Reedam - Founder" class="founder-img">
                 <div class="founder-card">
-                    <h4>Reedam</h4>
+                    <h4>Reedam Kumar</h4>
                     <p class="founder-title">Founder & Managing Director</p>
                     <div class="founder-card-divider"></div>
                     <p class="founder-bio">With over 15 years of experience in interior design, Reedam's leadership continues to shape our journey of growth, trust, and excellence.</p>
-                    <a href="#" class="founder-social"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <div class="founder-social-links" style="display: flex; gap: 12px; margin-top: 15px;">
+                        <a href="mailto:info@kalpinteriors.com" class="founder-social" title="Email info@kalpinteriors.com" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: white; transition: all 0.3s ease;"><i class="fa-solid fa-envelope"></i></a>
+                        <a href="https://wa.me/919234772288" class="founder-social" target="_blank" title="WhatsApp +91 9234772288" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: white; transition: all 0.3s ease;"><i class="fa-brands fa-whatsapp"></i></a>
+                    </div>
                 </div>
             </div>
             
@@ -55,9 +58,9 @@
                         <i class="fa-solid fa-quote-left"></i>
                     </div>
                     <div class="quote-content">
-                        <p>We believe that every property has the power to transform lives.<br>Our mission is to turn dreams into reality through trust,<br>innovation, and unwavering commitment.</p>
+                        <p><strong>"A home is built with emotions before it is built with materials."</strong><br><br>We believe that every property has the power to transform lives. Our mission is to turn dreams into reality through trust, innovation, and unwavering commitment.</p>
                         <div class="signature-wrapper" style="text-align: right; margin-top: 15px;">
-                            <span class="founder-signature" style="font-family: var(--font-accent); font-size: 2.5rem; color: var(--text-dark); opacity: 0.8; font-style: italic;">Reedam</span>
+                            <span class="founder-signature" style="font-family: var(--font-accent); font-size: 2.5rem; color: var(--text-dark); opacity: 0.8; font-style: italic;">Reedam Kumar</span>
                         </div>
                     </div>
                 </div>

@@ -203,7 +203,7 @@ include 'includes/header.php';
                         <span style="display: block; width: 40px; height: 2px; background: var(--accent-color);"></span>
                         <p class="section-subtitle" style="margin-bottom: 0;">EXPLORE OUR WORK</p>
                     </div>
-                    <h2 class="section-title">More Interior Design <span class="accent-text signature-text" style="color: var(--accent-color); font-weight: 400; text-transform: none;">Projects</span></h2>
+                    <h2 class="section-title">More Interior Design <span class="accent-text signature-text" style="font-family: var(--font-accent); color: var(--accent-color); font-weight: 400; text-transform: none;">Projects</span></h2>
                 </div>
                 <div class="mp-header-right">
                     <a href="projects.php" class="btn btn-dark-pill">
@@ -218,7 +218,7 @@ include 'includes/header.php';
                     <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="Living Room" class="mp-card-bg">
                     <div class="mp-card-top">
                         <div class="mp-tag">Residential Design</div>
-                        <div class="mp-like"><i class="fa-regular fa-heart"></i></div>
+
                     </div>
                     <div class="mp-card-bottom">
                         <div class="mp-card-title-row" style="margin-bottom: 10px;">
@@ -294,7 +294,60 @@ include 'includes/header.php';
             </div>
             <a href="contact.php" class="btn btn-primary" style="display: flex; align-items: center; gap: 10px;">Book a Consultation <span class="icon-circle" style="background: transparent; border: 1px solid rgba(0,0,0,0.3); color: var(--text-dark); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i></span></a>
         </div>
-    </div>ion>
+    </div>
+
+    <section class="services-features" style="background-color: var(--bg-light); padding: 80px 0;">
+        <div class="container" style="max-width: 1300px;">
+            <!-- Features block -->
+            <div class="portfolio-features new-features-bar" style="display: flex; justify-content: space-between; align-items: center; padding: 30px 40px; background-color: white; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.03);">
+                <div class="pf-item" style="display: flex; align-items: center; gap: 15px;">
+                    <div class="pf-icon" style="width: 50px; height: 50px; background-color: #fcf1db; color: #EAB136; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                        <i class="fa-solid fa-users-gear"></i>
+                    </div>
+                    <div class="pf-text">
+                        <strong style="display: block; font-size: 16px; color: var(--text-dark); margin-bottom: 2px;">Client Focused</strong>
+                        <span style="font-size: 13px; color: var(--text-muted);">Your vision, our priority.</span>
+                    </div>
+                </div>
+                
+                <div style="width: 1px; height: 40px; background-color: rgba(0,0,0,0.05);"></div>
+                
+                <div class="pf-item" style="display: flex; align-items: center; gap: 15px;">
+                    <div class="pf-icon" style="width: 50px; height: 50px; background-color: #fcf1db; color: #EAB136; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                        <i class="fa-regular fa-lightbulb"></i>
+                    </div>
+                    <div class="pf-text">
+                        <strong style="display: block; font-size: 16px; color: var(--text-dark); margin-bottom: 2px;">Innovative Solutions</strong>
+                        <span style="font-size: 13px; color: var(--text-muted);">Creative ideas for unique spaces.</span>
+                    </div>
+                </div>
+
+                <div style="width: 1px; height: 40px; background-color: rgba(0,0,0,0.05);"></div>
+
+                <div class="pf-item" style="display: flex; align-items: center; gap: 15px;">
+                    <div class="pf-icon" style="width: 50px; height: 50px; background-color: #fcf1db; color: #EAB136; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <div class="pf-text">
+                        <strong style="display: block; font-size: 16px; color: var(--text-dark); margin-bottom: 2px;">Quality & Excellence</strong>
+                        <span style="font-size: 13px; color: var(--text-muted);">Commitment to highest standards.</span>
+                    </div>
+                </div>
+
+                <div style="width: 1px; height: 40px; background-color: rgba(0,0,0,0.05);"></div>
+
+                <div class="pf-item" style="display: flex; align-items: center; gap: 15px;">
+                    <div class="pf-icon" style="width: 50px; height: 50px; background-color: #fcf1db; color: #EAB136; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                        <i class="fa-regular fa-clock"></i>
+                    </div>
+                    <div class="pf-text">
+                        <strong style="display: block; font-size: 16px; color: var(--text-dark); margin-bottom: 2px;">On-Time Delivery</strong>
+                        <span style="font-size: 13px; color: var(--text-muted);">Reliable service, every time.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 </main>
 

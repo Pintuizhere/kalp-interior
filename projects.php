@@ -22,10 +22,7 @@ include 'includes/header.php';
                     <h2 class="section-title" style="font-size: 3.5rem; color: var(--text-dark);">Explore <span class="accent-text" style="font-family: var(--font-accent); font-style: italic; font-weight: 400;">Our Portfolio</span></h2>
                     <p style="color: var(--text-muted); max-width: 500px; font-size: 1.1rem; line-height: 1.6; margin-top: 15px;">Discover a selection of our finest interior design projects crafted with creativity, functionality, and elegance.</p>
                 </div>
-                <a href="#" class="btn hero-btn" style="background: var(--text-dark); padding: 8px 30px 8px 8px; border-radius: 40px; align-self: center;">
-                    <span class="btn-icon" style="background: var(--accent-color); color: var(--text-dark); width: 40px; height: 40px;"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></span>
-                    <span class="btn-text" style="background: transparent; color: white; padding: 0 10px; font-weight: 500;">View All Projects</span>
-                </a>
+
             </div>
             
             <div class="filter-tags" style="justify-content: flex-start; gap: 15px; margin-bottom: 50px;">
@@ -46,7 +43,7 @@ include 'includes/header.php';
                 <a href="project-details.php" style="display: block; overflow: hidden;"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="MODERN 4 BHK APARTMENT" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;"></a>
                 <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
                     <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-house" style="color: #24352a;"></i> Residential Design</span>
-                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-regular fa-heart"></i></span>
+
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
@@ -67,7 +64,7 @@ include 'includes/header.php';
                 <a href="project-details.php" style="display: block; overflow: hidden;"><img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="LUXURY 6 BHK BUNGALOW" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;"></a>
                 <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
                     <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-house" style="color: #24352a;"></i> Residential Design</span>
-                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-regular fa-heart"></i></span>
+
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
@@ -88,7 +85,7 @@ include 'includes/header.php';
                 <a href="project-details.php" style="display: block; overflow: hidden;"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="CORPORATE OFFICE SPACE" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;"></a>
                 <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
                     <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-building" style="color: #24352a;"></i> Commercial Design</span>
-                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-regular fa-heart"></i></span>
+
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
@@ -109,7 +106,7 @@ include 'includes/header.php';
                 <a href="project-details.php" style="display: block; overflow: hidden;"><img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="MINIMALIST LIVING ROOM" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;"></a>
                 <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
                     <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-couch" style="color: #24352a;"></i> Interior Design</span>
-                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-regular fa-heart"></i></span>
+
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
@@ -130,7 +127,7 @@ include 'includes/header.php';
                 <a href="project-details.php" style="display: block; overflow: hidden;"><img src="https://images.unsplash.com/photo-1556910103-1c02745a8728?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="MODERN KITCHEN SPACE" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;"></a>
                 <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
                     <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-kitchen-set" style="color: #24352a;"></i> Kitchen Design</span>
-                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-regular fa-heart"></i></span>
+
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
@@ -151,7 +148,7 @@ include 'includes/header.php';
                 <a href="project-details.php" style="display: block; overflow: hidden;"><img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="CONTEMPORARY BEDROOM" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;"></a>
                 <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
                     <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-bed" style="color: #24352a;"></i> Bedroom Design</span>
-                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-regular fa-heart"></i></span>
+
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
@@ -172,7 +169,7 @@ include 'includes/header.php';
                 <a href="project-details.php" style="display: block; overflow: hidden;"><img src="https://images.unsplash.com/photo-1613490908592-fd5e16f9f2c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="MODERN VILLA EXTERIOR" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;"></a>
                 <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
                     <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-house-user" style="color: #24352a;"></i> Exterior Design</span>
-                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-regular fa-heart"></i></span>
+
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
@@ -193,7 +190,7 @@ include 'includes/header.php';
                 <a href="project-details.php" style="display: block; overflow: hidden;"><img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="ELEGANT FAMILY LOUNGE" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;"></a>
                 <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
                     <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-couch" style="color: #24352a;"></i> Living Room Design</span>
-                    <span class="project-badge right" style="background: white; color: var(--text-dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-regular fa-heart"></i></span>
+
                 </div>
                 <div class="project-bottom-content">
                     <div class="project-bottom-main">
@@ -215,7 +212,7 @@ include 'includes/header.php';
             <div class="projects-pagination" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 50px;">
                 <a href="#" class="page-link prev-page"><i class="fa-solid fa-angle-left"></i></a>
                 
-                <a href="#" class="page-link active">1</a>
+                <a href="#" class="page-link active" style="background-color: var(--accent-color); color: var(--text-dark); border-color: var(--accent-color);">1</a>
                 <a href="#" class="page-link">2</a>
                 <a href="#" class="page-link">3</a>
                 <span class="page-dots">...</span>

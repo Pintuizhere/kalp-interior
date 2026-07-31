@@ -2,7 +2,7 @@
     <style>
         @media (max-width: 992px) {
             .about-content-row { grid-template-columns: 1fr !important; gap: 40px !important; }
-            .experience-card { min-height: 300px !important; padding: 40px !important; }
+            .experience-card { min-height: 400px !important; padding: 0 !important; }
             .about-text-content { text-align: left; }
             .stats-grid { justify-content: flex-start; text-align: left; }
             .signature-block { align-items: center; }
@@ -13,10 +13,11 @@
             .exp-number-mask { font-size: 120px !important; }
             .stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 30px 15px !important; padding-bottom: 30px !important; }
             .stat-item h3 { font-size: 28px !important; }
-            .experience-card { min-height: 250px !important; }
+            .experience-card { min-height: 380px !important; }
         }
         @media (max-width: 480px) {
             .stats-grid { grid-template-columns: 1fr !important; gap: 20px !important; }
+            .experience-card { min-height: 350px !important; }
         }
     </style>
     <section class="about-intro-section" style="padding: 100px 0; background-color: var(--bg-white);">
@@ -32,9 +33,42 @@
                     
                     <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; background: linear-gradient(to top, rgba(26, 38, 30, 0.9), transparent); z-index: 1;"></div>
                     
-                    <div style="position: relative; z-index: 2; padding: 40px 20px;">
-                        <h2 style="font-size: 80px; font-weight: 800; line-height: 1; color: white; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">18</h2>
-                        <h3 class="exp-text" style="font-size: 20px; color: rgba(255,255,255,0.9); margin: 0; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Years of Experience</h3>
+                    <style>
+                        .award-capsule {
+                            position: relative; z-index: 2; margin-bottom: 30px; 
+                            padding: 12px 28px; display: flex; align-items: center; justify-content: center; 
+                            gap: 15px; background: rgba(0, 0, 0, 0.4); 
+                            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); 
+                            border: 1px solid rgba(255, 255, 255, 0.2); 
+                            border-radius: 50px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); 
+                            max-width: 95%; margin-left: auto; margin-right: auto;
+                        }
+                        .award-capsule i {
+                            color: #ffcc00; font-size: 28px; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.4));
+                        }
+                        .award-capsule h3 {
+                            font-size: 14px; color: white; margin: 0; font-weight: 700; 
+                            text-transform: uppercase; letter-spacing: 1px; 
+                            text-shadow: 1px 1px 3px rgba(0,0,0,0.8); white-space: nowrap;
+                        }
+                        @media (max-width: 768px) {
+                            .award-capsule {
+                                padding: 8px 16px;
+                                gap: 8px;
+                                margin-bottom: 20px;
+                            }
+                            .award-capsule i {
+                                font-size: 18px;
+                            }
+                            .award-capsule h3 {
+                                font-size: 10px;
+                                letter-spacing: 0.5px;
+                            }
+                        }
+                    </style>
+                    <div class="award-capsule">
+                        <i class="fa-solid fa-trophy"></i>
+                        <h3>Best Interior Designer 2025</h3>
                     </div>
                 </div>
 
@@ -60,8 +94,8 @@
                     </div>
 
                     <div class="signature-block" style="display: flex; flex-direction: column; gap: 5px;">
-                        <span class="founder-signature" style="font-family: var(--font-accent); font-size: 2.5rem; color: var(--text-dark); opacity: 0.8; font-style: italic;">Reedam</span>
-                        <p style="font-size: 13px; color: var(--text-muted); margin: 0; padding-left: 5px;">Reedam <span style="color: var(--accent-color);">•</span> Founder</p>
+                        <span class="founder-signature" style="font-family: var(--font-accent); font-size: 2.5rem; color: var(--text-dark); opacity: 0.8; font-style: italic;">Reedam Kumar</span>
+                        <p style="font-size: 13px; color: var(--text-muted); margin: 0; padding-left: 5px;">Interior Designer <span style="color: var(--accent-color);">•</span> Founder</p>
                     </div>
                 </div>
 

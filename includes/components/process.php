@@ -20,7 +20,7 @@
             .promise-icon { width: 28px !important; height: 28px !important; font-size: 12px !important; min-width: 28px !important; }
         }
     </style>
-    <section class="process-section" style="padding: 100px 0; background-color: #F6F6F6; overflow: hidden; position: relative;">
+    <section class="process-section" style="padding: 100px 0; background-color: #ffffff; overflow: hidden; position: relative;">
         
         <!-- Decorative Background Elements -->
         <div style="position: absolute; top: 10%; left: 5%; opacity: 0.1;">

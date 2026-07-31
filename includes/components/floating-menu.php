@@ -12,13 +12,13 @@
         <a href="#" class="floating-icon" title="Instagram">
             <i class="fa-brands fa-instagram"></i>
         </a>
-        <a href="https://wa.me/919999999999" class="floating-icon whatsapp" title="WhatsApp">
+        <a href="https://wa.me/919234772288" class="floating-icon whatsapp" title="WhatsApp">
             <i class="fa-brands fa-whatsapp"></i>
         </a>
-        <a href="mailto:info@kalpinterior.com" class="floating-icon" title="Email">
+        <a href="mailto:info@kalpinteriors.com" class="floating-icon" title="Email">
             <i class="fa-regular fa-envelope"></i>
         </a>
-        <a href="tel:+919999999999" class="floating-icon" title="Call Us">
+        <a href="tel:+919234772288" class="floating-icon" title="Call Us">
             <i class="fa-solid fa-phone"></i>
         </a>
         <button id="floating-close" class="floating-icon close-btn" title="Close">

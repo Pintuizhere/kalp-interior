@@ -1,3 +1,44 @@
+<style>
+    @media (max-width: 768px) {
+        .calculator-section { padding: 60px 15px !important; }
+        .calc-title { font-size: 2rem !important; line-height: 1.3 !important; }
+        .calc-form-col, .calc-results-col { padding: 25px 15px !important; border-radius: 15px !important; }
+        
+        /* Make form elements stack gracefully */
+        .calc-options-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+        
+        /* Exception: keep 2 columns for primary choices if they fit, or let them stack on very small screens */
+        .main-category-options { grid-template-columns: repeat(2, 1fr) !important; }
+        
+        .calc-header { margin-bottom: 30px; text-align: center; }
+        .calc-title-box p { font-size: 1rem !important; }
+        .calc-header-features { gap: 15px; }
+        
+        /* Result column tweaks */
+        .results-amount h2 { font-size: 36px !important; }
+        .breakdown-row { font-size: 14px !important; }
+        .results-cta { padding: 15px !important; flex-direction: column; text-align: center; }
+        .results-cta .cta-arrow { align-self: center; margin-top: 10px; }
+        
+        .cf-badge { width: 100% !important; margin-bottom: 10px; }
+        .calc-footer-badges { padding: 20px 0 !important; }
+    }
+    
+    @media (max-width: 480px) {
+        .calculator-section { padding: 40px 10px !important; }
+        .calc-title { font-size: 1.6rem !important; }
+        .calc-form-col, .calc-results-col { padding: 20px 15px !important; }
+        
+        /* Force 1 column on tiny screens to avoid cramped text */
+        .main-category-options, .type-options, .style-options, .finish-options { 
+            grid-template-columns: 1fr !important; 
+        }
+        
+        .results-amount h2 { font-size: 28px !important; }
+        .results-cta .cta-text strong { font-size: 14px !important; }
+        .wi-text p { font-size: 12px !important; }
+    }
+</style>
 <section class="calculator-section" style="padding: 100px 0; background-color: var(--primary-color);">
     <div class="container" style="max-width: 1400px;">
         
@@ -454,7 +495,7 @@
 
     </div>
 <!-- Hidden PDF Export Template -->
-<div id="pdf-export-template" style="display: none; width: 794px; height: 1123px; font-family: 'Inter', sans-serif; background: #ffffff; color: #333333; overflow: hidden; box-sizing: border-box;">
+<div id="pdf-export-template" style="display: none; width: 794px; height: 2246px; font-family: 'Inter', sans-serif; background: #ffffff; color: #333333; overflow: hidden; box-sizing: border-box;">
     <div style="display: flex; width: 100%; height: 100%;">
         <!-- Left Sidebar -->
         <div style="width: 35%; flex-shrink: 0; background-color: #a49375; color: #ffffff; padding: 40px 30px; box-sizing: border-box; display: flex; flex-direction: column;">
@@ -533,6 +574,9 @@
                 </tr>
             </table>
         </div>
+
+        <!-- Spacer to push content exactly to the start of Page 2 -->
+        <div style="height: 450px;"></div>
 
         <!-- Material Specification -->
         <div style="flex-grow: 1;">
