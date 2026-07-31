@@ -172,24 +172,24 @@ include 'includes/header.php';
                     .masonry-gallery-grid .item-small { grid-column: span 12 !important; height: 250px !important; }
                     .gallery-header { flex-direction: column; align-items: flex-start !important; }
                 }
-                .gallery-filter-btn { transition: all 0.3s ease; }
+                .gallery-filter-btn { transition: all 0.3s ease; font-family: var(--font-primary); }
                 .gallery-filter-btn:hover { background: var(--primary-color) !important; color: white !important; border-color: var(--primary-color) !important; }
             </style>
             
             <div class="project-gallery-section" style="margin-bottom: 60px;">
                 <div class="gallery-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; margin-bottom: 30px;">
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <h2 class="section-title" style="margin-bottom: 0; font-size: 2.5rem; font-family: 'Playfair Display', serif;">Gallery</h2>
+                        <h2 class="section-title" style="margin-bottom: 0; font-size: 2.5rem;">Gallery</h2>
                     </div>
                     
                     <div class="gallery-filters" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button class="gallery-filter-btn active" style="background: var(--primary-color); color: white; border: 1px solid var(--primary-color); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">All</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">Living Room</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">Bedroom</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">Kitchen</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">Dining</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">Bathroom</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">Other Spaces</button>
+                        <button class="gallery-filter-btn active" style="background: var(--primary-color); color: white; border: 1px solid var(--primary-color); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-layer-group" style="margin-right: 5px;"></i> All</button>
+                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-couch" style="margin-right: 5px;"></i> Living Room</button>
+                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-bed" style="margin-right: 5px;"></i> Bedroom</button>
+                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-kitchen-set" style="margin-right: 5px;"></i> Kitchen</button>
+                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-utensils" style="margin-right: 5px;"></i> Dining</button>
+                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-bath" style="margin-right: 5px;"></i> Bathroom</button>
+                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-door-open" style="margin-right: 5px;"></i> Other Spaces</button>
                     </div>
                 </div>
 
