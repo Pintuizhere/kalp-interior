@@ -20,32 +20,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         try {
             // Prepare statement to prevent SQL injection
-            $stmt = $pdo->prepare("SELECT * FROM admin_users WHERE email = :email");
-            $stmt->bindParam(':email', $email);
-            $stmt->execute();
-            
-            // Check if user exists
-            if ($stmt->rowCount() == 1) {
-                if ($user = $stmt->fetch()) {
-                    // Verify password
-                    if (password_verify($password, $user['password'])) {
-                        // Password is correct, start a new session
-                        session_regenerate_id();
-                        $_SESSION['admin_logged_in'] = true;
-                        $_SESSION['admin_id'] = $user['id'];
-                        $_SESSION['admin_email'] = $user['email'];
-                        
-                        // Redirect to admin dashboard
-                        header('Location: index.php');
-                        exit;
-                    } else {
-                        $error = "The password you entered was not valid.";
+            $stmt = $conn->prepare("SELECT * FROM admin_users WHERE email = ?");
+            if ($stmt) {
+                $stmt->bind_param("s", $email);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                
+                // Check if user exists
+                if ($result->num_rows == 1) {
+                    if ($user = $result->fetch_assoc()) {
+                        // Verify password
+                        if (password_verify($password, $user['password'])) {
+                            // Password is correct, start a new session
+                            session_regenerate_id();
+                            $_SESSION['admin_logged_in'] = true;
+                            $_SESSION['admin_id'] = $user['id'];
+                            $_SESSION['admin_email'] = $user['email'];
+                            
+                            // Redirect to admin dashboard
+                            header('Location: index.php');
+                            exit;
+                        } else {
+                            $error = "The password you entered was not valid.";
+                        }
                     }
+                } else {
+                    $error = "No account found with that email address.";
                 }
+                $stmt->close();
             } else {
-                $error = "No account found with that email address.";
+                $error = "Oops! Something went wrong. Please try again later.";
             }
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             $error = "Oops! Something went wrong. Please try again later.";
             // $error = "Database Error: " . $e->getMessage(); // Uncomment for debugging
         }

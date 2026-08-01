@@ -75,8 +75,9 @@
                 <!-- Right: Text Content -->
                 <div class="about-text-content">
                     <p class="section-subtitle" style="letter-spacing: 2px; font-weight: 600; text-transform: uppercase;">ABOUT US</p>
-                    <h2 class="section-title" style="font-size: 42px; margin-bottom: 20px; line-height: 1.2;">Turning <span class="accent-text" style="font-family: var(--font-accent); font-style: italic; font-weight: 400; color: var(--accent-color);">Your Dream<br>Home</span> into Reality</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 40px; line-height: 1.8; font-size: 15px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
+                    <h2 class="section-title" style="font-size: 42px; margin-bottom: 20px; line-height: 1.2;"><?php echo isset($about_content['main_heading']) ? htmlspecialchars($about_content['main_heading']) : 'Turning Your Dream Home into Reality'; ?></h2>
+                    <h3 style="font-size: 18px; margin-bottom: 20px; font-weight: 500; color: var(--text-dark);"><?php echo isset($about_content['sub_heading']) ? htmlspecialchars($about_content['sub_heading']) : ''; ?></h3>
+                    <p style="color: var(--text-muted); margin-bottom: 40px; line-height: 1.8; font-size: 15px; white-space: pre-wrap;"><?php echo isset($about_content['main_text']) ? htmlspecialchars($about_content['main_text']) : 'Kalp Interiors description goes here.'; ?></p>
                     
                     <div class="stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; border-bottom: 1px solid #eaeaea; padding-bottom: 40px;">
                         <div class="stat-item">

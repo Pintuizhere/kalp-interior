@@ -18,9 +18,7 @@
                 <span class="cp-label">OUR VISION</span>
                 <h3 class="cp-block-title">To Inspire<br>Beautiful Living</h3>
                 <div class="cp-divider"></div>
-                <p class="cp-block-text">At KALP Interior Design Studio, our vision is to redefine the way people experience spaces by creating interiors that inspire, enrich, and stand the test of time. We envision becoming India's most trusted design-led interior brand, known for innovation, craftsmanship, functionality, and customer satisfaction.</p>
-                <p class="cp-block-text">We believe every space has the power to transform lives. Through thoughtful design, quality materials, sustainable practices, and attention to every detail, we aim to create homes, workplaces, and commercial environments that reflect each client's personality and aspirations.</p>
-                <p class="cp-block-text">Our long-term vision is to build a design ecosystem that extends beyond interior design into furniture manufacturing, design education, and innovative lifestyle solutions—making KALP a symbol of creativity, excellence, and trust across India.</p>
+                <p class="cp-block-text"><?php echo isset($about_content['vision_text']) ? htmlspecialchars($about_content['vision_text']) : 'At KALP Interior Design Studio, our vision is to redefine the way people experience spaces...'; ?></p>
             </div>
             <div class="cp-block-image" style="background-image: url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80');"></div>
         </div>
@@ -31,8 +29,7 @@
                 <span class="cp-label">OUR MISSION</span>
                 <h3 class="cp-block-title">Designing Spaces<br>That Enrich Lives</h3>
                 <div class="cp-divider" style="background-color: #D08C60;"></div>
-                <p class="cp-block-text">At KALP Interior Design Studio, our mission is to design spaces that seamlessly blend creativity, functionality, and quality. We are committed to understanding every client's vision and transforming it into interiors that are beautiful, practical, and built to last.</p>
-                <p class="cp-block-text">We strive to deliver exceptional design experiences through transparent communication, innovative thinking, premium craftsmanship, and timely execution. By embracing modern technology, sustainable practices, and continuous learning, we aim to exceed expectations while building lasting relationships based on trust and integrity.</p>
+                <p class="cp-block-text"><?php echo isset($about_content['mission_text']) ? htmlspecialchars($about_content['mission_text']) : 'At KALP Interior Design Studio, our mission is to design spaces that seamlessly blend creativity...'; ?></p>
             </div>
             <div class="cp-block-image-right">
                 <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&q=80" alt="Mission Interior">

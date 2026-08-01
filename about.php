@@ -1,5 +1,14 @@
 <?php 
 $currentPage = 'about';
+require_once 'admin/config/db.php';
+$about_content = [];
+$stmt = $conn->prepare("SELECT section_key, content_value FROM page_content WHERE page_name = 'about'");
+$stmt->execute();
+$result = $stmt->get_result();
+while($row = $result->fetch_assoc()) {
+    $about_content[$row['section_key']] = $row['content_value'];
+}
+$stmt->close();
 include 'includes/header.php'; 
 ?>
 

@@ -25,7 +25,22 @@
         
         <div class="admin-profile">
             <div class="avatar">
-                <img src="https://i.pravatar.cc/150?img=11" alt="Admin">
+                <?php
+                if (isset($_SESSION['admin_id']) && isset($conn)) {
+                    $curr_id = $_SESSION['admin_id'];
+                    $q = $conn->query("SELECT profile_image, email FROM admin_users WHERE id = '$curr_id'");
+                    if ($q && $q->num_rows > 0) {
+                        $u = $q->fetch_assoc();
+                        if (!empty($u['profile_image'])) {
+                            echo '<img src="../uploads/profiles/' . htmlspecialchars($u['profile_image']) . '" alt="Admin">';
+                        } else {
+                            echo '<div style="width: 100%; height: 100%; background: var(--primary-color); color: white; display: flex; justify-content: center; align-items: center; font-size: 16px;"><i class="fa-solid fa-user"></i></div>';
+                        }
+                    }
+                } else {
+                    echo '<img src="https://i.pravatar.cc/150?img=11" alt="Admin">';
+                }
+                ?>
             </div>
             <div class="admin-info">
                 <span class="name">Admin User</span>

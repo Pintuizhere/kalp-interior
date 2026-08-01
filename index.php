@@ -1,4 +1,15 @@
-<?php include 'includes/header.php'; ?>
+<?php 
+require_once 'admin/config/db.php';
+$home_content = [];
+$stmt = $conn->prepare("SELECT section_key, content_value FROM page_content WHERE page_name = 'home'");
+$stmt->execute();
+$result = $stmt->get_result();
+while($row = $result->fetch_assoc()) {
+    $home_content[$row['section_key']] = $row['content_value'];
+}
+$stmt->close();
+include 'includes/header.php'; 
+?>
 
 <main>
 <?php

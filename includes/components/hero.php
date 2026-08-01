@@ -25,8 +25,8 @@
                     </div>
                 </div>
 
-                <h1 class="new-hero-title">Elevate <span class="accent-text" style="font-weight: 700; display: inline-block; position: relative; z-index: 10;">Your Space</span> with Exceptional Interior Design</h1>
-                <p class="new-hero-desc">Kalp Interiors specializes in modern, luxurious, and personalized interior experiences.</p>
+                <h1 class="new-hero-title"><?php echo isset($home_content['hero_title']) ? htmlspecialchars($home_content['hero_title']) : 'Elevate <span class="accent-text" style="font-weight: 700; display: inline-block; position: relative; z-index: 10;">Your Space</span> with Exceptional Interior Design'; ?></h1>
+                <p class="new-hero-desc"><?php echo isset($home_content['hero_desc']) ? htmlspecialchars($home_content['hero_desc']) : 'Kalp Interiors specializes in modern, luxurious, and personalized interior experiences.'; ?></p>
                 
                 <div class="new-hero-actions">
                     <a href="contact.php" class="btn" style="background-color: var(--accent-color); color: var(--text-dark); border: none; font-weight: 600; padding: 15px 30px;">
@@ -42,20 +42,20 @@
             <!-- Bottom Stats Grid -->
             <div class="new-hero-stats">
                 <div class="hero-stat-col">
-                    <h3>500+</h3>
-                    <p>Projects Completed</p>
+                    <h3><?php echo isset($home_content['stat_projects']) ? htmlspecialchars($home_content['stat_projects']) : '500+'; ?></h3>
+                    <p><?php echo isset($home_content['stat_projects_label']) ? htmlspecialchars($home_content['stat_projects_label']) : 'Projects Completed'; ?></p>
                 </div>
                 <div class="hero-stat-col">
-                    <h3>18+</h3>
-                    <p>Years of Experience</p>
+                    <h3><?php echo isset($home_content['stat_experience']) ? htmlspecialchars($home_content['stat_experience']) : '18+'; ?></h3>
+                    <p><?php echo isset($home_content['stat_experience_label']) ? htmlspecialchars($home_content['stat_experience_label']) : 'Years of Experience'; ?></p>
                 </div>
                 <div class="hero-stat-col">
-                    <h3>300+</h3>
-                    <p>Happy Clients</p>
+                    <h3><?php echo isset($home_content['stat_clients']) ? htmlspecialchars($home_content['stat_clients']) : '300+'; ?></h3>
+                    <p><?php echo isset($home_content['stat_clients_label']) ? htmlspecialchars($home_content['stat_clients_label']) : 'Happy Clients'; ?></p>
                 </div>
                 <div class="hero-stat-col border-none">
-                    <h3>98%</h3>
-                    <p>Client Satisfaction</p>
+                    <h3><?php echo isset($home_content['stat_satisfaction']) ? htmlspecialchars($home_content['stat_satisfaction']) : '98%'; ?></h3>
+                    <p><?php echo isset($home_content['stat_satisfaction_label']) ? htmlspecialchars($home_content['stat_satisfaction_label']) : 'Client Satisfaction'; ?></p>
                 </div>
             </div>
         </div>

@@ -1,19 +1,15 @@
 <?php 
 $currentPage = 'projects';
-include 'includes/header.php'; 
+include '../includes/header.php'; 
 ?>
+<style>
+    /* Hide frontend navigation and footer in preview mode */
+    .navbar { display: none !important; }
+    .page-banner { display: none !important; }
+    footer, .main-footer, .footer-bottom { display: none !important; }
+</style>
 
 <main>
-    <!-- Page Banner -->
-    <section class="page-banner">
-        <div class="container">
-            <h1 class="banner-title">Projects</h1>
-            <div class="breadcrumbs">
-                <a href="index.php">Home</a> <span class="divider">/</span> <span class="current">Project Details</span>
-            </div>
-        </div>
-    </section>
-
     <!-- Project Details Redesign -->
     <section class="project-details-redesign" style="padding: 60px 0 0px; background-color: var(--bg-white);">
         <div class="container" style="max-width: 1200px;">
@@ -25,52 +21,61 @@ include 'includes/header.php';
                     <div class="hero-main-img-wrapper">
                         <span class="hero-tag"><i class="fa-solid fa-house" style="margin-right: 5px;"></i> Residential Design</span>
                         <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80" alt="Main Room" class="hero-main-img">
+                        <button class="nav-arrow prev"><i class="fa-solid fa-arrow-left"></i></button>
+                        <button class="nav-arrow next"><i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="hero-thumbnails">
+                        <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=300&q=80" class="active" alt="Thumb 1">
+                        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=300&q=80" alt="Thumb 2">
+                        <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=300&q=80" alt="Thumb 3">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300&q=80" alt="Thumb 4">
+                        <img src="https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=300&q=80" alt="Thumb 5">
                     </div>
                 </div>
 
                 <!-- Right: Details Box -->
                 <div class="hero-right-details">
                     <div class="hero-details-header">
-                        <h2 class="project-title">MODERN 4 BHK<br>APARTMENT</h2>
+                        <h2 class="project-title" id="pv_title">MODERN 4 BHK<br>APARTMENT</h2>
                         <div class="project-actions">
                             <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
                             <button class="icon-btn"><i class="fa-solid fa-share-nodes"></i></button>
                         </div>
                     </div>
-                    <p class="location-pin"><i class="fa-solid fa-location-dot" style="color: var(--accent-color); margin-right: 8px;"></i> Mumbai, India</p>
+                    <p class="location-pin"><i class="fa-solid fa-location-dot" style="color: var(--accent-color); margin-right: 8px;"></i> <span id="pv_location">Mumbai, India</span></p>
                     
-                    <p class="short-desc">A perfect blend of modern aesthetics and functional luxury. This 4 BHK apartment is designed to reflect warmth, simplicity, and sophisticated living.</p>
+                    <p class="short-desc" id="pv_short_desc">A perfect blend of modern aesthetics and functional luxury. This 4 BHK apartment is designed to reflect warmth, simplicity, and sophisticated living.</p>
                     
                     <div class="project-meta-list">
                         <div class="meta-row">
                             <span class="meta-icon"><i class="fa-solid fa-building-user"></i></span>
                             <span class="meta-key">Project Type</span>
-                            <span class="meta-value">Residential</span>
+                            <span class="meta-value" id="pv_category">Residential</span>
                         </div>
                         <div class="meta-row">
                             <span class="meta-icon"><i class="fa-solid fa-house-chimney"></i></span>
                             <span class="meta-key">Property Type</span>
-                            <span class="meta-value">Apartment</span>
+                            <span class="meta-value" id="pv_property_type">Apartment</span>
                         </div>
                         <div class="meta-row">
                             <span class="meta-icon"><i class="fa-solid fa-expand"></i></span>
                             <span class="meta-key">Area</span>
-                            <span class="meta-value">2,350 sq. ft.</span>
+                            <span class="meta-value" id="pv_area">2,350 sq. ft.</span>
                         </div>
                         <div class="meta-row">
                             <span class="meta-icon"><i class="fa-regular fa-calendar-check"></i></span>
                             <span class="meta-key">Year of Completion</span>
-                            <span class="meta-value">2024</span>
+                            <span class="meta-value" id="pv_year">2024</span>
                         </div>
                         <div class="meta-row">
                             <span class="meta-icon"><i class="fa-solid fa-pen-ruler"></i></span>
                             <span class="meta-key">Design Style</span>
-                            <span class="meta-value">Modern Minimal</span>
+                            <span class="meta-value" id="pv_style">Modern Minimal</span>
                         </div>
                         <div class="meta-row">
                             <span class="meta-icon"><i class="fa-solid fa-list-check"></i></span>
                             <span class="meta-key">Scope of Work</span>
-                            <span class="meta-value">Full Interior Design</span>
+                            <span class="meta-value" id="pv_scope">Full Interior Design</span>
                         </div>
                     </div>
 
@@ -112,11 +117,13 @@ include 'includes/header.php';
                         <span style="display: block; width: 40px; height: 2px; background: var(--accent-color);"></span>
                         <p class="section-subtitle" style="margin-bottom: 0;">ABOUT THE PROJECT</p>
                     </div>
-                    <h2 class="section-title">Crafted for Comfort.<br><span class="accent-text signature-text" style="color: var(--accent-color); font-weight: 400; text-transform: none;">Designed for Living.</span></h2>
+                    <h2 class="section-title"><span id="pv_about_title">Crafted for Comfort.</span><br><span id="pv_about_subtitle" class="accent-text signature-text" style="color: var(--accent-color); font-weight: 400; text-transform: none;">Designed for Living.</span></h2>
                     
-                    <p style="color: #666; line-height: 1.8; margin-bottom: 20px;">This modern 4 BHK apartment is designed for a young family seeking a balance between style and functionality.</p>
-                    <p style="color: #666; line-height: 1.8; margin-bottom: 20px;">The interiors feature a neutral palette, clean lines, and custom elements that create a calm and cohesive environment.</p>
-                    <p style="color: #666; line-height: 1.8;">From the spacious living area to the cozy bedrooms, each space is crafted to enhance everyday living.</p>
+                    <div id="pv_long_desc">
+                        <p style="color: #666; line-height: 1.8; margin-bottom: 20px;">This modern 4 BHK apartment is designed for a young family seeking a balance between style and functionality.</p>
+                        <p style="color: #666; line-height: 1.8; margin-bottom: 20px;">The interiors feature a neutral palette, clean lines, and custom elements that create a calm and cohesive environment.</p>
+                        <p style="color: #666; line-height: 1.8;">From the spacious living area to the cozy bedrooms, each space is crafted to enhance everyday living.</p>
+                    </div>
                 </div>
                 <div class="about-right">
                     <div class="project-highlight-card">
@@ -346,4 +353,4 @@ include 'includes/header.php';
 
 </main>
 
-<?php include 'includes/footer.php'; ?>
+<?php include '../includes/footer.php'; ?>

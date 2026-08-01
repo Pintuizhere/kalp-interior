@@ -1,4 +1,4 @@
-    <?php include 'includes/components/cta-banner.php'; ?>
+    <?php // include 'includes/components/cta-banner.php'; ?>
     
     <footer class="site-footer" style="position: relative;">
         <!-- Footer Wave Divider -->

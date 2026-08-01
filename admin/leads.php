@@ -3,6 +3,11 @@ $pageTitle = 'Leads';
 $currentPage = 'leads';
 include 'includes/header.php';
 include 'includes/sidebar.php';
+require_once 'config/db.php';
+
+// Fetch leads from DB
+$leads_query = "SELECT * FROM leads ORDER BY created_at DESC";
+$leads_result = $conn->query($leads_query);
 ?>
 
 <div class="main-wrapper">
@@ -12,9 +17,11 @@ include 'includes/sidebar.php';
         
         <div class="page-header">
             <h1>Manage Leads</h1>
-            <button class="btn-primary" onclick="switchTab('add-lead')">
-                <i class="fa-solid fa-plus"></i> Add New Lead
-            </button>
+            <div style="display: flex; gap: 10px;">
+                <a href="export_leads.php" class="btn-primary" style="background-color: #28a745; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-file-excel"></i> Export
+                </a>
+            </div>
         </div>
 
         <!-- MANAGE LEADS VIEW -->
@@ -48,75 +55,50 @@ include 'includes/sidebar.php';
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <div class="user-info">
-                                    <img src="https://i.pravatar.cc/150?img=12" class="user-avatar" alt="User">
-                                    <div class="user-details">
-                                        <h4 style="font-size: 14px; margin-bottom: 2px;">Rahul Sharma</h4>
-                                        <p style="color: var(--text-muted); font-size: 11px;">2 mins ago</p>
+                        <?php if($leads_result && $leads_result->num_rows > 0): ?>
+                            <?php while($lead = $leads_result->fetch_assoc()): 
+                                $date = date('M d, Y', strtotime($lead['created_at']));
+                                $status_class = 'new';
+                                if($lead['status'] == 'Contacted') $status_class = 'contacted';
+                                if($lead['status'] == 'In Progress') $status_class = 'progress';
+                            ?>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar" style="background:var(--primary-color); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                                            <?php echo strtoupper(substr($lead['name'], 0, 1)); ?>
+                                        </div>
+                                        <div class="user-details">
+                                            <h4 style="font-size: 14px; margin-bottom: 2px;"><?php echo htmlspecialchars($lead['name']); ?></h4>
+                                            <p style="color: var(--text-muted); font-size: 11px;"><?php echo $date; ?></p>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div style="font-size: 12px; color: var(--text-main); margin-bottom: 4px;"><i class="fa-regular fa-envelope" style="margin-right:5px; color:var(--text-muted);"></i> rahul.sharma@email.com</div>
-                                <div style="font-size: 12px; color: var(--text-muted);"><i class="fa-solid fa-phone" style="margin-right:5px;"></i> +91 98765 43210</div>
-                            </td>
-                            <td>Residential Interior</td>
-                            <td><span class="pill new">New</span></td>
-                            <td>
-                                <div class="action-btns">
-                                    <a href="#" class="btn-icon"><i class="fa-regular fa-eye"></i></a>
-                                    <a href="#" class="btn-icon delete"><i class="fa-solid fa-trash"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="user-info">
-                                    <img src="https://i.pravatar.cc/150?img=5" class="user-avatar" alt="User">
-                                    <div class="user-details">
-                                        <h4 style="font-size: 14px; margin-bottom: 2px;">Priya Mehta</h4>
-                                        <p style="color: var(--text-muted); font-size: 11px;">1 hour ago</p>
+                                </td>
+                                <td>
+                                    <div style="font-size: 12px; color: var(--text-main); margin-bottom: 4px;"><i class="fa-regular fa-envelope" style="margin-right:5px; color:var(--text-muted);"></i> <?php echo htmlspecialchars($lead['email']); ?></div>
+                                </td>
+                                <td><?php echo htmlspecialchars($lead['service']); ?></td>
+                                <td><span class="pill <?php echo $status_class; ?>"><?php echo htmlspecialchars($lead['status']); ?></span></td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button type="button" class="btn-icon view-lead-btn" style="border:none; background:none; cursor:pointer;"
+                                            data-name="<?php echo htmlspecialchars($lead['name']); ?>"
+                                            data-email="<?php echo htmlspecialchars($lead['email']); ?>"
+                                            data-service="<?php echo htmlspecialchars($lead['service']); ?>"
+                                            data-message="<?php echo htmlspecialchars($lead['message']); ?>"
+                                            data-date="<?php echo $date; ?>"
+                                            data-status="<?php echo htmlspecialchars($lead['status']); ?>"
+                                        ><i class="fa-regular fa-eye"></i></button>
+                                        <a href="#" class="btn-icon delete"><i class="fa-solid fa-trash"></i></a>
                                     </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div style="font-size: 12px; color: var(--text-main); margin-bottom: 4px;"><i class="fa-regular fa-envelope" style="margin-right:5px; color:var(--text-muted);"></i> priya.mehta@email.com</div>
-                                <div style="font-size: 12px; color: var(--text-muted);"><i class="fa-solid fa-phone" style="margin-right:5px;"></i> +91 91234 56789</div>
-                            </td>
-                            <td>Modular Kitchen</td>
-                            <td><span class="pill contacted">Contacted</span></td>
-                            <td>
-                                <div class="action-btns">
-                                    <a href="#" class="btn-icon"><i class="fa-regular fa-eye"></i></a>
-                                    <a href="#" class="btn-icon delete"><i class="fa-solid fa-trash"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="user-info">
-                                    <img src="https://i.pravatar.cc/150?img=13" class="user-avatar" alt="User">
-                                    <div class="user-details">
-                                        <h4 style="font-size: 14px; margin-bottom: 2px;">Amit Verma</h4>
-                                        <p style="color: var(--text-muted); font-size: 11px;">3 hours ago</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div style="font-size: 12px; color: var(--text-main); margin-bottom: 4px;"><i class="fa-regular fa-envelope" style="margin-right:5px; color:var(--text-muted);"></i> amit.verma@email.com</div>
-                                <div style="font-size: 12px; color: var(--text-muted);"><i class="fa-solid fa-phone" style="margin-right:5px;"></i> +91 99887 76655</div>
-                            </td>
-                            <td>Commercial Design</td>
-                            <td><span class="pill progress">In Progress</span></td>
-                            <td>
-                                <div class="action-btns">
-                                    <a href="#" class="btn-icon"><i class="fa-regular fa-eye"></i></a>
-                                    <a href="#" class="btn-icon delete"><i class="fa-solid fa-trash"></i></a>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="5" style="text-align:center; padding: 20px;">No leads found.</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -202,6 +184,69 @@ function switchTab(tabId) {
     // Show selected content
     document.getElementById('view-' + tabId).classList.add('active');
 }
+</script>
+
+<!-- Lead Details Modal -->
+<div id="leadModal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+    <div class="modal-content" style="background:#fff; width:90%; max-width:600px; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,0.2); overflow:hidden;">
+        <div class="modal-header" style="background:var(--bg-white); padding:20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="margin:0; font-family:var(--font-headline); color:var(--text-dark);">Lead Details</h3>
+            <button onclick="closeLeadModal()" style="background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-muted);"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body" style="padding:20px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:20px;">
+                <div>
+                    <strong style="display:block; font-size:12px; color:var(--text-muted); margin-bottom:5px;">Name</strong>
+                    <div id="modal-name" style="font-weight:600; color:var(--text-dark);"></div>
+                </div>
+                <div>
+                    <strong style="display:block; font-size:12px; color:var(--text-muted); margin-bottom:5px;">Email</strong>
+                    <div id="modal-email" style="font-weight:600; color:var(--text-dark);"></div>
+                </div>
+                <div>
+                    <strong style="display:block; font-size:12px; color:var(--text-muted); margin-bottom:5px;">Service Requested</strong>
+                    <div id="modal-service" style="font-weight:600; color:var(--text-dark);"></div>
+                </div>
+                <div>
+                    <strong style="display:block; font-size:12px; color:var(--text-muted); margin-bottom:5px;">Date Submitted</strong>
+                    <div id="modal-date" style="font-weight:600; color:var(--text-dark);"></div>
+                </div>
+            </div>
+            <div>
+                <strong style="display:block; font-size:12px; color:var(--text-muted); margin-bottom:5px;">Message</strong>
+                <div id="modal-message" style="background:#f9f9f9; padding:15px; border-radius:8px; color:var(--text-dark); line-height:1.6; border:1px solid #eee; white-space:pre-wrap;"></div>
+            </div>
+        </div>
+        <div class="modal-footer" style="padding:20px; background:#f9f9f9; border-top:1px solid var(--border-color); text-align:right;">
+            <button class="btn-primary" onclick="closeLeadModal()" style="padding:8px 20px;">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.view-lead-btn').forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('modal-name').textContent = this.getAttribute('data-name');
+        document.getElementById('modal-email').textContent = this.getAttribute('data-email');
+        document.getElementById('modal-service').textContent = this.getAttribute('data-service');
+        document.getElementById('modal-message').textContent = this.getAttribute('data-message');
+        document.getElementById('modal-date').textContent = this.getAttribute('data-date');
+        
+        document.getElementById('leadModal').style.display = 'flex';
+    });
+});
+
+function closeLeadModal() {
+    document.getElementById('leadModal').style.display = 'none';
+}
+
+// Close on outside click
+document.getElementById('leadModal').addEventListener('click', function(e) {
+    if(e.target === this) {
+        closeLeadModal();
+    }
+});
 </script>
 
 <?php include 'includes/footer.php'; ?>

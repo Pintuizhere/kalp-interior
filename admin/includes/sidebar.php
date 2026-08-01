@@ -44,23 +44,29 @@
         <p class="menu-label">CONTENT</p>
         <ul class="menu-list">
             <li>
-                <a href="#" class="<?php echo ($currentPage == 'blog') ? 'active' : ''; ?>">
+                <a href="blog.php" class="<?php echo ($currentPage == 'blog') ? 'active' : ''; ?>">
                     <i class="fa-solid fa-pen-to-square"></i> Blog Posts
                 </a>
             </li>
             <li>
-                <a href="#" class="<?php echo ($currentPage == 'categories') ? 'active' : ''; ?>">
+                <a href="categories.php" class="<?php echo ($currentPage == 'categories') ? 'active' : ''; ?>">
                     <i class="fa-regular fa-folder-open"></i> Categories
                 </a>
             </li>
             <li>
-                <a href="#" class="<?php echo ($currentPage == 'media') ? 'active' : ''; ?>">
+                <a href="media.php" class="<?php echo ($currentPage == 'media') ? 'active' : ''; ?>">
                     <i class="fa-regular fa-image"></i> Media Library
                 </a>
             </li>
+            <li class="menu-label" style="margin-top: 15px; font-size: 11px; color: var(--text-muted); padding: 0 15px; font-weight: 600; letter-spacing: 1px;">FRONTEND PAGES</li>
             <li>
-                <a href="#" class="<?php echo ($currentPage == 'pages') ? 'active' : ''; ?>">
-                    <i class="fa-regular fa-file-lines"></i> Pages
+                <a href="manage_page.php?page=home" class="<?php echo ($currentPage == 'page_home') ? 'active' : ''; ?>">
+                    <i class="fa-solid fa-house"></i> Home Page
+                </a>
+            </li>
+            <li>
+                <a href="manage_page.php?page=about" class="<?php echo ($currentPage == 'page_about') ? 'active' : ''; ?>">
+                    <i class="fa-solid fa-users"></i> About Us
                 </a>
             </li>
             <li>
@@ -73,22 +79,22 @@
         <p class="menu-label">OTHERS</p>
         <ul class="menu-list">
             <li>
-                <a href="#" class="<?php echo ($currentPage == 'users') ? 'active' : ''; ?>">
+                <a href="users.php" class="<?php echo ($currentPage == 'users') ? 'active' : ''; ?>">
                     <i class="fa-regular fa-user"></i> Users
                 </a>
             </li>
             <li>
-                <a href="#" class="<?php echo ($currentPage == 'settings') ? 'active' : ''; ?>">
+                <a href="settings.php" class="<?php echo ($currentPage == 'settings') ? 'active' : ''; ?>">
                     <i class="fa-solid fa-gear"></i> Settings
                 </a>
             </li>
             <li>
-                <a href="#" class="<?php echo ($currentPage == 'notifications') ? 'active' : ''; ?>">
+                <a href="notifications.php" class="<?php echo ($currentPage == 'notifications') ? 'active' : ''; ?>">
                     <i class="fa-regular fa-bell"></i> Notifications
                 </a>
             </li>
             <li>
-                <a href="#" class="<?php echo ($currentPage == 'profile') ? 'active' : ''; ?>">
+                <a href="profile.php" class="<?php echo ($currentPage == 'profile') ? 'active' : ''; ?>">
                     <i class="fa-regular fa-circle-user"></i> Profile
                 </a>
             </li>

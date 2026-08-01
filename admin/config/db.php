@@ -1,16 +1,15 @@
 <?php
-$host = 'localhost';
-// IMPORTANT: Update this variable if your database name is different
-$dbname = 'kalp_interior_db'; 
-$username = 'root';
-$password = '';
+$host = "localhost";
+$username = "root";
+$password = ""; // Default XAMPP password is empty
+$database = "kalp_interior_db"; // Keep original database name
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    // Set the PDO error mode to exception
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-} catch(PDOException $e) {
-    die("ERROR: Could not connect to the database. Please check if your database exists and credentials are correct. Error Details: " . $e->getMessage());
+$conn = new mysqli($host, $username, $password, $database);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
+
+// Optional: Set UTF-8 charset
+$conn->set_charset("utf8");
 ?>

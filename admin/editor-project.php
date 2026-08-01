@@ -1,20 +1,43 @@
 <?php 
 $currentPage = 'projects';
-include 'includes/header.php'; 
+include '../includes/header.php'; 
 ?>
+<style>
+    /* Force include frontend CSS since relative path in header fails in admin folder */
+    @import url('../assets/css/style.css');
+
+    /* Hide frontend navigation and footer */
+    .navbar, .page-banner, footer, .main-footer, .footer-bottom { display: none !important; }
+    
+    /* Live Editor Styles */
+    [contenteditable="true"] {
+        outline: 1px dashed transparent;
+        transition: all 0.3s ease;
+        padding: 2px;
+        border-radius: 4px;
+    }
+    [contenteditable="true"]:hover {
+        outline: 2px dashed var(--accent-color);
+        background: rgba(234, 177, 54, 0.05);
+        cursor: text;
+    }
+    [contenteditable="true"]:focus {
+        outline: 2px solid var(--accent-color);
+        background: #fff;
+    }
+    .editable-img {
+        transition: opacity 0.3s, outline 0.3s;
+    }
+    .editable-img:hover {
+        opacity: 0.7;
+        cursor: pointer;
+        outline: 3px dashed var(--accent-color);
+        outline-offset: -3px;
+    }
+</style>
 
 <main>
-    <!-- Page Banner -->
-    <section class="page-banner">
-        <div class="container">
-            <h1 class="banner-title">Projects</h1>
-            <div class="breadcrumbs">
-                <a href="index.php">Home</a> <span class="divider">/</span> <span class="current">Project Details</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Project Details Redesign -->
+    <!-- Project Details Live Editor -->
     <section class="project-details-redesign" style="padding: 60px 0 0px; background-color: var(--bg-white);">
         <div class="container" style="max-width: 1200px;">
             
@@ -114,9 +137,11 @@ include 'includes/header.php';
                     </div>
                     <h2 class="section-title">Crafted for Comfort.<br><span class="accent-text signature-text" style="color: var(--accent-color); font-weight: 400; text-transform: none;">Designed for Living.</span></h2>
                     
-                    <p style="color: #666; line-height: 1.8; margin-bottom: 20px;">This modern 4 BHK apartment is designed for a young family seeking a balance between style and functionality.</p>
-                    <p style="color: #666; line-height: 1.8; margin-bottom: 20px;">The interiors feature a neutral palette, clean lines, and custom elements that create a calm and cohesive environment.</p>
-                    <p style="color: #666; line-height: 1.8;">From the spacious living area to the cozy bedrooms, each space is crafted to enhance everyday living.</p>
+                    <div class="long-desc-container">
+                        <p style="color: #666; line-height: 1.8; margin-bottom: 20px;">This modern 4 BHK apartment is designed for a young family seeking a balance between style and functionality.</p>
+                        <p style="color: #666; line-height: 1.8; margin-bottom: 20px;">The interiors feature a neutral palette, clean lines, and custom elements that create a calm and cohesive environment.</p>
+                        <p style="color: #666; line-height: 1.8;">From the spacious living area to the cozy bedrooms, each space is crafted to enhance everyday living.</p>
+                    </div>
                 </div>
                 <div class="about-right">
                     <div class="project-highlight-card">
@@ -165,6 +190,26 @@ include 'includes/header.php';
                 }
                 .gallery-filter-btn { transition: all 0.3s ease; font-family: var(--font-primary); }
                 .gallery-filter-btn:hover { background: var(--primary-color) !important; color: white !important; border-color: var(--primary-color) !important; }
+                
+                /* Deletable Wrapper Styles */
+                .deletable-wrapper { position: relative; border: 2px solid transparent; transition: all 0.3s; }
+                .deletable-wrapper:hover { border: 2px dashed #ef4444; border-radius: 8px; }
+                .delete-btn {
+                    position: absolute; top: 10px; right: 10px;
+                    background: #ef4444; color: white; border: none;
+                    border-radius: 50%; width: 32px; height: 32px;
+                    display: none; align-items: center; justify-content: center;
+                    cursor: pointer; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                }
+                .deletable-wrapper:hover .delete-btn { display: flex; }
+
+                /* Image Edit Overlay */
+                .image-edit-overlay {
+                    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                    background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;
+                    opacity: 0; transition: opacity 0.3s ease; pointer-events: none; z-index: 10;
+                }
+                .gallery-item:hover .image-edit-overlay { opacity: 1; }
             </style>
             
             <div class="project-gallery-section" style="margin-bottom: 60px;">
@@ -177,7 +222,6 @@ include 'includes/header.php';
                         <button class="gallery-filter-btn active" style="background: var(--primary-color); color: white; border: 1px solid var(--primary-color); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-layer-group" style="margin-right: 5px;"></i> All</button>
                         <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-couch" style="margin-right: 5px;"></i> Living Room</button>
                         <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-bed" style="margin-right: 5px;"></i> Bedroom</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-kitchen-set" style="margin-right: 5px;"></i> Kitchen</button>
                         <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-utensils" style="margin-right: 5px;"></i> Dining</button>
                         <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-bath" style="margin-right: 5px;"></i> Bathroom</button>
                         <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-door-open" style="margin-right: 5px;"></i> Other Spaces</button>
@@ -186,30 +230,39 @@ include 'includes/header.php';
 
                 <div class="masonry-gallery-grid" style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 15px;">
                     <!-- Top Left Image (spans 7 columns) -->
-                    <div class="gallery-item item-large" style="grid-column: span 7; position: relative; border-radius: 12px; overflow: hidden; height: 450px;">
+                    <div class="gallery-item item-large" data-category="Living Room" style="grid-column: span 7; position: relative; border-radius: 12px; overflow: hidden; height: 450px;">
                         <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80" alt="Living Room" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
-                        <div class="play-button-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 70px; height: 70px; background: rgba(0,0,0,0.4); border: 2px solid var(--accent-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.3s ease;">
-                            <i class="fa-solid fa-play" style="color: var(--accent-color); font-size: 24px; margin-left: 5px;"></i>
-                        </div>
+                        <div class="image-edit-overlay"><div style="width:50px;height:50px;background:var(--accent-color);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;"><i class="fa-solid fa-camera"></i></div></div>
                     </div>
                     
                     <!-- Top Right Image (spans 5 columns) -->
-                    <div class="gallery-item item-medium" style="grid-column: span 5; border-radius: 12px; overflow: hidden; height: 450px;">
+                    <div class="gallery-item item-medium" data-category="Dining" style="grid-column: span 5; position: relative; border-radius: 12px; overflow: hidden; height: 450px;">
                         <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80" alt="Dining Room" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
+                        <div class="image-edit-overlay"><div style="width:50px;height:50px;background:var(--accent-color);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;"><i class="fa-solid fa-camera"></i></div></div>
                     </div>
                     
                     <!-- Bottom Row: 4 images (span 3 columns each) -->
-                    <div class="gallery-item item-small" style="grid-column: span 3; border-radius: 12px; overflow: hidden; height: 260px;">
+                    <div class="gallery-item item-small" data-category="Kitchen" style="grid-column: span 3; position: relative; border-radius: 12px; overflow: hidden; height: 260px;">
                         <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Kitchen" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
+                        <div class="image-edit-overlay"><div style="width:50px;height:50px;background:var(--accent-color);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;"><i class="fa-solid fa-camera"></i></div></div>
                     </div>
-                    <div class="gallery-item item-small" style="grid-column: span 3; border-radius: 12px; overflow: hidden; height: 260px;">
+                    <div class="gallery-item item-small" data-category="Bedroom" style="grid-column: span 3; position: relative; border-radius: 12px; overflow: hidden; height: 260px;">
                         <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&q=80" alt="Bedroom" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
+                        <div class="image-edit-overlay"><div style="width:50px;height:50px;background:var(--accent-color);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;"><i class="fa-solid fa-camera"></i></div></div>
                     </div>
-                    <div class="gallery-item item-small" style="grid-column: span 3; border-radius: 12px; overflow: hidden; height: 260px;">
+                    <div class="gallery-item item-small" data-category="Bathroom" style="grid-column: span 3; position: relative; border-radius: 12px; overflow: hidden; height: 260px;">
                         <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&q=80" alt="Bathroom" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
+                        <div class="image-edit-overlay"><div style="width:50px;height:50px;background:var(--accent-color);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;"><i class="fa-solid fa-camera"></i></div></div>
                     </div>
-                    <div class="gallery-item item-small" style="grid-column: span 3; border-radius: 12px; overflow: hidden; height: 260px;">
+                    <div class="gallery-item item-small" data-category="Other Spaces" style="grid-column: span 3; position: relative; border-radius: 12px; overflow: hidden; height: 260px;">
                         <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=600&q=80" alt="Balcony" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
+                        <div class="image-edit-overlay"><div style="width:50px;height:50px;background:var(--accent-color);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;"><i class="fa-solid fa-camera"></i></div></div>
+                    </div>
+                    
+                    <!-- Add Image Card -->
+                    <div id="add-image-card" style="grid-column: span 3; border-radius: 12px; height: 260px; border: 2px dashed rgba(0,0,0,0.2); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; color: #888; background: #f8f9fa; transition: all 0.3s ease;">
+                        <i class="fa-solid fa-plus" style="font-size: 32px; margin-bottom: 10px; color: var(--accent-color);"></i>
+                        <span style="font-weight: 500;">Add Image</span>
                     </div>
                 </div>
             </div>
@@ -253,97 +306,166 @@ include 'includes/header.php';
         </div>
     </section>
 
-    <!-- More Projects Section -->
-    <section class="more-projects-section" style="padding: 40px 0 20px; background-color: var(--bg-white);">
-        <div class="container" style="max-width: 1200px;">
-            <div class="more-projects-header">
-                <div class="mp-header-left">
-                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
-                        <span style="display: block; width: 40px; height: 2px; background: var(--accent-color);"></span>
-                        <p class="section-subtitle" style="margin-bottom: 0;">MORE PROJECTS</p>
-                    </div>
-                    <h2 class="section-title">Explore More <span class="accent-text signature-text" style="color: var(--accent-color); font-weight: 400; text-transform: none;">Inspiring Spaces</span></h2>
-                </div>
-                <div class="mp-header-right">
-                    <a href="projects.php" class="btn btn-dark-pill">
-                        <span class="icon-circle-yellow"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 14px;"></i></span> View All Projects
-                    </a>
-                </div>
-            </div>
-
-            <div class="more-projects-grid">
-                <!-- Card 1 -->
-                <div class="mp-card">
-                    <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="Villa" class="mp-card-bg">
-                    <div class="mp-card-top">
-                        <div class="mp-tag"><i class="fa-solid fa-house"></i> Residential Design</div>
-                        <div class="mp-like"><i class="fa-regular fa-heart"></i></div>
-                    </div>
-                    <div class="mp-card-bottom">
-                        <div class="mp-card-title-row">
-                            <a href="#" class="mp-link-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                            <div class="mp-title-col">
-                                <h3>LUXURY 5 BHK VILLA</h3>
-                                <p><i class="fa-solid fa-location-dot"></i> Pune, India</p>
-                            </div>
-                        </div>
-                        <div class="mp-tags-row">
-                            <span class="mp-pill">Villa</span>
-                            <span class="mp-pill">Residential Design</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="mp-card">
-                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80" alt="Office" class="mp-card-bg">
-                    <div class="mp-card-top">
-                        <div class="mp-tag"><i class="fa-solid fa-building"></i> Commercial Design</div>
-                        <div class="mp-like"><i class="fa-regular fa-heart"></i></div>
-                    </div>
-                    <div class="mp-card-bottom">
-                        <div class="mp-card-title-row">
-                            <a href="#" class="mp-link-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                            <div class="mp-title-col">
-                                <h3>CORPORATE OFFICE SPACE</h3>
-                                <p><i class="fa-solid fa-location-dot"></i> Bangalore, India</p>
-                            </div>
-                        </div>
-                        <div class="mp-tags-row">
-                            <span class="mp-pill">Offices</span>
-                            <span class="mp-pill">Commercial Design</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="mp-card">
-                    <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80" alt="Apartment" class="mp-card-bg">
-                    <div class="mp-card-top">
-                        <div class="mp-tag"><i class="fa-solid fa-house"></i> Residential Design</div>
-                        <div class="mp-like"><i class="fa-regular fa-heart"></i></div>
-                    </div>
-                    <div class="mp-card-bottom">
-                        <div class="mp-card-title-row">
-                            <a href="#" class="mp-link-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                            <div class="mp-title-col">
-                                <h3>MINIMALIST 3 BHK HOME</h3>
-                                <p><i class="fa-solid fa-location-dot"></i> Delhi, India</p>
-                            </div>
-                        </div>
-                        <div class="mp-tags-row">
-                            <span class="mp-pill">Apartment</span>
-                            <span class="mp-pill">Residential Design</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Contact Form -->
-    <?php include 'includes/components/contact.php'; ?>
 
 </main>
 
-<?php include 'includes/footer.php'; ?>
+<!-- Hidden inputs for file selecting -->
+<input type="file" id="local-gallery-adder" accept="image/*" multiple style="display:none">
+<input type="file" id="local-gallery-replacer" accept="image/*" style="display:none">
+
+<script>
+    // Initialize Live Editor
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Make text editable
+        const textSelectors = [
+            '.project-title', '.location-pin', '.short-desc', '.meta-value', 
+            '.feature-col h4', '.feature-col p', '.section-title', '.long-desc-container', 
+            '.hi-text h5', '.hi-text p', '.hero-tag', '.section-subtitle'
+        ];
+        
+        textSelectors.forEach(selector => {
+            document.querySelectorAll(selector).forEach(el => {
+                el.contentEditable = true;
+                // Prevent links from navigating
+                if(el.tagName === 'A') {
+                    el.addEventListener('click', e => e.preventDefault());
+                }
+            });
+        });
+
+        // 2. Setup Deletable Sections
+        const deletableSelectors = ['.feature-col', '.highlight-item', '.gallery-item'];
+        
+        function makeDeletable(el) {
+            el.classList.add('deletable-wrapper');
+            const btn = document.createElement('button');
+            btn.className = 'delete-btn';
+            btn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+            btn.title = 'Delete this section';
+            btn.onclick = function(e) {
+                e.stopPropagation();
+                el.remove();
+            };
+            el.appendChild(btn);
+        }
+
+        deletableSelectors.forEach(selector => {
+            document.querySelectorAll(selector).forEach(makeDeletable);
+        });
+
+        // 3. Gallery Image Swapping
+        let currentTargetImg = null;
+        const replacerInput = document.getElementById('local-gallery-replacer');
+        
+        document.querySelector('.masonry-gallery-grid').addEventListener('click', (e) => {
+            if (e.target.tagName === 'IMG') {
+                currentTargetImg = e.target;
+                replacerInput.click();
+            }
+        });
+
+        replacerInput.addEventListener('change', function() {
+            if (this.files && this.files[0] && currentTargetImg) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentTargetImg.src = e.target.result;
+                }
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+        // 4. Gallery Image Adding
+        const adderInput = document.getElementById('local-gallery-adder');
+        const addCard = document.getElementById('add-image-card');
+        
+        addCard.addEventListener('mouseover', () => { addCard.style.background = 'rgba(234, 177, 54, 0.1)'; addCard.style.borderColor = 'var(--accent-color)'; });
+        addCard.addEventListener('mouseout', () => { addCard.style.background = '#f8f9fa'; addCard.style.borderColor = 'rgba(0,0,0,0.2)'; });
+        
+        addCard.addEventListener('click', (e) => {
+            e.preventDefault();
+            adderInput.click();
+        });
+
+        adderInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                const grid = document.querySelector('.masonry-gallery-grid');
+                
+                // Determine category from active filter button
+                let activeCat = 'Living Room'; // default
+                const activeBtn = document.querySelector('.gallery-filter-btn.active');
+                if (activeBtn) {
+                    const text = activeBtn.innerText.trim();
+                    if (text && text !== 'All') activeCat = text;
+                }
+                
+                Array.from(this.files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const div = document.createElement('div');
+                        div.className = 'gallery-item item-small deletable-wrapper';
+                        div.dataset.category = activeCat;
+                        div.style.gridColumn = 'span 3';
+                        div.style.borderRadius = '12px';
+                        div.style.overflow = 'hidden';
+                        div.style.height = '260px';
+                        div.style.position = 'relative'; // Required for overlay
+                        
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'cover';
+                        img.style.display = 'block';
+                        img.style.transition = 'transform 0.5s ease';
+                        
+                        // Edit overlay
+                        const overlay = document.createElement('div');
+                        overlay.className = 'image-edit-overlay';
+                        overlay.innerHTML = '<div style="width:50px;height:50px;background:var(--accent-color);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;"><i class="fa-solid fa-camera"></i></div>';
+                        
+                        div.appendChild(img);
+                        div.appendChild(overlay);
+                        
+                        // Add delete button
+                        makeDeletable(div);
+                        
+                        // Insert right before the Add Image card
+                        grid.insertBefore(div, document.getElementById('add-image-card'));
+                    }
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+
+        // 5. Gallery Filter Button Logic
+        const filterBtns = document.querySelectorAll('.gallery-filter-btn');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class and reset styles
+                filterBtns.forEach(b => {
+                    b.classList.remove('active');
+                    b.style.background = 'white';
+                    b.style.color = 'var(--text-dark)';
+                });
+                // Set active style
+                btn.classList.add('active');
+                btn.style.background = 'var(--primary-color)';
+                btn.style.color = 'white';
+                
+                const filter = btn.innerText.trim();
+                const items = document.querySelectorAll('.gallery-item');
+                
+                items.forEach(item => {
+                    if (filter === 'All' || item.dataset.category === filter) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+    });
+</script>
+
+<?php include '../includes/footer.php'; ?>
