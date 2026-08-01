@@ -41,32 +41,33 @@
         <!-- Images Area with Smooth Continuous Scroll -->
         <div class="projects-marquee-wrapper">
             <div class="projects-marquee-content">
-                <!-- Set 1 -->
-                <img src="assets/images/brand-logo1.webp" alt="Brand 1" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo2.webp" alt="Brand 2" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo3.png" alt="Brand 3" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo4.png" alt="Brand 4" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo5.png" alt="Brand 5" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo6.png" alt="Brand 6" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo1.webp" alt="Brand 1" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo2.webp" alt="Brand 2" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo3.png" alt="Brand 3" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo4.png" alt="Brand 4" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo5.png" alt="Brand 5" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo6.png" alt="Brand 6" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <?php 
+                // We need two identical sets of logos for the continuous scrolling effect
+                $projects_logos_html = '';
+                $res = $conn->query("SELECT * FROM stripe_logos WHERE stripe_type = 'project' ORDER BY created_at ASC");
+                if($res && $res->num_rows > 0) {
+                    while($row = $res->fetch_assoc()) {
+                        $img_path = htmlspecialchars($row['image_path']);
+                        $alt = htmlspecialchars($row['alt_text']);
+                        $projects_logos_html .= '<img src="'.$img_path.'" alt="'.$alt.'" class="projects-stripe-img" onmouseover="this.style.transform=\'scale(1.1)\'" onmouseout="this.style.transform=\'scale(1)\'"> ';
+                    }
+                } else {
+                    // Fallback to placeholders if no logos in DB yet
+                    $projects_logos_html = '
+                    <img src="assets/images/brand-logo1.webp" alt="Brand 1" class="projects-stripe-img">
+                    <img src="assets/images/brand-logo2.webp" alt="Brand 2" class="projects-stripe-img">
+                    <img src="assets/images/brand-logo3.png" alt="Brand 3" class="projects-stripe-img">
+                    <img src="assets/images/brand-logo4.png" alt="Brand 4" class="projects-stripe-img">
+                    <img src="assets/images/brand-logo5.png" alt="Brand 5" class="projects-stripe-img">
+                    <img src="assets/images/brand-logo6.png" alt="Brand 6" class="projects-stripe-img">';
+                }
+                
+                // Print Set 1
+                echo $projects_logos_html;
+                ?>
+                
                 <!-- Set 2 (Duplicate for continuous loop) -->
-                <img src="assets/images/brand-logo1.webp" alt="Brand 1" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo2.webp" alt="Brand 2" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo3.png" alt="Brand 3" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo4.png" alt="Brand 4" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo5.png" alt="Brand 5" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo6.png" alt="Brand 6" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo1.webp" alt="Brand 1" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo2.webp" alt="Brand 2" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo3.png" alt="Brand 3" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo4.png" alt="Brand 4" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo5.png" alt="Brand 5" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="assets/images/brand-logo6.png" alt="Brand 6" class="projects-stripe-img" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <?php echo $projects_logos_html; ?>
             </div>
         </div>
         

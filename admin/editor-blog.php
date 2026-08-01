@@ -2,23 +2,63 @@
 require_once 'config/db.php';
 $pageTitle = 'Add New Post';
 $currentPage = 'blog';
-include 'includes/header.php';
-include 'includes/sidebar.php';
 
 $success_msg = '';
 $error_msg = '';
 
+// Fetch for edit if ?edit=ID is passed
+$edit_data = null;
+if (isset($_GET['edit'])) {
+    $id = (int)$_GET['edit'];
+    $stmt = $conn->prepare("SELECT * FROM blogs WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($res->num_rows > 0) {
+        $edit_data = $res->fetch_assoc();
+        $pageTitle = 'Edit Post';
+    }
+    $stmt->close();
+}
+
+// Default HTML template for New Posts
+$default_template = '
+<p class="drop-cap-paragraph">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
+<p>ed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+<h3>INTRODUCTION TO REMOTE WORK DESIGN</h3>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
+<h3>IMPORTANCE OF ERGONOMIC FURNITURE</h3>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
+<div class="image-grid-2col">
+    <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Sample Image 1">
+    <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Sample Image 2">
+</div>
+<h3>IMPORTANCE OF LIGHTING IN A OFFICE</h3>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
+<blockquote class="also-read-block">"Productive Office Layouts: Designing Spaces for Efficiency"</blockquote>
+<h3>TIPS FOR ORGANIZING FURNITURE</h3>
+<ul class="custom-bullet-list">
+    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</li>
+    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</li>
+    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</li>
+    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</li>
+</ul>
+<h3>INTEGRATING TECHNOLOGY INTO HOME OFFICE SETUP</h3>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
+';
+
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_post'])) {
-    $title = $conn->real_escape_string($_POST['title']);
-    $content = $conn->real_escape_string($_POST['content']);
-    $status = $conn->real_escape_string($_POST['status']);
-    $category = $conn->real_escape_string($_POST['category'] ?? '');
-    $tags = $conn->real_escape_string($_POST['tags'] ?? '');
-    $meta_title = $conn->real_escape_string($_POST['meta_title'] ?? '');
-    $meta_description = $conn->real_escape_string($_POST['meta_description'] ?? '');
-    $meta_keywords = $conn->real_escape_string($_POST['meta_keywords'] ?? '');
-    $author = 'Admin'; // Could be dynamic based on session
+    $blog_id = isset($_POST['blog_id']) && !empty($_POST['blog_id']) ? (int)$_POST['blog_id'] : null;
+    $title = $_POST['title'];
+    $content = $_POST['content'];
+    $status = $_POST['status'];
+    $category = $_POST['category'] ?? '';
+    $tags = $_POST['tags'] ?? '';
+    $meta_title = $_POST['meta_title'] ?? '';
+    $meta_description = $_POST['meta_description'] ?? '';
+    $meta_keywords = $_POST['meta_keywords'] ?? '';
+    $author = 'Admin'; 
 
     $image_name = '';
 
@@ -36,7 +76,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_post'])) {
             if (in_array($file_extension, $allowed_exts)) {
                 $image_name = 'blog_' . time() . '.' . $file_extension;
                 $target_file = $upload_dir . $image_name;
-
                 if (!move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
                     $error_msg = "Failed to move uploaded image.";
                 }
@@ -46,24 +85,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_post'])) {
         }
 
         if (empty($error_msg)) {
-            $stmt = $conn->prepare("INSERT INTO blogs (title, author, category, image, content, status, meta_title, meta_description, meta_keywords, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            if ($stmt) {
-                $stmt->bind_param("ssssssssss", $title, $author, $category, $image_name, $content, $status, $meta_title, $meta_description, $meta_keywords, $tags);
+            if ($blog_id) {
+                // Update
+                if ($image_name !== '') {
+                    $stmt = $conn->prepare("UPDATE blogs SET title=?, category=?, image=?, content=?, status=?, meta_title=?, meta_description=?, meta_keywords=?, tags=? WHERE id=?");
+                    $stmt->bind_param("sssssssssi", $title, $category, $image_name, $content, $status, $meta_title, $meta_description, $meta_keywords, $tags, $blog_id);
+                } else {
+                    $stmt = $conn->prepare("UPDATE blogs SET title=?, category=?, content=?, status=?, meta_title=?, meta_description=?, meta_keywords=?, tags=? WHERE id=?");
+                    $stmt->bind_param("ssssssssi", $title, $category, $content, $status, $meta_title, $meta_description, $meta_keywords, $tags, $blog_id);
+                }
                 if ($stmt->execute()) {
-                    $success_msg = "Post published successfully!";
-                    // Optionally redirect to blog.php after successful insert
-                    // header("Location: blog.php");
-                    // exit();
+                    header("Location: editor-blog.php?edit=" . $blog_id . "&success=update");
+                    exit;
                 } else {
                     $error_msg = "Database error: " . $stmt->error;
                 }
                 $stmt->close();
             } else {
-                $error_msg = "Database error: " . $conn->error;
+                // Insert
+                $stmt = $conn->prepare("INSERT INTO blogs (title, author, category, image, content, status, meta_title, meta_description, meta_keywords, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("ssssssssss", $title, $author, $category, $image_name, $content, $status, $meta_title, $meta_description, $meta_keywords, $tags);
+                if ($stmt->execute()) {
+                    header("Location: blog.php?success=insert");
+                    exit;
+                } else {
+                    $error_msg = "Database error: " . $stmt->error;
+                }
+                $stmt->close();
             }
         }
     }
 }
+
+if (isset($_GET['success']) && $_GET['success'] == 'update') {
+    $success_msg = "Post updated successfully!";
+}
+
+include 'includes/header.php';
+include 'includes/sidebar.php';
 
 // Fetch categories for the sidebar
 $categories_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
@@ -83,14 +142,97 @@ $categories_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
       'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
       'insertdatetime', 'media', 'table', 'help', 'wordcount'
     ],
-    toolbar: 'undo redo | blocks | ' +
-    'bold italic backcolor | alignleft aligncenter ' +
+    toolbar: 'undo redo | formatselect styleselect | ' +
+    'bold italic backcolor link unlink | alignleft aligncenter ' +
     'alignright alignjustify | bullist numlist outdent indent | ' +
     'image | removeformat | help',
+    block_formats: 'Paragraph=p; Heading 1=h1; Heading 2=h2; Heading 3=h3;',
+    style_formats: [
+        { title: 'Drop Cap Paragraph', block: 'p', classes: 'drop-cap-paragraph' },
+        { title: 'Also Read / Quote Box', block: 'blockquote', classes: 'also-read-block', wrapper: true },
+        { title: 'Image Grid (2 Columns)', block: 'div', classes: 'image-grid-2col', wrapper: true },
+        { title: 'Custom Bullet List', selector: 'ul', classes: 'custom-bullet-list' }
+    ],
     images_upload_url: 'upload_handler.php',
     automatic_uploads: true,
     file_picker_types: 'image',
-    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+    content_style: `
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=League+Spartan:wght@400;500;600;700;800;900&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif; 
+            font-size: 16px; 
+            line-height: 1.6;
+            color: #333;
+        }
+        h1, h2, h3 { font-family: 'League Spartan', sans-serif; font-weight: 700; margin-top: 1.5em; margin-bottom: 0.5em; }
+        h1 { font-size: 2.2em; text-transform: uppercase; }
+        h2 { font-size: 1.8em; text-transform: uppercase; }
+        h3 { font-size: 1.3em; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .drop-cap-paragraph::first-letter {
+            float: left;
+            width: 45px;
+            height: 45px;
+            background-color: #fca311;
+            color: #000;
+            border-radius: 50%;
+            font-size: 24px;
+            font-weight: 700;
+            margin-right: 15px;
+            margin-top: 5px;
+            line-height: 45px;
+            text-align: center;
+        }
+        
+        blockquote.also-read-block {
+            background: #395244;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 35px 0;
+            color: #fff;
+            border-left: none;
+        }
+        blockquote.also-read-block::before {
+            content: "Also Read :\\A";
+            white-space: pre;
+            color: #fca311;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .image-grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 35px 0;
+        }
+        .image-grid-2col img {
+            width: 100%;
+            height: auto;
+            border-radius: 40px 15px 40px 15px;
+        }
+        
+        ul.custom-bullet-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        ul.custom-bullet-list li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 10px;
+        }
+        ul.custom-bullet-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #fca311;
+        }
+    `
   });
 </script>
 
@@ -202,6 +344,13 @@ $categories_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
             <div style="background:#fff; border-left:4px solid #00a32a; padding:12px; margin-bottom:20px; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
                 <?php echo $success_msg; ?>
             </div>
+            <script>
+                if (window.history.replaceState) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('success');
+                    window.history.replaceState({path:url.href}, '', url.href);
+                }
+            </script>
         <?php endif; ?>
         <?php if(!empty($error_msg)): ?>
             <div style="background:#fff; border-left:4px solid #d63638; padding:12px; margin-bottom:20px; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
@@ -210,21 +359,24 @@ $categories_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
         <?php endif; ?>
 
         <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-            <h1 style="margin:0; font-size: 23px; font-weight: 400; color: #1d2327;">Add New Post</h1>
+            <h1 style="margin:0; font-size: 23px; font-weight: 400; color: #1d2327;"><?php echo $pageTitle; ?></h1>
             <a href="blog.php" style="border:1px solid #2271b1; color:#2271b1; background:#f6f7f7; padding:4px 8px; font-size:13px; text-decoration:none; border-radius:3px;">Back to Posts</a>
         </div>
 
         <form action="editor-blog.php" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="save_post" value="1">
+            <?php if($edit_data): ?>
+                <input type="hidden" name="blog_id" value="<?php echo $edit_data['id']; ?>">
+            <?php endif; ?>
             
             <div class="wp-layout">
                 
                 <!-- Left Column (Main Content & SEO) -->
                 <div>
-                    <input type="text" name="title" class="wp-title-input" placeholder="Add title" required>
+                    <input type="text" name="title" class="wp-title-input" placeholder="Add title" value="<?php echo $edit_data ? htmlspecialchars($edit_data['title']) : ''; ?>" required>
                     
                     <div style="margin-bottom: 20px;">
-                        <textarea id="content" name="content"></textarea>
+                        <textarea id="content" name="content"><?php echo $edit_data ? htmlspecialchars($edit_data['content']) : htmlspecialchars($default_template); ?></textarea>
                     </div>
 
                     <!-- SEO Panel -->
@@ -235,15 +387,15 @@ $categories_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
                         </div>
                         <div class="wp-panel-body">
                             <label>Meta Title</label>
-                            <input type="text" name="meta_title" class="wp-seo-input" placeholder="Enter SEO Title...">
+                            <input type="text" name="meta_title" class="wp-seo-input" placeholder="Enter SEO Title..." value="<?php echo $edit_data ? htmlspecialchars($edit_data['meta_title']) : ''; ?>">
                             <p style="font-size: 11px; color: #646970; margin-top:-10px; margin-bottom:15px;">Keep it under 60 characters for best results on Google.</p>
 
                             <label>Meta Description</label>
-                            <textarea name="meta_description" class="wp-seo-input" rows="3" placeholder="Enter a brief summary of this post..."></textarea>
+                            <textarea name="meta_description" class="wp-seo-input" rows="3" placeholder="Enter a brief summary of this post..."><?php echo $edit_data ? htmlspecialchars($edit_data['meta_description']) : ''; ?></textarea>
                             <p style="font-size: 11px; color: #646970; margin-top:-10px; margin-bottom:15px;">Aim for 150-160 characters. This is the snippet shown in search results.</p>
 
                             <label>Meta Keywords</label>
-                            <input type="text" name="meta_keywords" class="wp-seo-input" placeholder="e.g. interior design, modern home, 2026 trends">
+                            <input type="text" name="meta_keywords" class="wp-seo-input" placeholder="e.g. interior design, modern home, 2026 trends" value="<?php echo $edit_data ? htmlspecialchars($edit_data['meta_keywords']) : ''; ?>">
                         </div>
                     </div>
                 </div>
@@ -260,8 +412,8 @@ $categories_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
                             <div style="margin-bottom: 10px;">
                                 <i class="fa-solid fa-map-pin" style="color:#8c8f94; margin-right:5px;"></i> Status: 
                                 <select name="status" style="border: none; background: none; font-weight: 600; cursor: pointer;">
-                                    <option value="Draft">Draft</option>
-                                    <option value="Published">Published</option>
+                                    <option value="Draft" <?php echo ($edit_data && $edit_data['status'] == 'Draft') ? 'selected' : ''; ?>>Draft</option>
+                                    <option value="Published" <?php echo ($edit_data && $edit_data['status'] == 'Published') ? 'selected' : ''; ?>>Published</option>
                                 </select>
                             </div>
                             <div style="margin-bottom: 10px;">
@@ -272,7 +424,7 @@ $categories_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
                             </div>
                         </div>
                         <div class="wp-publish-actions">
-                            <button type="submit" class="wp-btn-primary">Publish</button>
+                            <button type="submit" class="wp-btn-primary"><?php echo $edit_data ? 'Update' : 'Publish'; ?></button>
                         </div>
                     </div>
 
@@ -288,7 +440,7 @@ $categories_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
                                     <?php while($cat = $categories_result->fetch_assoc()): ?>
                                         <div class="wp-cat-item">
                                             <label style="cursor: pointer;">
-                                                <input type="radio" name="category" value="<?php echo htmlspecialchars($cat['name']); ?>" required>
+                                                <input type="radio" name="category" value="<?php echo htmlspecialchars($cat['name']); ?>" <?php echo ($edit_data && $edit_data['category'] == $cat['name']) ? 'checked' : ''; ?> required>
                                                 <?php echo htmlspecialchars($cat['name']); ?>
                                             </label>
                                         </div>
@@ -307,7 +459,7 @@ $categories_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
                             <i class="fa-solid fa-caret-down"></i>
                         </div>
                         <div class="wp-panel-body">
-                            <input type="text" name="tags" style="width: 100%; padding: 6px; border: 1px solid #8c8f94; margin-bottom: 5px;" placeholder="Add tags...">
+                            <input type="text" name="tags" style="width: 100%; padding: 6px; border: 1px solid #8c8f94; margin-bottom: 5px;" placeholder="Add tags..." value="<?php echo $edit_data ? htmlspecialchars($edit_data['tags']) : ''; ?>">
                             <p style="font-size: 11px; color: #646970; margin: 0;">Separate tags with commas</p>
                         </div>
                     </div>
@@ -319,7 +471,13 @@ $categories_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
                             <i class="fa-solid fa-caret-down"></i>
                         </div>
                         <div class="wp-panel-body">
-                            <input type="file" name="image" accept="image/*" style="width: 100%;">
+                            <?php if($edit_data && !empty($edit_data['image'])): ?>
+                                <div style="margin-bottom: 10px;">
+                                    <img src="../uploads/blogs/<?php echo $edit_data['image']; ?>" style="max-width: 100%; border-radius: 4px;">
+                                </div>
+                                <p style="font-size: 11px; color: #646970; margin-bottom:10px;">Upload a new image to replace the current one.</p>
+                            <?php endif; ?>
+                            <input type="file" name="image" accept="image/*" style="width: 100%;" <?php echo !$edit_data ? 'required' : ''; ?>>
                         </div>
                     </div>
 

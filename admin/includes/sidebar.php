@@ -58,6 +58,11 @@
                     <i class="fa-regular fa-image"></i> Media Library
                 </a>
             </li>
+            <li>
+                <a href="stripe_logos.php" class="<?php echo ($currentPage == 'stripe_logos') ? 'active' : ''; ?>">
+                    <i class="fa-solid fa-rectangle-ad"></i> Stripe Logos
+                </a>
+            </li>
             <li class="menu-label" style="margin-top: 15px; font-size: 11px; color: var(--text-muted); padding: 0 15px; font-weight: 600; letter-spacing: 1px;">FRONTEND PAGES</li>
             <li>
                 <a href="manage_page.php?page=home" class="<?php echo ($currentPage == 'page_home') ? 'active' : ''; ?>">
@@ -80,7 +85,7 @@
         <ul class="menu-list">
             <li>
                 <a href="users.php" class="<?php echo ($currentPage == 'users') ? 'active' : ''; ?>">
-                    <i class="fa-regular fa-user"></i> Users
+                    <i class="fa-solid fa-user-shield"></i> Super Admin
                 </a>
             </li>
             <li>

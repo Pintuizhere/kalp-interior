@@ -1,7 +1,8 @@
 <?php
 require_once 'config/db.php';
-$pageTitle = 'My Profile';
-$currentPage = 'profile';
+$pageTitle = 'Settings';
+$currentPage = 'profile'; // Keep sidebar active state
+
 include 'includes/header.php';
 include 'includes/sidebar.php';
 
@@ -10,177 +11,258 @@ $error_msg = '';
 $current_user_id = $_SESSION['admin_id'] ?? 0;
 $upload_dir = '../uploads/profiles/';
 
-// Handle Profile Update
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
-    $email = trim($_POST['email']);
-    $new_password = $_POST['new_password'];
-    $confirm_password = $_POST['confirm_password'];
+// Handle Profile Updates
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    if (empty($email)) {
-        $error_msg = "Email address cannot be empty.";
-    } else {
-        // Check if email already exists for ANOTHER user
-        $check_stmt = $conn->prepare("SELECT id FROM admin_users WHERE email = ? AND id != ?");
-        $check_stmt->bind_param("si", $email, $current_user_id);
-        $check_stmt->execute();
-        $res = $check_stmt->get_result();
+    // --- Update Personal Details ---
+    if (isset($_POST['update_personal'])) {
+        $full_name = trim($_POST['full_name']);
+        $email = trim($_POST['email']);
+        $job_title = trim($_POST['job_title']);
         
-        if ($res->num_rows > 0) {
-            $error_msg = "This email address is already in use by another account.";
+        if (empty($email)) {
+            $error_msg = "Email address cannot be empty.";
         } else {
-            $profile_image = null;
-            $update_image = false;
-
-            // Handle Image Upload
-            if (isset($_FILES['profile_image']) && $_FILES['profile_image']['size'] > 0) {
-                if ($_FILES['profile_image']['error'] == 0) {
-                    $file = $_FILES['profile_image'];
-                    $file_extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-                    $allowed_exts = ['jpg', 'jpeg', 'png', 'webp'];
-                    
-                    if (in_array($file_extension, $allowed_exts)) {
-                        $new_file_name = 'profile_' . $current_user_id . '_' . time() . '.' . $file_extension;
-                        $target_file = $upload_dir . $new_file_name;
-                        
-                        if (move_uploaded_file($file['tmp_name'], $target_file)) {
-                            $profile_image = $new_file_name;
-                            $update_image = true;
-                        } else {
-                            $error_msg = "Failed to move uploaded file. Check directory permissions.";
-                        }
-                    } else {
-                        $error_msg = "Invalid image format. Supported formats: JPG, PNG, WEBP.";
-                    }
+            $check_stmt = $conn->prepare("SELECT id FROM admin_users WHERE email = ? AND id != ?");
+            $check_stmt->bind_param("si", $email, $current_user_id);
+            $check_stmt->execute();
+            if ($check_stmt->get_result()->num_rows > 0) {
+                $error_msg = "This email address is already in use.";
+            } else {
+                $stmt = $conn->prepare("UPDATE admin_users SET full_name = ?, email = ?, job_title = ? WHERE id = ?");
+                $stmt->bind_param("sssi", $full_name, $email, $job_title, $current_user_id);
+                if ($stmt->execute()) {
+                    $success_msg = "Personal details updated successfully!";
+                    $_SESSION['admin_email'] = $email;
                 } else {
-                    $error_msg = "Upload error code: " . $_FILES['profile_image']['error'];
+                    $error_msg = "Error updating details.";
                 }
+                $stmt->close();
             }
+            $check_stmt->close();
+        }
+    }
 
-            if (empty($error_msg)) {
-                // Determine which fields to update
-                if (!empty($new_password)) {
-                    if ($new_password !== $confirm_password) {
-                        $error_msg = "New passwords do not match.";
-                    } else {
-                        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-                        if ($update_image) {
-                            $stmt = $conn->prepare("UPDATE admin_users SET email = ?, password = ?, profile_image = ? WHERE id = ?");
-                            $stmt->bind_param("sssi", $email, $hashed_password, $profile_image, $current_user_id);
-                        } else {
-                            $stmt = $conn->prepare("UPDATE admin_users SET email = ?, password = ? WHERE id = ?");
-                            $stmt->bind_param("ssi", $email, $hashed_password, $current_user_id);
-                        }
-                    }
-                } else {
-                    if ($update_image) {
-                        $stmt = $conn->prepare("UPDATE admin_users SET email = ?, profile_image = ? WHERE id = ?");
-                        $stmt->bind_param("ssi", $email, $profile_image, $current_user_id);
-                    } else {
-                        $stmt = $conn->prepare("UPDATE admin_users SET email = ? WHERE id = ?");
-                        $stmt->bind_param("si", $email, $current_user_id);
-                    }
-                }
-
-                if (empty($error_msg) && isset($stmt)) {
-                    if ($stmt->execute()) {
-                        $success_msg = "Profile updated successfully!";
-                        $_SESSION['admin_email'] = $email;
-                    } else {
-                        $error_msg = "Error updating profile.";
-                    }
+    // --- Update Profile Picture ---
+    if (isset($_POST['update_picture'])) {
+        if (isset($_FILES['profile_image']) && $_FILES['profile_image']['size'] > 0) {
+            $file = $_FILES['profile_image'];
+            $file_extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $allowed_exts = ['jpg', 'jpeg', 'png', 'webp'];
+            
+            if (in_array($file_extension, $allowed_exts)) {
+                $new_file_name = 'profile_' . $current_user_id . '_' . time() . '.' . $file_extension;
+                $target_file = $upload_dir . $new_file_name;
+                
+                if (move_uploaded_file($file['tmp_name'], $target_file)) {
+                    $stmt = $conn->prepare("UPDATE admin_users SET profile_image = ? WHERE id = ?");
+                    $stmt->bind_param("si", $new_file_name, $current_user_id);
+                    $stmt->execute();
                     $stmt->close();
+                    $success_msg = "Profile picture updated successfully!";
+                } else {
+                    $error_msg = "Failed to upload image.";
                 }
+            } else {
+                $error_msg = "Invalid image format. Supported formats: JPG, PNG, WEBP.";
             }
         }
-        $check_stmt->close();
+    }
+
+    // --- Remove Profile Picture ---
+    if (isset($_POST['remove_picture'])) {
+        $stmt = $conn->prepare("UPDATE admin_users SET profile_image = NULL WHERE id = ?");
+        $stmt->bind_param("i", $current_user_id);
+        $stmt->execute();
+        $stmt->close();
+        $success_msg = "Profile picture removed successfully!";
+    }
+
+    // --- Update Password ---
+    if (isset($_POST['update_password'])) {
+        $new_password = $_POST['new_password'];
+        $confirm_password = $_POST['confirm_password'];
+        
+        if (empty($new_password)) {
+            $error_msg = "Password cannot be empty.";
+        } elseif ($new_password !== $confirm_password) {
+            $error_msg = "New passwords do not match.";
+        } else {
+            $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+            $stmt = $conn->prepare("UPDATE admin_users SET password = ? WHERE id = ?");
+            $stmt->bind_param("si", $hashed_password, $current_user_id);
+            if ($stmt->execute()) {
+                $success_msg = "Password updated successfully!";
+            } else {
+                $error_msg = "Error updating password.";
+            }
+            $stmt->close();
+        }
     }
 }
 
 // Fetch current user details
 $user_email = '';
+$user_full_name = '';
+$user_job_title = '';
 $user_image = null;
-$stmt = $conn->prepare("SELECT email, profile_image FROM admin_users WHERE id = ?");
+$user_role = 'SUPER ADMIN';
+$stmt = $conn->prepare("SELECT email, full_name, job_title, profile_image, role FROM admin_users WHERE id = ?");
 $stmt->bind_param("i", $current_user_id);
 $stmt->execute();
 $res = $stmt->get_result();
 if ($row = $res->fetch_assoc()) {
     $user_email = $row['email'];
+    $user_full_name = $row['full_name'];
+    $user_job_title = $row['job_title'];
     $user_image = $row['profile_image'];
+    if (!empty($row['role'])) {
+        $user_role = strtoupper($row['role']);
+    }
 }
 $stmt->close();
-
 ?>
 
 <style>
-    .profile-card {
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        border: 1px solid var(--border-color);
-        padding: 40px;
-        text-align: center;
-        height: 100%;
+    .settings-header {
+        font-family: 'League Spartan', sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #000;
+        margin-bottom: 25px;
+    }
+    .settings-tabs {
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        gap: 30px;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 30px;
     }
-    
-    .profile-avatar-wrapper {
+    .settings-tab {
+        padding: 10px 0;
+        font-size: 14px;
+        font-weight: 700;
+        color: #64748b;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
         position: relative;
-        width: 150px;
-        height: 150px;
-        margin: 0 auto 20px auto;
     }
-
-    .profile-avatar-container {
+    .settings-tab.active {
+        color: #000;
+    }
+    .settings-tab.active::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
         width: 100%;
-        height: 100%;
+        height: 2px;
+        background: #ef4444; /* red underline */
+    }
+    .settings-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 25px;
+    }
+    .settings-card h3 {
+        margin: 0 0 25px 0;
+        font-family: 'League Spartan', sans-serif;
+        font-size: 20px;
+        color: #000;
+    }
+    .profile-pic-container {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+    }
+    .profile-avatar {
+        width: 90px;
+        height: 90px;
         border-radius: 50%;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        border: 4px solid #fff;
-        background: var(--bg-hover);
+        background: #e2e8f0;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
+        font-size: 30px;
+        color: #475569;
+        font-weight: 700;
     }
-    
-    .profile-avatar-img {
+    .profile-avatar img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
-    
-    .profile-avatar-icon {
-        font-size: 60px;
-        color: var(--primary-color);
-        opacity: 0.8;
+    .profile-info p {
+        margin: 5px 0 15px 0;
+        color: #64748b;
+        font-size: 13px;
     }
-    
-    .profile-upload-btn {
-        position: absolute;
-        bottom: 5px;
-        right: 5px;
-        width: 35px;
-        height: 35px;
-        background: var(--accent-color);
-        color: #fff;
-        border-radius: 50%;
-        display: flex;
+    .btn-upload {
+        display: inline-flex;
         align-items: center;
-        justify-content: center;
+        gap: 8px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        color: #000;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
         cursor: pointer;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        transition: transform 0.3s;
+        transition: 0.2s;
     }
-    
-    .profile-upload-btn:hover {
-        transform: scale(1.1);
+    .btn-upload:hover {
+        background: #f1f5f9;
     }
-    
-    .file-input {
-        display: none;
+    .btn-remove {
+        background: none;
+        border: none;
+        color: #ef4444;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 8px 16px;
+    }
+    .btn-remove:hover {
+        text-decoration: underline;
+    }
+    .form-group label {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 8px;
+    }
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        color: #0f172a;
+        box-sizing: border-box;
+    }
+    .form-control:focus {
+        outline: none;
+        border-color: #94a3b8;
+    }
+    .btn-save {
+        background: #000;
+        color: #fff;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'League Spartan', sans-serif;
+        text-transform: uppercase;
+        font-size: 13px;
+        float: right;
     }
 </style>
 
@@ -188,129 +270,145 @@ $stmt->close();
     <?php include 'includes/topbar.php'; ?>
     
     <div class="main-content">
+        <div style="max-width: 900px;">
         
         <?php if(!empty($success_msg)): ?>
-            <div style="background:#d4edda; color:#155724; padding:15px; border-radius:8px; margin-bottom:20px; border-left: 4px solid #10b981; display:flex; align-items:center; gap:10px;">
-                <i class="fa-solid fa-circle-check"></i> <?php echo $success_msg; ?>
+            <div style="background:#d4edda; color:#155724; padding:15px; border-radius:8px; margin-bottom:20px;">
+                <i class="fa-solid fa-circle-check" style="margin-right: 8px;"></i> <?php echo $success_msg; ?>
             </div>
+            <script>
+                if (window.history.replaceState) {
+                    window.history.replaceState(null, null, window.location.href);
+                }
+            </script>
         <?php endif; ?>
         <?php if(!empty($error_msg)): ?>
-            <div style="background:#f8d7da; color:#721c24; padding:15px; border-radius:8px; margin-bottom:20px; border-left: 4px solid #ef4444; display:flex; align-items:center; gap:10px;">
-                <i class="fa-solid fa-circle-exclamation"></i> <?php echo $error_msg; ?>
+            <div style="background:#f8d7da; color:#721c24; padding:15px; border-radius:8px; margin-bottom:20px;">
+                <i class="fa-solid fa-circle-exclamation" style="margin-right: 8px;"></i> <?php echo $error_msg; ?>
             </div>
         <?php endif; ?>
 
-        <div class="page-header" style="margin-bottom: 30px;">
-            <h1 style="margin:0; font-size: 28px; color: var(--text-dark);">My Profile</h1>
-            <p style="color:var(--text-muted); margin-top:5px; font-size: 14px;">Manage your personal account settings and security.</p>
+        <div class="settings-header">SETTINGS</div>
+        
+        <div class="settings-tabs">
+            <div class="settings-tab active" onclick="switchTab('profile', this)">My Profile</div>
+            <div class="settings-tab" onclick="switchTab('security', this)">Account Security</div>
         </div>
 
-        <form action="profile.php" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="update_profile" value="1">
-            
-            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
-                
-                <!-- Left Column: Profile Card -->
-                <div>
-                    <div class="profile-card">
-                        <div class="profile-avatar-wrapper">
-                            <div class="profile-avatar-container">
-                                <?php if ($user_image): ?>
-                                    <img id="preview-image" src="<?php echo $upload_dir . htmlspecialchars($user_image); ?>" alt="Profile" class="profile-avatar-img">
-                                <?php else: ?>
-                                    <img id="preview-image" src="" alt="Profile" class="profile-avatar-img" style="display:none;">
-                                    <i id="preview-icon" class="fa-solid fa-user-astronaut profile-avatar-icon"></i>
-                                <?php endif; ?>
-                            </div>
+        <!-- My Profile Tab -->
+        <div id="tab-profile" style="display: block;">
+            <!-- Profile Picture Card -->
+            <div class="settings-card">
+                <div class="profile-pic-container">
+                    <div class="profile-avatar">
+                        <?php if ($user_image): ?>
+                            <img src="<?php echo $upload_dir . htmlspecialchars($user_image); ?>" alt="Profile">
+                        <?php else: ?>
+                            <?php 
+                            $displayName = !empty($user_full_name) ? $user_full_name : 'User';
+                            if (empty($user_full_name)) {
+                                $parts = explode('@', $user_email);
+                                $displayName = $parts[0];
+                            }
+                            echo strtoupper(substr($displayName, 0, 1)); 
+                            ?>
+                        <?php endif; ?>
+                    </div>
+                    <div class="profile-info">
+                        <h3 style="margin: 0; font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700;">Profile Picture</h3>
+                        <p>PNG, JPG or WEBP under 5MB. You are logged in as a <?php echo htmlspecialchars($user_role); ?>.</p>
+                        
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <form action="profile.php" method="POST" enctype="multipart/form-data" id="uploadForm">
+                                <input type="hidden" name="update_picture" value="1">
+                                <input type="file" name="profile_image" id="profile_image" style="display: none;" accept="image/png, image/jpeg, image/webp" onchange="document.getElementById('uploadForm').submit();">
+                                <button type="button" class="btn-upload" onclick="document.getElementById('profile_image').click();">
+                                    <i class="fa-solid fa-arrow-up-from-bracket"></i> Upload Image
+                                </button>
+                            </form>
                             
-                            <label for="profile_image" class="profile-upload-btn" title="Upload Profile Picture">
-                                <i class="fa-solid fa-camera"></i>
-                            </label>
-                            <input type="file" id="profile_image" name="profile_image" class="file-input" accept="image/png, image/jpeg, image/webp" onchange="previewFile()">
-                        </div>
-                        
-                        <h2 style="margin: 0; font-size: 22px; color: var(--text-dark); font-weight: 600;">Admin User</h2>
-                        <p style="color: var(--text-muted); margin-top: 5px; font-size: 14px;">
-                            <span style="display:inline-block; width:8px; height:8px; background:#10b981; border-radius:50%; margin-right:5px;"></span>
-                            Active Session
-                        </p>
-                        
-                        <div style="margin-top: 30px; width: 100%; text-align: left; background: #f9f9f9; padding: 15px; border-radius: 8px;">
-                            <p style="margin:0; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Registered Email</p>
-                            <p style="margin: 5px 0 0 0; font-weight: 500; color: var(--text-dark); word-break: break-all;"><?php echo htmlspecialchars($user_email); ?></p>
+                            <?php if ($user_image): ?>
+                            <form action="profile.php" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to remove your profile picture?');">
+                                <input type="hidden" name="remove_picture" value="1">
+                                <button type="submit" class="btn-remove">Remove</button>
+                            </form>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
-
-                <!-- Right Column: Edit Form -->
-                <div>
-                    <div class="table-wrapper" style="padding: 35px;">
-                        
-                        <h3 style="margin-bottom: 25px; color: var(--text-dark); border-bottom: 2px solid var(--bg-hover); padding-bottom: 12px; font-size: 18px; display:flex; align-items:center; gap:10px;">
-                            <i class="fa-regular fa-envelope" style="color: var(--primary-color);"></i> Account Details
-                        </h3>
-                        
-                        <div class="form-group" style="margin-bottom: 35px;">
-                            <label style="display:block; margin-bottom:8px; font-weight:500; color: var(--text-dark);">Email Address <span style="color:#ef4444;">*</span></label>
-                            <input type="email" name="email" value="<?php echo htmlspecialchars($user_email); ?>" required style="width:100%; padding:12px 15px; border:1px solid var(--border-color); border-radius:8px; background: #f9f9f9; transition: border 0.3s; font-size: 14px;" onfocus="this.style.borderColor='var(--primary-color)'" onblur="this.style.borderColor='var(--border-color)'">
-                        </div>
-
-                        <h3 style="margin-top: 20px; margin-bottom: 15px; color: var(--text-dark); border-bottom: 2px solid var(--bg-hover); padding-bottom: 12px; font-size: 18px; display:flex; align-items:center; gap:10px;">
-                            <i class="fa-solid fa-lock" style="color: var(--primary-color);"></i> Security
-                        </h3>
-                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 25px; padding: 10px 15px; background: var(--bg-hover); border-radius: 6px;">
-                            <i class="fa-solid fa-circle-info" style="margin-right: 5px;"></i> Leave these fields blank if you do not want to change your password.
-                        </p>
-
-                        <div class="form-group" style="margin-bottom: 20px;">
-                            <label style="display:block; margin-bottom:8px; font-weight:500; color: var(--text-dark);">New Password</label>
-                            <input type="password" name="new_password" style="width:100%; padding:12px 15px; border:1px solid var(--border-color); border-radius:8px; font-size: 14px; transition: border 0.3s;" placeholder="••••••••" onfocus="this.style.borderColor='var(--primary-color)'" onblur="this.style.borderColor='var(--border-color)'">
-                        </div>
-
-                        <div class="form-group" style="margin-bottom: 40px;">
-                            <label style="display:block; margin-bottom:8px; font-weight:500; color: var(--text-dark);">Confirm New Password</label>
-                            <input type="password" name="confirm_password" style="width:100%; padding:12px 15px; border:1px solid var(--border-color); border-radius:8px; font-size: 14px; transition: border 0.3s;" placeholder="••••••••" onfocus="this.style.borderColor='var(--primary-color)'" onblur="this.style.borderColor='var(--border-color)'">
-                        </div>
-
-                        <div style="display: flex; justify-content: flex-end;">
-                            <button type="submit" class="btn-primary" style="padding: 12px 30px; font-size: 15px; font-weight: 600; border-radius: 8px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                                <i class="fa-solid fa-cloud-arrow-up"></i> Save Changes
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
             </div>
-        </form>
 
+            <!-- Personal Details Card -->
+            <div class="settings-card">
+                <h3>Personal Details</h3>
+                <form action="profile.php" method="POST">
+                    <input type="hidden" name="update_personal" value="1">
+                    
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label>Full Name</label>
+                        <input type="text" name="full_name" class="form-control" value="<?php echo htmlspecialchars($user_full_name); ?>">
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label>Email Address</label>
+                        <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user_email); ?>" required>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 30px;">
+                        <label>Job Title / Designation</label>
+                        <input type="text" name="job_title" class="form-control" value="<?php echo htmlspecialchars($user_job_title); ?>">
+                    </div>
+                    
+                    <div style="overflow: hidden;">
+                        <button type="submit" class="btn-save">SAVE CHANGES</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Account Security Tab -->
+        <div id="tab-security" style="display: none;">
+            <div class="settings-card">
+                <h3>Update Password</h3>
+                <form action="profile.php" method="POST">
+                    <input type="hidden" name="update_password" value="1">
+                    
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label>New Password</label>
+                        <input type="password" name="new_password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 30px;">
+                        <label>Confirm New Password</label>
+                        <input type="password" name="confirm_password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    
+                    <div style="overflow: hidden;">
+                        <button type="submit" class="btn-save">UPDATE PASSWORD</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        </div>
     </div>
 </div>
 
 <script>
-function previewFile() {
-    const previewImage = document.getElementById('preview-image');
-    const previewIcon = document.getElementById('preview-icon');
-    const fileInput = document.getElementById('profile_image');
-    const file = fileInput.files[0];
-    const reader = new FileReader();
-
-    reader.addEventListener("load", function () {
-        previewImage.src = reader.result;
-        previewImage.style.display = 'block';
-        if (previewIcon) {
-            previewIcon.style.display = 'none';
-        }
-        
-        // Auto-submit the form so the user doesn't have to click save manually for the image
-        // We will add a small loading indication
-        document.querySelector('.profile-upload-btn').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-        fileInput.closest('form').submit();
-        
-    }, false);
-
-    if (file) {
-        reader.readAsDataURL(file);
-    }
+function switchTab(tabId, element) {
+    // Hide all tabs
+    document.getElementById('tab-profile').style.display = 'none';
+    document.getElementById('tab-security').style.display = 'none';
+    
+    // Remove active class from all tab links
+    const tabs = document.querySelectorAll('.settings-tab');
+    tabs.forEach(tab => tab.classList.remove('active'));
+    
+    // Show selected tab
+    document.getElementById('tab-' + tabId).style.display = 'block';
+    
+    // Add active class to clicked tab link
+    element.classList.add('active');
 }
 </script>
 

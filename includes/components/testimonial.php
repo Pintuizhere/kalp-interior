@@ -1,3 +1,4 @@
+<?php require_once 'admin/config/db.php'; ?>
 <!-- Testimonial Section -->
 <style>
     @media (max-width: 992px) {
@@ -38,87 +39,55 @@
         
         <div class="testi-slider-wrapper" style="position: relative; overflow: hidden; margin-bottom: 80px;">
             <div class="testi-slides" style="display: flex; gap: 30px; transition: transform 0.6s ease-in-out;">
-                
-                <!-- Slide 1 -->
+                <?php
+                $testi_query = "SELECT * FROM testimonials WHERE status = 'Published' ORDER BY created_at DESC";
+                $testi_result = $conn->query($testi_query);
+                $testi_count = 0;
+                if ($testi_result && $testi_result->num_rows > 0) {
+                    while ($row = $testi_result->fetch_assoc()) {
+                        $img_src = !empty($row['client_image']) ? 'uploads/testimonials/' . htmlspecialchars($row['client_image']) : 'https://ui-avatars.com/api/?name='.urlencode($row['client_name']);
+                ?>
+                <!-- Slide -->
                 <div class="testi-slide" style="min-width: calc(33.333% - 20px); background: white; border-radius: 10px; padding: 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.03);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Sarah Mitchell" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
-                        <span style="font-weight: 700; color: var(--text-dark); font-size: 16px; display: flex; align-items: center; gap: 5px;"><i class="fa-solid fa-fan" style="color: #4f46e5;"></i> Logoipsum</span>
+                        <img src="<?php echo $img_src; ?>" alt="<?php echo htmlspecialchars($row['client_name']); ?>" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                        <?php if(!empty($row['company_name']) || !empty($row['company_logo'])): ?>
+                        <span style="font-weight: 700; color: var(--text-dark); font-size: 16px; display: flex; align-items: center; gap: 5px;">
+                            <?php if(!empty($row['company_logo'])): ?>
+                            <img src="uploads/testimonials/<?php echo htmlspecialchars($row['company_logo']); ?>" style="max-height: 25px;">
+                            <?php elseif(!empty($row['company_icon'])): ?>
+                            <i class="<?php echo htmlspecialchars($row['company_icon']); ?>" style="color: #EAB136;"></i> 
+                            <?php endif; ?>
+                            <?php echo !empty($row['company_name']) ? htmlspecialchars($row['company_name']) : ''; ?>
+                        </span>
+                        <?php endif; ?>
                     </div>
                     <div style="font-size: 45px; color: #334C40; line-height: 1; margin-bottom: 20px;">
                         <i class="fa-solid fa-quote-left"></i>
                     </div>
                     <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 30px; font-size: 15px;">
-                        The entire process was seamless from start to finish. The team delivered exceptional craftsmanship, stayed on schedule, and transformed our home into a space we truly love.
+                        <?php echo htmlspecialchars($row['content']); ?>
                     </p>
                     <div style="border-left: 3px solid #334C40; padding-left: 15px;">
-                        <h4 style="color: var(--text-dark); margin: 0 0 3px 0; font-size: 16px;">Sarah Mitchell</h4>
-                        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Home Renovation Client</p>
+                        <h4 style="color: var(--text-dark); margin: 0 0 3px 0; font-size: 16px; text-transform: uppercase;"><?php echo htmlspecialchars($row['client_name']); ?></h4>
+                        <p style="color: var(--text-muted); font-size: 13px; margin: 0;"><?php echo htmlspecialchars($row['client_role']); ?></p>
                     </div>
                 </div>
-
-                <!-- Slide 2 -->
-                <div class="testi-slide" style="min-width: calc(33.333% - 20px); background: white; border-radius: 10px; padding: 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.03);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Robert Fox" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
-                        <span style="font-weight: 700; color: var(--text-dark); font-size: 16px; display: flex; align-items: center; gap: 5px;"><i class="fa-solid fa-gem" style="color: #EAB136;"></i> Logoipsum</span>
-                    </div>
-                    <div style="font-size: 45px; color: #334C40; line-height: 1; margin-bottom: 20px;">
-                        <i class="fa-solid fa-quote-left"></i>
-                    </div>
-                    <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 30px; font-size: 15px;">
-                        The attention to detail and ability to capture our brand identity was phenomenal. It has completely transformed our working environment and boosted employee morale.
-                    </p>
-                    <div style="border-left: 3px solid #334C40; padding-left: 15px;">
-                        <h4 style="color: var(--text-dark); margin: 0 0 3px 0; font-size: 16px;">Robert Fox</h4>
-                        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">CEO, Tech Innovators</p>
-                    </div>
-                </div>
-                
-                <!-- Slide 3 -->
-                <div class="testi-slide" style="min-width: calc(33.333% - 20px); background: white; border-radius: 10px; padding: 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.03);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Eleanor Pena" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
-                        <span style="font-weight: 700; color: var(--text-dark); font-size: 16px; display: flex; align-items: center; gap: 5px;"><i class="fa-solid fa-leaf" style="color: #4CAF50;"></i> Logoipsum</span>
-                    </div>
-                    <div style="font-size: 45px; color: #334C40; line-height: 1; margin-bottom: 20px;">
-                        <i class="fa-solid fa-quote-left"></i>
-                    </div>
-                    <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 30px; font-size: 15px;">
-                        We wanted our home to feel like a luxurious retreat, and they absolutely delivered. The color palettes, furniture selection, and lighting design were simply impeccable.
-                    </p>
-                    <div style="border-left: 3px solid #334C40; padding-left: 15px;">
-                        <h4 style="color: var(--text-dark); margin: 0 0 3px 0; font-size: 16px;">Eleanor Pena</h4>
-                        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Homeowner</p>
-                    </div>
-                </div>
-
-                <!-- Slide 4 (For scrolling effect) -->
-                <div class="testi-slide" style="min-width: calc(33.333% - 20px); background: white; border-radius: 10px; padding: 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.03);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Michael Chen" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
-                        <span style="font-weight: 700; color: var(--text-dark); font-size: 16px; display: flex; align-items: center; gap: 5px;"><i class="fa-solid fa-cube" style="color: #00bcd4;"></i> Logoipsum</span>
-                    </div>
-                    <div style="font-size: 45px; color: #334C40; line-height: 1; margin-bottom: 20px;">
-                        <i class="fa-solid fa-quote-left"></i>
-                    </div>
-                    <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 30px; font-size: 15px;">
-                        Working with this team was an absolute pleasure. They took our vague ideas and turned them into a stunning, modern workspace that our team loves coming to every day.
-                    </p>
-                    <div style="border-left: 3px solid #334C40; padding-left: 15px;">
-                        <h4 style="color: var(--text-dark); margin: 0 0 3px 0; font-size: 16px;">Michael Chen</h4>
-                        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Startup Founder</p>
-                    </div>
-                </div>
+                <?php 
+                        $testi_count++;
+                    } 
+                } else {
+                    echo "<p>No testimonials found.</p>";
+                }
+                ?>
 
             </div>
         </div>
 
         <div class="testi-pagination" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 50px;">
-            <div class="dot active" data-index="0" style="width: 10px; height: 10px; border-radius: 50%; background: var(--text-dark); cursor: pointer; transition: 0.3s;"></div>
-            <div class="dot" data-index="1" style="width: 10px; height: 10px; border-radius: 50%; background: #ddd; cursor: pointer; transition: 0.3s;"></div>
-            <div class="dot" data-index="2" style="width: 10px; height: 10px; border-radius: 50%; background: #ddd; cursor: pointer; transition: 0.3s;"></div>
-            <div class="dot" data-index="3" style="width: 10px; height: 10px; border-radius: 50%; background: #ddd; cursor: pointer; transition: 0.3s;"></div>
+            <?php for($i=0; $i<$testi_count; $i++): ?>
+            <div class="dot <?php echo $i===0?'active':''; ?>" data-index="<?php echo $i; ?>" style="width: 10px; height: 10px; border-radius: 50%; background: <?php echo $i===0?'var(--text-dark)':'#ddd'; ?>; cursor: pointer; transition: 0.3s;"></div>
+            <?php endfor; ?>
         </div>
 
         <!-- Testimonial Stats Bar -->

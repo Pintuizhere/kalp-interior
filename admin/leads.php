@@ -5,6 +5,27 @@ include 'includes/header.php';
 include 'includes/sidebar.php';
 require_once 'config/db.php';
 
+$success_msg = '';
+$error_msg = '';
+
+if (isset($_GET['success']) && $_GET['success'] == 'delete') {
+    $success_msg = "Lead deleted successfully!";
+}
+
+// Handle Delete
+if (isset($_GET['delete'])) {
+    $id = (int)$_GET['delete'];
+    $stmt = $conn->prepare("DELETE FROM leads WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        header("Location: leads.php?success=delete");
+        exit;
+    } else {
+        $error_msg = "Failed to delete lead.";
+    }
+    $stmt->close();
+}
+
 // Fetch leads from DB
 $leads_query = "SELECT * FROM leads ORDER BY created_at DESC";
 $leads_result = $conn->query($leads_query);
@@ -23,6 +44,17 @@ $leads_result = $conn->query($leads_query);
                 </a>
             </div>
         </div>
+
+        <?php if(!empty($success_msg)): ?>
+            <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <?php echo $success_msg; ?>
+            </div>
+        <?php endif; ?>
+        <?php if(!empty($error_msg)): ?>
+            <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <?php echo $error_msg; ?>
+            </div>
+        <?php endif; ?>
 
         <!-- MANAGE LEADS VIEW -->
         <div class="tab-content active" id="view-manage">
@@ -89,7 +121,7 @@ $leads_result = $conn->query($leads_query);
                                             data-date="<?php echo $date; ?>"
                                             data-status="<?php echo htmlspecialchars($lead['status']); ?>"
                                         ><i class="fa-regular fa-eye"></i></button>
-                                        <a href="#" class="btn-icon delete"><i class="fa-solid fa-trash"></i></a>
+                                        <a href="?delete=<?php echo $lead['id']; ?>" class="btn-icon delete"><i class="fa-solid fa-trash"></i></a>
                                     </div>
                                 </td>
                             </tr>

@@ -1,6 +1,65 @@
 <?php 
+require_once 'admin/config/db.php';
+
+if (!isset($_GET['id']) || empty($_GET['id'])) {
+    header("Location: blog.php");
+    exit;
+}
+
+$id = (int)$_GET['id'];
+$stmt = $conn->prepare("SELECT * FROM blogs WHERE id = ? AND status = 'Published'");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows === 0) {
+    header("Location: blog.php");
+    exit;
+}
+
+$post = $result->fetch_assoc();
+$stmt->close();
+
 $currentPage = 'blog';
+$pageTitle = $post['title'];
 include 'includes/header.php'; 
+
+// Format data
+$date = date("d F Y", strtotime($post['created_at']));
+$image_path = !empty($post['image']) ? 'uploads/blogs/' . htmlspecialchars($post['image']) : 'assets/images/placeholder.jpg';
+$tags = !empty($post['tags']) ? explode(',', $post['tags']) : [];
+
+// Extract headings for TOC and inject IDs
+$toc_headings = [];
+$post['content'] = preg_replace_callback(
+    '/<(h[23])([^>]*)>(.*?)<\/\1>/i',
+    function($matches) use (&$toc_headings) {
+        $tag = strtolower($matches[1]);
+        $attributes = $matches[2];
+        $text = $matches[3];
+        $clean_text = strip_tags($text);
+        $id = 'heading-' . count($toc_headings);
+        
+        $toc_headings[] = [
+            'tag' => $tag,
+            'text' => $clean_text,
+            'id' => $id
+        ];
+        
+        // Return heading with injected ID
+        return "<{$tag} id=\"{$id}\"{$attributes}>{$text}</{$tag}>";
+    },
+    $post['content']
+);
+
+// Fetch all categories for the sidebar
+$categories_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
+$all_categories = [];
+if ($categories_result && $categories_result->num_rows > 0) {
+    while($cat = $categories_result->fetch_assoc()) {
+        $all_categories[] = $cat;
+    }
+}
 ?>
 
 <main>
@@ -21,22 +80,25 @@ include 'includes/header.php';
             <!-- Hero Header -->
             <div class="blog-hero" style="text-align: center; margin-bottom: 50px;">
                 <div class="blog-feature-wrapper" style="margin-bottom: 30px;">
-                    <img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Remote Work Office" style="width: 100%; height: 500px; object-fit: cover; border-radius: 80px 20px 80px 20px; display: block;">
+                    <img src="<?php echo $image_path; ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" style="width: 100%; height: 500px; object-fit: cover; border-radius: 80px 20px 80px 20px; display: block;">
                 </div>
                 
                 <div class="blog-header-tags" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 25px;">
-                    <span class="tag-pill">Office</span>
-                    <span class="tag-pill">Home Office</span>
-                    <span class="tag-pill">Interior Design</span>
+                    <span class="tag-pill"><?php echo htmlspecialchars($post['category']); ?></span>
+                    <?php foreach($tags as $tag): if(trim($tag) != ''): ?>
+                        <span class="tag-pill"><?php echo htmlspecialchars(trim($tag)); ?></span>
+                    <?php endif; endforeach; ?>
                 </div>
                 
-                <h1 style="font-size: 36px; line-height: 1.3; margin-bottom: 25px; max-width: 900px; margin-left: auto; margin-right: auto;">Remote Work Design: Creating Home Offices<br>for Maximum Comfort and Productivity</h1>
+                <h1 style="font-size: 36px; line-height: 1.3; margin-bottom: 25px; max-width: 900px; margin-left: auto; margin-right: auto;"><?php echo htmlspecialchars($post['title']); ?></h1>
                 
                 <div class="author-meta" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
-                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Jenny Alexander" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--accent-color); color: var(--text-dark); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">
+                        <?php echo substr(htmlspecialchars($post['author']), 0, 1); ?>
+                    </div>
                     <div style="text-align: left;">
-                        <div style="font-weight: 600; font-size: 14px; color: var(--text-dark);">Written by Jenny Alexander</div>
-                        <div style="font-size: 13px; color: var(--text-muted);">28 February 2024 | 12 min Read</div>
+                        <div style="font-weight: 600; font-size: 14px; color: var(--text-dark);">Written by <?php echo htmlspecialchars($post['author']); ?></div>
+                        <div style="font-size: 13px; color: var(--text-muted);"><?php echo $date; ?></div>
                     </div>
                 </div>
             </div>
@@ -57,47 +119,150 @@ include 'includes/header.php';
                 </div>
 
                 <!-- Main Content -->
+                <style>
+                    .blog-main-content h1, .blog-main-content h2, .blog-main-content h3 { font-family: 'League Spartan', sans-serif; font-weight: 700; margin-top: 1.5em; margin-bottom: 0.5em; }
+                    .blog-main-content p { margin-bottom: 15px; }
+                    .blog-main-content .drop-cap-paragraph::first-letter {
+                        float: left;
+                        width: 45px;
+                        height: 45px;
+                        background-color: var(--accent-color);
+                        color: #000;
+                        border-radius: 50%;
+                        font-size: 24px;
+                        font-weight: 700;
+                        margin-right: 15px;
+                        margin-top: 5px;
+                        line-height: 45px;
+                        text-align: center;
+                    }
+                    .blog-main-content blockquote.also-read-block {
+                        background: #395244;
+                        padding: 30px;
+                        border-radius: 10px;
+                        margin: 35px 0;
+                        color: #fff;
+                        border-left: none;
+                    }
+                    .blog-main-content blockquote.also-read-block::before {
+                        content: "Also Read :\A";
+                        white-space: pre;
+                        color: var(--accent-color);
+                        font-weight: 600;
+                        display: block;
+                        margin-bottom: 5px;
+                    }
+                    .blog-main-content .image-grid-2col {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 20px;
+                        margin: 35px 0;
+                    }
+                    .blog-main-content .image-grid-2col img {
+                        width: 100%;
+                        border-radius: 10px;
+                        object-fit: cover;
+                    }
+                    .blog-main-content ul.custom-bullet-list {
+                        list-style: none;
+                        padding-left: 0;
+                    }
+                    .blog-main-content ul.custom-bullet-list li {
+                        position: relative;
+                        padding-left: 25px;
+                        margin-bottom: 10px;
+                    }
+                    .blog-main-content ul.custom-bullet-list li::before {
+                        content: "";
+                        position: absolute;
+                        left: 0;
+                        top: 8px;
+                        width: 10px;
+                        height: 10px;
+                        background-color: var(--accent-color);
+                        border-radius: 50%;
+                    }
+
+                    /* Sidebar & Header UI Styles to match layout */
+                    .tag-pill {
+                        background-color: var(--accent-color);
+                        color: var(--text-dark);
+                        font-size: 11px;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        padding: 6px 15px;
+                        border-radius: 20px;
+                        display: inline-block;
+                    }
+                    
+                    .share-icon {
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        background-color: #222;
+                        color: #fff;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        text-decoration: none;
+                        font-size: 16px;
+                        transition: 0.3s;
+                    }
+                    .share-icon:hover {
+                        background-color: var(--accent-color);
+                        color: #000;
+                    }
+
+                    .widget-title {
+                        font-size: 13px;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        font-weight: 700;
+                        margin-bottom: 20px;
+                    }
+
+                    .category-pills {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                    }
+                    .category-pills a {
+                        display: inline-block;
+                        padding: 8px 16px;
+                        background-color: #f9f9f9;
+                        border: 1px solid #eee;
+                        color: #555;
+                        font-size: 11px;
+                        text-decoration: none;
+                        border-radius: 20px;
+                        transition: 0.3s;
+                    }
+                    .category-pills a:hover {
+                        background-color: var(--accent-color);
+                        color: #000;
+                        border-color: var(--accent-color);
+                    }
+
+                    .toc-list {
+                        list-style: none;
+                        padding: 0;
+                        margin: 0;
+                    }
+                    .toc-list li {
+                        margin-bottom: 12px;
+                    }
+                    .toc-list li a {
+                        color: #666;
+                        text-decoration: none;
+                        font-size: 13px;
+                        transition: 0.3s;
+                    }
+                    .toc-list li a:hover {
+                        color: var(--accent-color);
+                    }
+                </style>
                 <div class="blog-main-content">
-                    <div class="drop-cap-paragraph" style="margin-bottom: 20px;">
-                        <span class="drop-cap" style="float: left; width: 45px; height: 45px; background-color: var(--accent-color); color: var(--text-dark); display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 20px; font-weight: 700; margin-right: 15px; margin-top: 5px;">L</span>
-                        <p style="display: inline;">orem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
-                    </div>
-                    
-                    <p>ed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-                    
-                    <h3>Introduction to Remote Work Design</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
-
-                    <h3>Importance of ergonomic furniture</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
-                    
-                    <!-- Split Images -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 35px 0;">
-                        <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Office 1" style="width: 100%; height: 300px; object-fit: cover; border-radius: 40px 15px 40px 15px;">
-                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Office 2" style="width: 100%; height: 300px; object-fit: cover; border-radius: 40px 15px 40px 15px;">
-                    </div>
-
-                    <h3>Importance of lighting in a office</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
-
-                    <!-- Also Read Block -->
-                    <div class="also-read-block">
-                        <span style="color: var(--primary-color); font-weight: 600; display: block; margin-bottom: 5px;">Also Read :</span>
-                        <a href="#" style="color: rgba(255,255,255,0.9); text-decoration: none; font-size: 14px;">"Productive Office Layouts: Designing Spaces for Efficiency"</a>
-                    </div>
-
-                    <h3>Tips for organizing furniture</h3>
-                    <ul class="custom-bullet-list">
-                        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</li>
-                        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</li>
-                        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</li>
-                        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</li>
-                    </ul>
-
-                    <h3>Integrating technology into home office setup</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
-
-
+                    <?php echo $post['content']; ?>
                 </div>
 
                 <!-- Right Sidebar -->
@@ -107,27 +272,29 @@ include 'includes/header.php';
                         <div class="sidebar-widget">
                             <h4 class="widget-title">Filter by Categories</h4>
                             <div class="category-pills">
-                                <a href="#">Interior</a>
-                                <a href="#">Exterior</a>
-                                <a href="#">Residence</a>
-                                <a href="#">Offices</a>
-                                <a href="#">Kitchen</a>
-                                <a href="#">Living Room</a>
-                                <a href="#">Bed Room</a>
-                                <a href="#">Hospitality Design</a>
-                                <a href="#">Office</a>
-                                <a href="#">Commercial Design</a>
+                                <?php foreach($all_categories as $cat): ?>
+                                    <a href="blog.php?category=<?php echo urlencode($cat['name']); ?>"><?php echo htmlspecialchars($cat['name']); ?></a>
+                                <?php endforeach; ?>
+                                <?php if(empty($all_categories)): ?>
+                                    <span class="text-muted" style="font-size: 13px;">No categories found.</span>
+                                <?php endif; ?>
                             </div>
                         </div>
 
                         <div class="sidebar-widget">
                             <h4 class="widget-title">Table of Content</h4>
                             <ul class="toc-list">
-                                <li><a href="#">Introduction to Remote Work Design</a></li>
-                                <li><a href="#">Importance of ergonomic furniture</a></li>
-                                <li><a href="#">Importance of lighting in a office</a></li>
-                                <li><a href="#">Tips for organizing furniture</a></li>
-                                <li><a href="#">Integrating technology into home office setup</a></li>
+                                <?php foreach($toc_headings as $heading): ?>
+                                    <li style="margin-left: <?php echo $heading['tag'] == 'h3' ? '15px' : '0'; ?>">
+                                        <a href="#<?php echo $heading['id']; ?>">
+                                            <i class="fa-solid fa-angle-right" style="margin-right: 8px; font-size: 10px; color: var(--accent-color);"></i>
+                                            <?php echo $heading['text']; ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                                <?php if(empty($toc_headings)): ?>
+                                    <li><span class="text-muted">No headings found.</span></li>
+                                <?php endif; ?>
                             </ul>
                         </div>
 

@@ -1,6 +1,7 @@
 <?php 
 $currentPage = 'blog';
 include 'includes/header.php'; 
+require_once 'admin/config/db.php';
 ?>
 
 <main>
@@ -42,161 +43,91 @@ include 'includes/header.php';
             </div>
             
             <div class="blog-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-bottom: 50px;">
-                <!-- Blog Card 1 -->
-                <div class="blog-card">
-                    <div class="blog-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Living Room">
-                        <div class="blog-tags">
-                            <span>05 March 2024</span>
-                            <span>Living Room</span>
-                        </div>
-                    </div>
-                    <div class="blog-content">
-                        <h3>Modern Living Room Design: Sleek and Stylish...</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="blog-details.php" class="read-more">Read More</a>
-                    </div>
-                </div>
+                <?php
+                $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+                if ($page < 1) $page = 1;
+                $limit = 12;
+                $offset = ($page - 1) * $limit;
 
-                <!-- Blog Card 2 -->
-                <div class="blog-card">
-                    <div class="blog-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Kitchen">
-                        <div class="blog-tags">
-                            <span>05 March 2024</span>
-                            <span>Kitchen</span>
-                        </div>
-                    </div>
-                    <div class="blog-content">
-                        <h3>Kitchen Layout Ideas: Optimizing Space and Fu...</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="blog-details.php" class="read-more">Read More</a>
-                    </div>
-                </div>
+                // Count total
+                $count_query = "SELECT COUNT(id) as total FROM blogs WHERE status = 'Published'";
+                $count_result = $conn->query($count_query);
+                $total_posts = $count_result->fetch_assoc()['total'];
+                $total_pages = ceil($total_posts / $limit);
 
-                <!-- Blog Card 3 -->
-                <div class="blog-card">
-                    <div class="blog-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Bedroom">
-                        <div class="blog-tags">
-                            <span>04 March 2024</span>
-                            <span>Bedroom</span>
-                        </div>
-                    </div>
-                    <div class="blog-content">
-                        <h3>Master Bedroom Design Tips: Creating Your Pers...</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="blog-details.php" class="read-more">Read More</a>
-                    </div>
-                </div>
+                $blog_query = "SELECT * FROM blogs WHERE status = 'Published' ORDER BY created_at DESC LIMIT $limit OFFSET $offset";
+                $blog_result = $conn->query($blog_query);
                 
-                <!-- Blog Card 4 -->
+                if($blog_result && $blog_result->num_rows > 0):
+                    while($row = $blog_result->fetch_assoc()):
+                        // Format date
+                        $date = date("d F Y", strtotime($row['created_at']));
+                        // Clean up excerpt
+                        $excerpt = substr(strip_tags($row['content']), 0, 80) . '...';
+                        $image_path = !empty($row['image']) ? 'uploads/blogs/' . htmlspecialchars($row['image']) : 'assets/images/placeholder.jpg';
+                ?>
                 <div class="blog-card">
                     <div class="blog-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Small Kitchen">
+                        <img src="<?php echo $image_path; ?>" alt="<?php echo htmlspecialchars($row['title']); ?>" style="width: 100%; height: 250px; object-fit: cover;">
                         <div class="blog-tags">
-                            <span>03 March 2024</span>
-                            <span>Kitchen</span>
+                            <span><?php echo $date; ?></span>
+                            <span><?php echo htmlspecialchars($row['category']); ?></span>
                         </div>
                     </div>
                     <div class="blog-content">
-                        <h3>Small Kitchen Design Tips: Making the Most of Lim...</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="blog-details.php" class="read-more">Read More</a>
+                        <h3><?php echo htmlspecialchars(substr($row['title'], 0, 50)); ?><?php echo strlen($row['title']) > 50 ? '...' : ''; ?></h3>
+                        <p><?php echo htmlspecialchars($excerpt); ?></p>
+                        <a href="blog-details.php?id=<?php echo $row['id']; ?>" class="read-more">Read More</a>
                     </div>
                 </div>
-
-                <!-- Blog Card 5 -->
-                <div class="blog-card">
-                    <div class="blog-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Minimalist Bedroom">
-                        <div class="blog-tags">
-                            <span>02 March 2024</span>
-                            <span>Bedroom</span>
-                        </div>
-                    </div>
-                    <div class="blog-content">
-                        <h3>Minimalist Bedroom Design: Streamlined Simplicity f...</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="blog-details.php" class="read-more">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Blog Card 6 -->
-                <div class="blog-card">
-                    <div class="blog-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Living Room Light">
-                        <div class="blog-tags">
-                            <span>01 March 2024</span>
-                            <span>Living Room</span>
-                        </div>
-                    </div>
-                    <div class="blog-content">
-                        <h3>Maximizing Natural Light: Brightening Your Living R...</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="blog-details.php" class="read-more">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Blog Card 7 -->
-                <div class="blog-card">
-                    <div class="blog-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Office Design">
-                        <div class="blog-tags">
-                            <span>29 February 2024</span>
-                            <span>Office</span>
-                        </div>
-                    </div>
-                    <div class="blog-content">
-                        <h3>Modern Office Design Trends: Sleek and Funct...</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="blog-details.php" class="read-more">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Blog Card 8 -->
-                <div class="blog-card">
-                    <div class="blog-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Remote Work Office">
-                        <div class="blog-tags">
-                            <span>28 February 2024</span>
-                            <span>Office</span>
-                        </div>
-                    </div>
-                    <div class="blog-content">
-                        <h3>Remote Work Design: Creating Home Offices f...</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="blog-details.php" class="read-more">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Blog Card 9 -->
-                <div class="blog-card">
-                    <div class="blog-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1580618672591-eb180b1a973f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Salon Design">
-                        <div class="blog-tags">
-                            <span>27 February 2024</span>
-                            <span>Salon</span>
-                        </div>
-                    </div>
-                    <div class="blog-content">
-                        <h3>Salon Interior Design Trends: Creating Stylish a...</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="blog-details.php" class="read-more">Read More</a>
-                    </div>
-                </div>
+                <?php 
+                    endwhile;
+                else:
+                ?>
+                    <p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">No blog posts found.</p>
+                <?php endif; ?>
             </div>
 
             <!-- Pagination -->
+            <?php if ($total_pages > 1): ?>
             <div class="pagination">
-                <a href="#" class="page-nav"><i class="fa-solid fa-angle-left"></i></a>
-                <a href="#" class="page-num active">1</a>
-                <a href="#" class="page-num">2</a>
-                <a href="#" class="page-num">3</a>
-                <span class="page-dots">...</span>
-                <a href="#" class="page-num">10</a>
-                <a href="#" class="page-nav"><i class="fa-solid fa-angle-right"></i></a>
+                <?php if ($page > 1): ?>
+                    <a href="?page=<?php echo $page - 1; ?>" class="page-nav"><i class="fa-solid fa-angle-left"></i></a>
+                <?php else: ?>
+                    <span class="page-nav disabled" style="opacity:0.5; cursor:not-allowed;"><i class="fa-solid fa-angle-left"></i></span>
+                <?php endif; ?>
+
+                <?php
+                $start = max(1, $page - 1);
+                $end = min($total_pages, $page + 1);
+                
+                if ($start > 1) {
+                    echo '<a href="?page=1" class="page-num">1</a>';
+                    if ($start > 2) {
+                        echo '<span class="page-dots" style="margin: 0 10px; color: var(--text-muted);">...</span>';
+                    }
+                }
+                
+                for ($i = $start; $i <= $end; $i++) {
+                    $activeClass = ($i == $page) ? 'active' : '';
+                    echo '<a href="?page='.$i.'" class="page-num '.$activeClass.'">'.$i.'</a>';
+                }
+                
+                if ($end < $total_pages) {
+                    if ($end < $total_pages - 1) {
+                        echo '<span class="page-dots" style="margin: 0 10px; color: var(--text-muted);">...</span>';
+                    }
+                    echo '<a href="?page='.$total_pages.'" class="page-num">'.$total_pages.'</a>';
+                }
+                ?>
+
+                <?php if ($page < $total_pages): ?>
+                    <a href="?page=<?php echo $page + 1; ?>" class="page-nav"><i class="fa-solid fa-angle-right"></i></a>
+                <?php else: ?>
+                    <span class="page-nav disabled" style="opacity:0.5; cursor:not-allowed;"><i class="fa-solid fa-angle-right"></i></span>
+                <?php endif; ?>
             </div>
+            <?php endif; ?>
         </div>
     </section>
 

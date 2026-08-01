@@ -7364,3 +7364,72 @@ textarea.form-control {
         font-size: 1.25rem !important;
     }
 }
+/* BLOG DETAILS CUSTOM TINYMCE STYLES */
+.drop-cap-paragraph::first-letter {
+    float: left;
+    width: 45px;
+    height: 45px;
+    background-color: var(--accent-color);
+    color: var(--text-dark);
+    border-radius: 50%;
+    font-size: 24px;
+    font-weight: 700;
+    margin-right: 15px;
+    margin-top: 5px;
+    line-height: 45px;
+    text-align: center;
+}
+
+blockquote.also-read-block {
+    background: #395244;
+    padding: 30px;
+    border-radius: 10px;
+    margin: 35px 0;
+    color: #fff;
+    border-left: none;
+}
+blockquote.also-read-block::before {
+    content: "Also Read :\A";
+    white-space: pre;
+    color: var(--accent-color);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+}
+blockquote.also-read-block a {
+    color: rgba(255,255,255,0.9);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.image-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 35px 0;
+}
+.image-grid-2col img {
+    width: 100%;
+    height: auto;
+    border-radius: 40px 15px 40px 15px;
+}
+
+ul.custom-bullet-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+ul.custom-bullet-list li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 10px;
+}
+ul.custom-bullet-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+}

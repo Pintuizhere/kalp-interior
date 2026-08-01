@@ -1,15 +1,37 @@
 <?php
 $pageTitle = 'Blog Posts';
 $currentPage = 'blog';
-include 'includes/header.php';
-include 'includes/sidebar.php';
 require_once 'config/db.php';
 
 $success_msg = '';
 $error_msg = '';
 
+if (isset($_GET['success'])) {
+    if ($_GET['success'] == 'delete') $success_msg = "Blog post deleted successfully!";
+}
+
+// Handle Delete
+if (isset($_GET['delete'])) {
+    $id = (int)$_GET['delete'];
+    
+    // Optional: Fetch image to delete from server if needed
+    // $stmt = $conn->prepare("SELECT image FROM blogs WHERE id = ?"); ...
+    
+    $stmt = $conn->prepare("DELETE FROM blogs WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        header("Location: blog.php?success=delete");
+        exit;
+    } else {
+        $error_msg = "Failed to delete blog post.";
+    }
+    $stmt->close();
+}
+
 // Handle POST request logic has been moved to editor-blog.php
 
+include 'includes/header.php';
+include 'includes/sidebar.php';
 // Fetch blogs
 $blogs_query = "SELECT * FROM blogs ORDER BY created_at DESC";
 $blogs_result = $conn->query($blogs_query);
@@ -28,6 +50,13 @@ $categories_result = $conn->query($categories_query);
             <div style="background:#d4edda; color:#155724; padding:15px; border-radius:5px; margin-bottom:20px;">
                 <?php echo $success_msg; ?>
             </div>
+            <script>
+                if (window.history.replaceState) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('success');
+                    window.history.replaceState({path:url.href}, '', url.href);
+                }
+            </script>
         <?php endif; ?>
         <?php if(!empty($error_msg)): ?>
             <div style="background:#f8d7da; color:#721c24; padding:15px; border-radius:5px; margin-bottom:20px;">
@@ -82,8 +111,8 @@ $categories_result = $conn->query($categories_query);
                                 <td><span class="pill <?php echo $status_class; ?>"><?php echo htmlspecialchars($blog['status']); ?></span></td>
                                 <td>
                                     <div class="action-btns">
-                                        <a href="#" class="btn-icon"><i class="fa-regular fa-pen-to-square"></i></a>
-                                        <a href="#" class="btn-icon delete"><i class="fa-solid fa-trash"></i></a>
+                                        <a href="editor-blog.php?edit=<?php echo $blog['id']; ?>" class="btn-icon"><i class="fa-regular fa-pen-to-square"></i></a>
+                                        <a href="?delete=<?php echo $blog['id']; ?>" class="btn-icon delete"><i class="fa-solid fa-trash"></i></a>
                                     </div>
                                 </td>
                             </tr>

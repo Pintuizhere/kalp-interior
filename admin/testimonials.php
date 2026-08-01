@@ -1,6 +1,141 @@
 <?php
+require_once 'config/db.php';
 $pageTitle = 'Testimonials';
 $currentPage = 'testimonials';
+
+$success_msg = '';
+$error_msg = '';
+
+if (isset($_GET['success'])) {
+    if ($_GET['success'] == 'delete') $success_msg = "Testimonial deleted successfully!";
+    if ($_GET['success'] == 'update') $success_msg = "Testimonial updated successfully!";
+    if ($_GET['success'] == 'insert') $success_msg = "Testimonial saved successfully!";
+}
+
+// Handle Delete
+if (isset($_GET['delete'])) {
+    $id = (int)$_GET['delete'];
+    $stmt = $conn->prepare("DELETE FROM testimonials WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        header("Location: testimonials.php?success=delete");
+        exit;
+    } else {
+        $error_msg = "Failed to delete testimonial.";
+    }
+    $stmt->close();
+}
+
+// Handle Form Submission
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_testimonial'])) {
+    $testimonial_id = isset($_POST['testimonial_id']) ? (int)$_POST['testimonial_id'] : 0;
+    $client_name = $conn->real_escape_string($_POST['client_name']);
+    $client_role = $conn->real_escape_string($_POST['client_role'] ?? '');
+    $company_name = $conn->real_escape_string($_POST['company_name'] ?? '');
+    $company_icon = $conn->real_escape_string($_POST['company_icon'] ?? '');
+    $content = $conn->real_escape_string($_POST['content']);
+    $status = $conn->real_escape_string($_POST['status']);
+
+    $client_image = '';
+    $company_logo = '';
+
+    if (empty($client_name) || empty($content)) {
+        $error_msg = "Name and Content are required.";
+    } else {
+        if (isset($_FILES['client_image']) && $_FILES['client_image']['error'] == 0) {
+            $upload_dir = '../uploads/testimonials/';
+            if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+            $file_extension = strtolower(pathinfo($_FILES['client_image']['name'], PATHINFO_EXTENSION));
+            $allowed_exts = ['jpg', 'jpeg', 'png', 'webp'];
+
+            if (in_array($file_extension, $allowed_exts)) {
+                $client_image = 'testi_' . time() . '.' . $file_extension;
+                $target_file = $upload_dir . $client_image;
+                if (!move_uploaded_file($_FILES['client_image']['tmp_name'], $target_file)) {
+                    $error_msg = "Failed to upload image.";
+                }
+            } else {
+                $error_msg = "Invalid image format.";
+            }
+        }
+
+        if (isset($_FILES['company_logo']) && $_FILES['company_logo']['error'] == 0) {
+            $upload_dir = '../uploads/testimonials/';
+            if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+            $file_extension = strtolower(pathinfo($_FILES['company_logo']['name'], PATHINFO_EXTENSION));
+            $allowed_exts = ['jpg', 'jpeg', 'png', 'webp', 'svg', 'gif'];
+
+            if (in_array($file_extension, $allowed_exts)) {
+                $company_logo = 'logo_' . time() . '.' . $file_extension;
+                $target_file = $upload_dir . $company_logo;
+                if (!move_uploaded_file($_FILES['company_logo']['tmp_name'], $target_file)) {
+                    $error_msg = "Failed to upload company logo.";
+                }
+            } else {
+                $error_msg = "Invalid company logo format.";
+            }
+        }
+
+        if (empty($error_msg)) {
+            if ($testimonial_id > 0) {
+                // Update existing
+                $update_query = "UPDATE testimonials SET client_name=?, client_role=?, company_name=?, company_icon=?, content=?, status=?";
+                $params = [$client_name, $client_role, $company_name, $company_icon, $content, $status];
+                $types = "ssssss";
+
+                if (!empty($client_image)) {
+                    $update_query .= ", client_image=?";
+                    $params[] = $client_image;
+                    $types .= "s";
+                }
+                if (!empty($company_logo)) {
+                    $update_query .= ", company_logo=?";
+                    $params[] = $company_logo;
+                    $types .= "s";
+                }
+                $update_query .= " WHERE id=?";
+                $params[] = $testimonial_id;
+                $types .= "i";
+
+                $stmt = $conn->prepare($update_query);
+                $stmt->bind_param($types, ...$params);
+                if ($stmt->execute()) {
+                    header("Location: testimonials.php?success=update");
+                    exit;
+                } else {
+                    $error_msg = "Database error: " . $conn->error;
+                }
+                $stmt->close();
+            } else {
+                // Insert new
+                $stmt = $conn->prepare("INSERT INTO testimonials (client_name, client_role, company_name, company_logo, company_icon, client_image, content, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("ssssssss", $client_name, $client_role, $company_name, $company_logo, $company_icon, $client_image, $content, $status);
+                if ($stmt->execute()) {
+                    header("Location: testimonials.php?success=insert");
+                    exit;
+                } else {
+                    $error_msg = "Database error: " . $conn->error;
+                }
+                $stmt->close();
+            }
+        }
+    }
+}
+
+// Fetch for edit
+$edit_data = null;
+if (isset($_GET['edit'])) {
+    $edit_id = (int)$_GET['edit'];
+    $stmt = $conn->prepare("SELECT * FROM testimonials WHERE id = ?");
+    $stmt->bind_param("i", $edit_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $edit_data = $result->fetch_assoc();
+    }
+    $stmt->close();
+}
+
 include 'includes/header.php';
 include 'includes/sidebar.php';
 ?>
@@ -17,20 +152,24 @@ include 'includes/sidebar.php';
             </button>
         </div>
 
+        <?php if(!empty($success_msg)): ?>
+            <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <?php echo $success_msg; ?>
+            </div>
+        <?php endif; ?>
+        <?php if(!empty($error_msg)): ?>
+            <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <?php echo $error_msg; ?>
+            </div>
+        <?php endif; ?>
+
         <!-- MANAGE TESTIMONIALS VIEW -->
-        <div class="tab-content active" id="view-manage">
+        <div class="tab-content <?php echo isset($_GET['edit']) ? '' : 'active'; ?>" id="view-manage">
             <div class="table-wrapper">
                 <div class="table-toolbar">
                     <div class="search-box">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <input type="text" placeholder="Search testimonials...">
-                    </div>
-                    <div>
-                        <select class="form-control" style="padding: 8px 15px; width: 150px;">
-                            <option>All Status</option>
-                            <option>Published</option>
-                            <option>Draft</option>
-                        </select>
                     </div>
                 </div>
 
@@ -45,138 +184,175 @@ include 'includes/sidebar.php';
                         </tr>
                     </thead>
                     <tbody>
+                        <?php
+                        $query = "SELECT * FROM testimonials ORDER BY created_at DESC";
+                        $result = $conn->query($query);
+                        if ($result && $result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                $img_src = !empty($row['client_image']) ? '../uploads/testimonials/' . htmlspecialchars($row['client_image']) : 'https://ui-avatars.com/api/?name='.urlencode($row['client_name']);
+                        ?>
                         <tr>
                             <td>
                                 <div class="user-info">
-                                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" class="user-avatar" alt="Sarah Mitchell">
+                                    <img src="<?php echo $img_src; ?>" class="user-avatar" alt="<?php echo htmlspecialchars($row['client_name']); ?>">
                                     <div class="user-details">
-                                        <h4 style="font-size: 14px; margin-bottom: 2px;">Sarah Mitchell</h4>
-                                        <p style="color: var(--text-muted); font-size: 11px;">Home Renovation Client</p>
+                                        <h4 style="font-size: 14px; margin-bottom: 2px;"><?php echo htmlspecialchars($row['client_name']); ?></h4>
+                                        <p style="color: var(--text-muted); font-size: 11px;"><?php echo htmlspecialchars($row['client_role']); ?></p>
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <div style="font-size: 12px; color: var(--text-main);"><i class="fa-solid fa-fan" style="color: #4f46e5; margin-right:5px;"></i> Logoipsum</div>
+                                <?php if(!empty($row['company_name'])): ?>
+                                <div style="font-size: 12px; color: var(--text-main); display: flex; align-items: center; gap: 5px;">
+                                    <?php if(!empty($row['company_logo'])): ?>
+                                    <img src="../uploads/testimonials/<?php echo htmlspecialchars($row['company_logo']); ?>" style="max-height: 20px;">
+                                    <?php elseif(!empty($row['company_icon'])): ?>
+                                    <i class="<?php echo htmlspecialchars($row['company_icon']); ?>" style="color: #EAB136;"></i> 
+                                    <?php endif; ?>
+                                    <?php echo htmlspecialchars($row['company_name']); ?>
+                                </div>
+                                <?php else: ?>
+                                <span style="color: var(--text-muted); font-size:12px;">N/A</span>
+                                <?php endif; ?>
                             </td>
                             <td style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-style: italic; color: var(--text-muted);">
-                                "The entire process was seamless from start to finish. The team delivered exceptional..."
+                                "<?php echo htmlspecialchars(substr($row['content'], 0, 50)); ?>..."
                             </td>
-                            <td><span class="pill progress">Published</span></td>
+                            <td><span class="pill progress"><?php echo htmlspecialchars($row['status']); ?></span></td>
                             <td>
                                 <div class="action-btns">
-                                    <a href="#" class="btn-icon"><i class="fa-solid fa-pen"></i></a>
-                                    <a href="#" class="btn-icon delete"><i class="fa-solid fa-trash"></i></a>
+                                    <a href="?edit=<?php echo $row['id']; ?>" class="btn-icon edit"><i class="fa-solid fa-pen"></i></a>
+                                    <a href="?delete=<?php echo $row['id']; ?>" class="btn-icon delete" onclick="return confirm('Delete this testimonial?');"><i class="fa-solid fa-trash"></i></a>
                                 </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                                <div class="user-info">
-                                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" class="user-avatar" alt="Robert Fox">
-                                    <div class="user-details">
-                                        <h4 style="font-size: 14px; margin-bottom: 2px;">Robert Fox</h4>
-                                        <p style="color: var(--text-muted); font-size: 11px;">CEO, Tech Innovators</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div style="font-size: 12px; color: var(--text-main);"><i class="fa-solid fa-gem" style="color: #EAB136; margin-right:5px;"></i> Logoipsum</div>
-                            </td>
-                            <td style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-style: italic; color: var(--text-muted);">
-                                "The attention to detail and ability to capture our brand identity was phenomenal..."
-                            </td>
-                            <td><span class="pill progress">Published</span></td>
-                            <td>
-                                <div class="action-btns">
-                                    <a href="#" class="btn-icon"><i class="fa-solid fa-pen"></i></a>
-                                    <a href="#" class="btn-icon delete"><i class="fa-solid fa-trash"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="user-info">
-                                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" class="user-avatar" alt="Eleanor Pena">
-                                    <div class="user-details">
-                                        <h4 style="font-size: 14px; margin-bottom: 2px;">Eleanor Pena</h4>
-                                        <p style="color: var(--text-muted); font-size: 11px;">Homeowner</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div style="font-size: 12px; color: var(--text-main);"><i class="fa-solid fa-leaf" style="color: #4CAF50; margin-right:5px;"></i> Logoipsum</div>
-                            </td>
-                            <td style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-style: italic; color: var(--text-muted);">
-                                "We wanted our home to feel like a luxurious retreat, and they absolutely delivered..."
-                            </td>
-                            <td><span class="pill progress">Published</span></td>
-                            <td>
-                                <div class="action-btns">
-                                    <a href="#" class="btn-icon"><i class="fa-solid fa-pen"></i></a>
-                                    <a href="#" class="btn-icon delete"><i class="fa-solid fa-trash"></i></a>
-                                </div>
-                            </td>
-                        </tr>
+                        <?php } } else { ?>
+                            <tr><td colspan="5" style="text-align: center;">No testimonials found.</td></tr>
+                        <?php } ?>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- ADD TESTIMONIAL VIEW -->
-        <div class="tab-content" id="view-add-testimonial">
-            <div class="form-panel">
-                <form action="#" method="POST" enctype="multipart/form-data">
-                    <div class="form-grid">
-                        
-                        <div class="form-group">
-                            <label class="form-label">Client Name</label>
-                            <input type="text" class="form-control" placeholder="e.g., Sarah Mitchell" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Client Role / Designation</label>
-                            <input type="text" class="form-control" placeholder="e.g., Home Renovation Client or CEO">
-                        </div>
+        <!-- ADD TESTIMONIAL VIEW WITH LIVE PREVIEW -->
+        <div class="tab-content <?php echo isset($_GET['edit']) ? 'active' : ''; ?>" id="view-add-testimonial">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                
+                <!-- Left: Form -->
+                <div class="form-panel">
+                    <form action="#" method="POST" enctype="multipart/form-data">
+                        <div class="form-grid">
+                            
+                            <?php if($edit_data): ?>
+                                <input type="hidden" name="testimonial_id" value="<?php echo $edit_data['id']; ?>">
+                            <?php endif; ?>
 
-                        <div class="form-group">
-                            <label class="form-label">Company / Brand Name</label>
-                            <input type="text" class="form-control" placeholder="e.g., Logoipsum (Leave blank if not applicable)">
-                        </div>
+                            <div class="form-group">
+                                <label class="form-label">Client Name</label>
+                                <input type="text" name="client_name" id="input_client_name" class="form-control" placeholder="e.g., Sarah Mitchell" required value="<?php echo $edit_data ? htmlspecialchars($edit_data['client_name']) : ''; ?>">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Client Role / Designation</label>
+                                <input type="text" name="client_role" id="input_client_role" class="form-control" placeholder="e.g., Home Renovation Client or CEO" value="<?php echo $edit_data ? htmlspecialchars($edit_data['client_role']) : ''; ?>">
+                            </div>
 
-                        <div class="form-group">
-                            <label class="form-label">Company Icon (FontAwesome)</label>
-                            <input type="text" class="form-control" placeholder="e.g., fa-solid fa-gem">
-                        </div>
+                            <div class="form-group">
+                                <label class="form-label">Company / Brand Name</label>
+                                <input type="text" name="company_name" id="input_company_name" class="form-control" placeholder="e.g., Logoipsum" value="<?php echo $edit_data ? htmlspecialchars($edit_data['company_name']) : ''; ?>">
+                            </div>
 
-                        <div class="form-group full">
-                            <label class="form-label">Client Image / Avatar</label>
-                            <div class="file-upload-box" onclick="document.getElementById('client_image').click()" style="padding: 30px;">
-                                <i class="fa-solid fa-user-circle"></i>
-                                <h4>Click to upload client photo</h4>
-                                <p style="font-size:12px; margin-top:5px;">Square image recommended (e.g., 150x150px)</p>
-                                <input type="file" id="client_image" accept="image/*">
+                            <div class="form-group">
+                                <label class="form-label">Brand Logo (Image file)</label>
+                                <input type="file" name="company_logo" id="input_company_logo" class="form-control" accept="image/*" onchange="previewCompanyLogo(this)">
+                                <small style="color: var(--text-muted); font-size: 11px;">Upload an image (png, jpg, svg) or use an icon below.</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Company Icon (FontAwesome fallback)</label>
+                                <input type="text" name="company_icon" id="input_company_icon" class="form-control" placeholder="e.g., fa-solid fa-gem" value="<?php echo $edit_data ? htmlspecialchars($edit_data['company_icon']) : 'fa-solid fa-gem'; ?>">
+                            </div>
+
+                            <div class="form-group full">
+                                <label class="form-label">Client Image / Avatar</label>
+                                <div class="file-upload-box" onclick="document.getElementById('input_client_image').click()" style="padding: 30px; cursor:pointer;">
+                                    <i class="fa-solid fa-user-circle"></i>
+                                    <h4>Click to upload client photo</h4>
+                                    <p style="font-size:12px; margin-top:5px;">Square image recommended (e.g., 150x150px)</p>
+                                    <input type="file" name="client_image" id="input_client_image" accept="image/*" style="display:none;" onchange="previewImage(this)">
+                                </div>
+                            </div>
+
+                            <div class="form-group full">
+                                <label class="form-label">Testimonial Content</label>
+                                <textarea name="content" id="input_content" class="form-control" placeholder="Write the client's review here..." style="min-height: 150px;" required><?php echo $edit_data ? htmlspecialchars($edit_data['content']) : ''; ?></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Status</label>
+                                <select name="status" class="form-control">
+                                    <option value="Published" <?php echo ($edit_data && $edit_data['status'] == 'Published') ? 'selected' : ''; ?>>Published</option>
+                                    <option value="Draft" <?php echo ($edit_data && $edit_data['status'] == 'Draft') ? 'selected' : ''; ?>>Draft</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group full" style="display:flex; justify-content:flex-end; gap:15px; margin-top:10px;">
+                                <?php if($edit_data): ?>
+                                    <a href="testimonials.php" class="btn-primary" style="background:#f1f5f9; color:var(--text-main); text-decoration: none; padding: 10px 20px; border-radius: 5px;">Cancel</a>
+                                <?php else: ?>
+                                    <button type="button" class="btn-primary" style="background:#f1f5f9; color:var(--text-main);" onclick="switchTab('manage')">Cancel</button>
+                                <?php endif; ?>
+                                <button type="submit" name="save_testimonial" class="btn-primary"><?php echo $edit_data ? 'Update Testimonial' : 'Save Testimonial'; ?></button>
                             </div>
                         </div>
-
-                        <div class="form-group full">
-                            <label class="form-label">Testimonial Content</label>
-                            <textarea class="form-control" placeholder="Write the client's review here..." style="min-height: 150px;" required></textarea>
+                    </form>
+                </div>
+                
+                <!-- Right: Live Preview -->
+                <div class="preview-panel" style="background: #f8fafc; padding: 30px; border-radius: 12px; border: 1px dashed #cbd5e1; display:flex; flex-direction:column; align-items:center;">
+                    <h3 style="font-size: 16px; margin-bottom: 30px; color: var(--text-muted);">Live Preview</h3>
+                    
+                    <!-- Preview Card matching frontend HTML -->
+                    <div style="width: 100%; max-width: 400px; background: white; border-radius: 10px; padding: 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.03);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                            <?php 
+                                $preview_img_src = 'https://ui-avatars.com/api/?name=C+N';
+                                if($edit_data && !empty($edit_data['client_image'])) {
+                                    $preview_img_src = '../uploads/testimonials/' . htmlspecialchars($edit_data['client_image']);
+                                } else if($edit_data && !empty($edit_data['client_name'])) {
+                                    $preview_img_src = 'https://ui-avatars.com/api/?name='.urlencode($edit_data['client_name']);
+                                }
+                            ?>
+                            <img id="preview_img" src="<?php echo $preview_img_src; ?>" alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                            <span id="preview_company_wrapper" style="font-weight: 700; color: var(--text-dark); font-size: 16px; display: flex; align-items: center; gap: 5px; <?php echo ($edit_data && (empty($edit_data['company_name']) && empty($edit_data['company_logo']))) ? 'display:none;' : ''; ?>">
+                                <?php 
+                                    $logo_display = 'none';
+                                    $icon_display = 'inline-block';
+                                    $logo_src = '';
+                                    if($edit_data && !empty($edit_data['company_logo'])) {
+                                        $logo_display = 'inline-block';
+                                        $icon_display = 'none';
+                                        $logo_src = '../uploads/testimonials/' . htmlspecialchars($edit_data['company_logo']);
+                                    }
+                                ?>
+                                <img id="preview_company_img" src="<?php echo $logo_src; ?>" style="max-height: 25px; display: <?php echo $logo_display; ?>;">
+                                <i id="preview_icon" class="<?php echo $edit_data ? htmlspecialchars($edit_data['company_icon']) : 'fa-solid fa-gem'; ?>" style="color: #EAB136; display: <?php echo $icon_display; ?>;"></i> 
+                                <span id="preview_company"><?php echo $edit_data ? htmlspecialchars($edit_data['company_name']) : ''; ?></span>
+                            </span>
                         </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Status</label>
-                            <select class="form-control">
-                                <option>Published</option>
-                                <option>Draft</option>
-                            </select>
+                        <div style="font-size: 45px; color: #334C40; line-height: 1; margin-bottom: 20px;">
+                            <i class="fa-solid fa-quote-left"></i>
                         </div>
-
-                        <div class="form-group full" style="display:flex; justify-content:flex-end; gap:15px; margin-top:10px;">
-                            <button type="button" class="btn-primary" style="background:#f1f5f9; color:var(--text-main);" onclick="switchTab('manage')">Cancel</button>
-                            <button type="submit" class="btn-primary">Save Testimonial</button>
+                        <p id="preview_content" style="color: #64748b; line-height: 1.6; margin-bottom: 30px; font-size: 15px;">
+                            <?php echo $edit_data ? htmlspecialchars($edit_data['content']) : 'The testimonial content will appear here...'; ?>
+                        </p>
+                        <div style="border-left: 3px solid #334C40; padding-left: 15px;">
+                            <h4 id="preview_name" style="color: var(--text-dark); margin: 0 0 3px 0; font-size: 16px; text-transform: uppercase;"><?php echo $edit_data ? htmlspecialchars($edit_data['client_name']) : 'CLIENT NAME'; ?></h4>
+                            <p id="preview_role" style="color: #64748b; font-size: 13px; margin: 0;"><?php echo $edit_data ? htmlspecialchars($edit_data['client_role']) : 'Role / Title'; ?></p>
                         </div>
                     </div>
-                </form>
+                </div>
+
             </div>
         </div>
 
@@ -189,11 +365,101 @@ include 'includes/sidebar.php';
 
 <script>
 function switchTab(tabId) {
-    // Hide all contents
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    
-    // Show selected content
     document.getElementById('view-' + tabId).classList.add('active');
+}
+
+// Live Preview JS logic
+document.addEventListener('DOMContentLoaded', () => {
+    const inputs = {
+        name: document.getElementById('input_client_name'),
+        role: document.getElementById('input_client_role'),
+        company: document.getElementById('input_company_name'),
+        icon: document.getElementById('input_company_icon'),
+        content: document.getElementById('input_content')
+    };
+
+    const preview = {
+        name: document.getElementById('preview_name'),
+        role: document.getElementById('preview_role'),
+        company: document.getElementById('preview_company'),
+        icon: document.getElementById('preview_icon'),
+        company_img: document.getElementById('preview_company_img'),
+        content: document.getElementById('preview_content'),
+        img: document.getElementById('preview_img')
+    };
+
+    function updatePreview() {
+        preview.name.innerText = inputs.name.value || 'CLIENT NAME';
+        preview.role.innerText = inputs.role.value || 'Role / Title';
+        preview.company.innerText = inputs.company.value || '';
+        
+        const hasLogo = document.getElementById('input_company_logo').files[0];
+        const hasCompany = inputs.company.value.trim() !== '';
+
+        if (!hasLogo && !hasCompany) {
+            document.getElementById('preview_company_wrapper').style.display = 'none';
+        } else {
+            document.getElementById('preview_company_wrapper').style.display = 'flex';
+        }
+
+        // Hide icon if company_logo is uploaded (handled in previewCompanyLogo)
+        if (!hasLogo) {
+            preview.icon.className = inputs.icon.value || 'fa-solid fa-gem';
+            preview.icon.style.display = 'inline-block';
+            preview.company_img.style.display = 'none';
+        }
+
+        preview.content.innerText = inputs.content.value || 'The testimonial content will appear here...';
+        
+        if(!inputs.name.value && !document.getElementById('input_client_image').files[0]) {
+             preview.img.src = 'https://ui-avatars.com/api/?name=C+N';
+        } else if(inputs.name.value && !document.getElementById('input_client_image').files[0]) {
+             preview.img.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(inputs.name.value);
+        }
+    }
+
+    Object.values(inputs).forEach(input => {
+        if(input) input.addEventListener('input', updatePreview);
+    });
+
+    // Initial update on load to handle pre-filled edit data
+    if (document.getElementById('input_client_name').value) {
+        // Only run on inputs so we don't clear the server-side generated image logic
+        preview.name.innerText = inputs.name.value;
+        preview.role.innerText = inputs.role.value;
+        preview.company.innerText = inputs.company.value;
+        preview.content.innerText = inputs.content.value;
+    }
+});
+
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview_img').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function previewCompanyLogo(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview_company_img').src = e.target.result;
+            document.getElementById('preview_company_img').style.display = 'inline-block';
+            document.getElementById('preview_icon').style.display = 'none';
+            document.getElementById('preview_company_wrapper').style.display = 'flex';
+        }
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        document.getElementById('preview_company_img').style.display = 'none';
+        document.getElementById('preview_icon').style.display = 'inline-block';
+        if(document.getElementById('input_company_name').value.trim() === '') {
+            document.getElementById('preview_company_wrapper').style.display = 'none';
+        }
+    }
 }
 </script>
 
