@@ -867,12 +867,14 @@ document.addEventListener('DOMContentLoaded', function() {
                                     filename = `Kalp_Interior_Studio_${label}_Estimate.pdf`;
                                 }
 
+                                const pdfHeight = Math.max(1123, pdfTemplate.offsetHeight);
+                                
                                 const opt = {
                                     margin:       0,
                                     filename:     filename,
                                     image:        { type: 'jpeg', quality: 1 },
-                                    html2canvas:  { scale: 2, useCORS: true, scrollX: 0, scrollY: 0, width: 794, height: 1123 }, 
-                                    jsPDF:        { unit: 'px', format: [794, 1123], orientation: 'portrait', hotfixes: ["px_scaling"] }
+                                    html2canvas:  { scale: 2, useCORS: true, scrollX: 0, scrollY: 0, width: 794, height: pdfHeight }, 
+                                    jsPDF:        { unit: 'px', format: [794, pdfHeight], orientation: 'portrait', hotfixes: ["px_scaling"] }
                                 };
 
                                 html2pdf().set(opt).from(pdfTemplate).save().then(() => {
