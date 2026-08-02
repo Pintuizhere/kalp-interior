@@ -1098,7 +1098,7 @@
                     <label for="lead-contact">Contact Number *</label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-phone input-icon"></i>
-                        <input type="text" id="lead-contact" class="form-control" placeholder="Enter your phone number" required>
+                        <input type="tel" id="lead-contact" class="form-control" placeholder="Enter your phone number" required pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                     </div>
                 </div>
                 
