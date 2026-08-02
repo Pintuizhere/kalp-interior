@@ -65,7 +65,7 @@
             </li>
             <li class="menu-label" style="margin-top: 15px; font-size: 11px; color: var(--text-muted); padding: 0 15px; font-weight: 600; letter-spacing: 1px;">FRONTEND PAGES</li>
             <li>
-                <a href="manage_page.php?page=home" class="<?php echo ($currentPage == 'page_home') ? 'active' : ''; ?>">
+                <a href="editor-home.php" class="<?php echo ($currentPage == 'page_home') ? 'active' : ''; ?>">
                     <i class="fa-solid fa-house"></i> Home Page
                 </a>
             </li>

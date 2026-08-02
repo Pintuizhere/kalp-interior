@@ -80,13 +80,45 @@ function val($key, $data) {
                     <h3 style="margin-bottom: 20px; color: var(--primary-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">Hero Section</h3>
                     
                     <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display:block; margin-bottom:8px; font-weight:500;">Hero Background Image URL</label>
+                        <input type="text" name="content[hero_bg_image]" value="<?php echo val('hero_bg_image', $content_data); ?>" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:5px;" placeholder="https://images.unsplash.com/...">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
                         <label style="display:block; margin-bottom:8px; font-weight:500;">Hero Title <span style="color:#ef4444;">*</span></label>
                         <input type="text" name="content[hero_title]" value="<?php echo val('hero_title', $content_data); ?>" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:5px;">
                     </div>
                     
-                    <div class="form-group" style="margin-bottom: 30px;">
+                    <div class="form-group" style="margin-bottom: 20px;">
                         <label style="display:block; margin-bottom:8px; font-weight:500;">Hero Description <span style="color:#ef4444;">*</span></label>
                         <textarea name="content[hero_desc]" rows="3" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:5px; font-family:inherit;"><?php echo val('hero_desc', $content_data); ?></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display:block; margin-bottom:8px; font-weight:500;">Rating Text</label>
+                        <input type="text" name="content[hero_rating_text]" value="<?php echo val('hero_rating_text', $content_data); ?>" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:5px;" placeholder="4.9/5 Rating - 15,000 Reviews">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label style="display:block; margin-bottom:8px; font-weight:500;">Primary Button Text</label>
+                            <input type="text" name="content[hero_btn1_text]" value="<?php echo val('hero_btn1_text', $content_data); ?>" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:5px;" placeholder="Contact us">
+                        </div>
+                        <div class="form-group">
+                            <label style="display:block; margin-bottom:8px; font-weight:500;">Primary Button Link</label>
+                            <input type="text" name="content[hero_btn1_link]" value="<?php echo val('hero_btn1_link', $content_data); ?>" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:5px;" placeholder="contact.php">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                        <div class="form-group">
+                            <label style="display:block; margin-bottom:8px; font-weight:500;">Secondary Button Text</label>
+                            <input type="text" name="content[hero_btn2_text]" value="<?php echo val('hero_btn2_text', $content_data); ?>" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:5px;" placeholder="View Projects">
+                        </div>
+                        <div class="form-group">
+                            <label style="display:block; margin-bottom:8px; font-weight:500;">Secondary Button Link</label>
+                            <input type="text" name="content[hero_btn2_link]" value="<?php echo val('hero_btn2_link', $content_data); ?>" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:5px;" placeholder="projects.php">
+                        </div>
                     </div>
 
                     <h3 style="margin-bottom: 20px; color: var(--primary-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">Statistics Section</h3>
