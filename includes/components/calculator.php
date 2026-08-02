@@ -111,7 +111,7 @@
                                 </label>
                             </div>
 
-                            <div class="calc-step-label">
+                            <div class="calc-step-label" id="specific-type-label">
                                 <span class="step-num"><i class="fa-solid fa-arrow-right"></i></span>
                                 <label>Select Specific Type</label>
                             </div>
@@ -162,6 +162,9 @@
                         </div>
 
                     </div>
+
+                    <!-- Standard Steps wrapper -->
+                    <div id="standard-calc-steps">
 
                     <!-- Step 2: Square Footage -->
                     <div class="calc-step-group" id="sqft-step-group" style="margin-bottom: 30px;">
@@ -329,11 +332,11 @@
                     <p class="calc-disclaimer">
                         <i class="fa-solid fa-circle-info"></i> This is an estimated range. Final cost may vary based on design, material selection & site conditions.
                     </p>
+                    
+                    </div> <!-- End standard-calc-steps -->
 
-                </form>
-
-                <!-- Modular Kitchen Wizard Form -->
-                <form id="kitchen-calculator-form" style="display: none;">
+                    <!-- Modular Kitchen Options -->
+                    <div id="kitchen-options" class="sub-options-group" style="display: none; padding-top: 20px;">
                     
                     <!-- Progress Bar for Kitchen -->
                     <div class="kitchen-progress-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; position: relative;">
@@ -364,7 +367,7 @@
                     </div>
 
                     <!-- Kitchen Step 1: Layout -->
-                    <div id="kitchen-step-1" class="kitchen-step-content active">
+                    <div id="kitchen-step-1" class="kitchen-step-content active" style="display: block; margin-bottom: 40px;">
                         <h3 style="text-align: center; color: white; margin-bottom: 25px;">Select the layout of your kitchen</h3>
                         <div class="calc-options-grid" style="grid-template-columns: repeat(3, 1fr); gap: 15px;">
                             
@@ -461,8 +464,7 @@
                             </label>
 
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-                            <button type="button" class="calc-submit-btn k-back-to-main-btn" style="width: auto; padding: 10px 30px; background: rgba(255,255,255,0.1);"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                        <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
                             <button type="button" class="calc-submit-btn k-next-btn" style="width: auto; padding: 10px 30px;">Next <i class="fa-solid fa-arrow-right"></i></button>
                         </div>
                     </div>
@@ -495,30 +497,53 @@
                         
                         <div class="calc-options-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px;">
                             <label class="calc-option-card active k-package-card" style="padding: 20px; text-align: left; display: block;">
-                                <input type="radio" name="k_package" value="1500" checked>
+                                <input type="radio" name="k_package" value="9500" checked>
                                 <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
                                     <div class="k-pkg-radio" style="width:16px; height:16px; border-radius:50%; border:2px solid white; display:inline-block; margin-right:10px;"></div>
-                                    Essentials
+                                    Essential Kitchen
                                 </div>
-                                <p style="font-size: 12px; margin-bottom: 15px; text-align: center; opacity: 0.8;">A range of basic units and accessories for a comfortable kitchen.</p>
+                                <p style="font-size: 14px; margin-bottom: 15px; text-align: center; color: #F4B41A; font-weight: bold;">₹9,500/RFT</p>
                                 <ul style="font-size: 11px; padding-left: 15px; opacity: 0.9; margin-bottom: 0;">
-                                    <li style="margin-bottom: 5px;">Century Sainik BWP 710 Grade Ply</li>
-                                    <li style="margin-bottom: 5px;">1mm Premium Quality Laminate</li>
-                                    <li style="margin-bottom: 5px;">Hettich Innotech Tandem Boxes</li>
+                                    <li style="margin-bottom: 5px;"><strong>Plywood:</strong> BWR Grade (Euro/Grain Touch/Wood Touch)</li>
+                                    <li style="margin-bottom: 5px;"><strong>Shutters:</strong> 0.8 mm laminate</li>
+                                    <li style="margin-bottom: 5px;"><strong>Edge Band:</strong> PVC edge band</li>
+                                    <li style="margin-bottom: 5px;"><strong>Back Panel:</strong> 6 mm BWR plywood</li>
+                                    <li style="margin-bottom: 5px;"><strong>Hardware:</strong> Standard soft-close hinges & channels</li>
+                                    <li style="margin-bottom: 5px;"><strong>Handles:</strong> SS profile/C-handle</li>
                                 </ul>
                             </label>
                             
                             <label class="calc-option-card k-package-card" style="padding: 20px; text-align: left; display: block;">
-                                <input type="radio" name="k_package" value="2000">
+                                <input type="radio" name="k_package" value="13000">
                                 <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
                                     <div class="k-pkg-radio" style="width:16px; height:16px; border-radius:50%; border:2px solid rgba(255,255,255,0.3); display:inline-block; margin-right:10px;"></div>
-                                    Premium
+                                    Premium Kitchen
                                 </div>
-                                <p style="font-size: 12px; margin-bottom: 15px; text-align: center; opacity: 0.8;">An exquisite offering with sleek fixtures and hardware.</p>
+                                <p style="font-size: 14px; margin-bottom: 15px; text-align: center; color: #F4B41A; font-weight: bold;">₹13,000/RFT</p>
                                 <ul style="font-size: 11px; padding-left: 15px; opacity: 0.9; margin-bottom: 0;">
-                                    <li style="margin-bottom: 5px;">Century Bond BWP 710 Grade Ply</li>
-                                    <li style="margin-bottom: 5px;">1.5mm Acrylic (Color of choice)</li>
-                                    <li style="margin-bottom: 5px;">Hettich Innotech Tandem Boxes (8pcs)</li>
+                                    <li style="margin-bottom: 5px;"><strong>Plywood:</strong> BWP Grade</li>
+                                    <li style="margin-bottom: 5px;"><strong>Shutters:</strong> Premium laminate or acrylic (selected areas)</li>
+                                    <li style="margin-bottom: 5px;"><strong>Edge Band:</strong> 1 mm PVC edge band</li>
+                                    <li style="margin-bottom: 5px;"><strong>Back Panel:</strong> 6 mm BWP plywood</li>
+                                    <li style="margin-bottom: 5px;"><strong>Hardware:</strong> Soft-close premium hardware (Ebco/Hettich eq.)</li>
+                                    <li style="margin-bottom: 5px;"><strong>Handles:</strong> G-profile/J-profile or premium handles</li>
+                                </ul>
+                            </label>
+
+                            <label class="calc-option-card k-package-card" style="padding: 20px; text-align: left; display: block;">
+                                <input type="radio" name="k_package" value="18000">
+                                <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <div class="k-pkg-radio" style="width:16px; height:16px; border-radius:50%; border:2px solid rgba(255,255,255,0.3); display:inline-block; margin-right:10px;"></div>
+                                    Luxury Kitchen
+                                </div>
+                                <p style="font-size: 14px; margin-bottom: 15px; text-align: center; color: #F4B41A; font-weight: bold;">₹18,000/RFT</p>
+                                <ul style="font-size: 11px; padding-left: 15px; opacity: 0.9; margin-bottom: 0;">
+                                    <li style="margin-bottom: 5px;"><strong>Plywood:</strong> 710 Grade BWP plywood</li>
+                                    <li style="margin-bottom: 5px;"><strong>Shutters:</strong> Acrylic / PU finish</li>
+                                    <li style="margin-bottom: 5px;"><strong>Edge Band:</strong> Premium laser/PVC edge band</li>
+                                    <li style="margin-bottom: 5px;"><strong>Back Panel:</strong> BWP plywood</li>
+                                    <li style="margin-bottom: 5px;"><strong>Hardware:</strong> Premium hardware (Blum / Hettich)</li>
+                                    <li style="margin-bottom: 5px;"><strong>Handles:</strong> Handleless Gola profile or premium profile</li>
                                 </ul>
                             </label>
                         </div>
@@ -529,73 +554,33 @@
                         </div>
                     </div>
 
-                    <!-- Kitchen Step 4: Accessories -->
+                    <!-- Kitchen Step 4: Add on -->
                     <div id="kitchen-step-4" class="kitchen-step-content" style="display: none;">
-                        <h3 style="text-align: center; color: white; margin-bottom: 10px;">Additional Accessories</h3>
+                        <h3 style="text-align: center; color: white; margin-bottom: 10px;">Add on</h3>
                         <p style="text-align: center; color: rgba(255,255,255,0.7); font-size: 13px; margin-bottom: 25px;">The prices are indicative only, actual cost will be provided after hardware finalization</p>
                         
                         <div class="calc-options-grid k-accessories-grid" style="grid-template-columns: repeat(2, 1fr); gap: 15px;">
                             <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
-                                <input type="checkbox" name="k_accessories" value="15000" data-name="Wicker Basket" style="margin-right: 15px; margin-top: 5px;">
+                                <input type="checkbox" name="k_accessories" value="300" data-name="Granite" style="margin-right: 15px; margin-top: 5px;">
                                 <div>
-                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Wicker Basket</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹15,000/-</div>
+                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Granite</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹300/sq ft</div>
                                 </div>
                             </label>
                             
                             <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
-                                <input type="checkbox" name="k_accessories" value="20000" data-name="Corner Solution" style="margin-right: 15px; margin-top: 5px;">
+                                <input type="checkbox" name="k_accessories" value="450" data-name="Premium granite" style="margin-right: 15px; margin-top: 5px;">
                                 <div>
-                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Corner Solution</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹20,000/-</div>
+                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Premium granite</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹450/sq ft</div>
                                 </div>
                             </label>
 
                             <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
-                                <input type="checkbox" name="k_accessories" value="39000" data-name="Pantry Unit" style="margin-right: 15px; margin-top: 5px;">
+                                <input type="checkbox" name="k_accessories" value="900" data-name="Quartz/Premium Imported Granite" style="margin-right: 15px; margin-top: 5px;">
                                 <div>
-                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Pantry Unit</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹39,000/-</div>
-                                </div>
-                            </label>
-
-                            <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
-                                <input type="checkbox" name="k_accessories" value="3000" data-name="Pan Hanger Pack & Lid Holder" style="margin-right: 15px; margin-top: 5px;">
-                                <div>
-                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Pan Hanger Pack & Lid Holder</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹3,000/-</div>
-                                </div>
-                            </label>
-
-                            <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
-                                <input type="checkbox" name="k_accessories" value="5000" data-name="Kitchen Midway Pack" style="margin-right: 15px; margin-top: 5px;">
-                                <div>
-                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Kitchen Midway Pack</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹5,000/-</div>
-                                </div>
-                            </label>
-
-                            <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
-                                <input type="checkbox" name="k_accessories" value="2000" data-name="Wire Glass Holder" style="margin-right: 15px; margin-top: 5px;">
-                                <div>
-                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Wire Glass Holder</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹2,000/-</div>
-                                </div>
-                            </label>
-
-                            <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
-                                <input type="checkbox" name="k_accessories" value="1500" data-name="Shelf Tray" style="margin-right: 15px; margin-top: 5px;">
-                                <div>
-                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Shelf Tray</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹1,500/-</div>
-                                </div>
-                            </label>
-
-                            <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
-                                <input type="checkbox" name="k_accessories" value="4000" data-name="Pull Out / Swing Out Waste Bin" style="margin-right: 15px; margin-top: 5px;">
-                                <div>
-                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Pull/Swing Out Waste Bin</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹4,000/-</div>
+                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Quartz/Premium Imported Granite</div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹900/sq ft</div>
                                 </div>
                             </label>
                         </div>
@@ -606,6 +591,7 @@
                         </div>
                     </div>
 
+                    </div> <!-- End kitchen-options -->
                 </form>
             </div>
             
@@ -835,14 +821,14 @@
         <div style="margin-bottom: 30px; background: #f9f9f9; padding: 20px; border-radius: 8px;">
             <h2 style="font-size: 13px; color: #a49375; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Cost Breakdown</h2>
             <table style="width: 100%; font-size: 10px; line-height: 1.6; border-collapse: collapse;">
-                <tr><td style="padding-bottom: 4px;">Furniture</td><td id="pdf-bd-furniture" style="text-align: right;">...</td></tr>
+                <tr><td style="padding-bottom: 4px;">TV Unit, Crockery, Vanity & Other Furniture</td><td id="pdf-bd-furniture" style="text-align: right;">...</td></tr>
                 <tr><td style="padding-bottom: 4px;">Wardrobes & Storage</td><td id="pdf-bd-wardrobes" style="text-align: right;">...</td></tr>
                 <tr><td style="padding-bottom: 4px;">Modular Kitchen</td><td id="pdf-bd-kitchen" style="text-align: right;">...</td></tr>
                 <tr><td style="padding-bottom: 4px;">False Ceiling</td><td id="pdf-bd-false-ceiling" style="text-align: right;">...</td></tr>
                 <tr><td style="padding-bottom: 4px;">Electrical & Lighting</td><td id="pdf-bd-electrical" style="text-align: right;">...</td></tr>
-                <tr><td style="padding-bottom: 4px;">Paint & Finishes</td><td id="pdf-bd-paint" style="text-align: right;">...</td></tr>
-                <tr><td style="padding-bottom: 4px;">Decorative Lights</td><td id="pdf-bd-decorative" style="text-align: right;">...</td></tr>
-                <tr><td style="padding-bottom: 4px;">Design & Management</td><td id="pdf-bd-design" style="text-align: right;">...</td></tr>
+                <tr><td style="padding-bottom: 4px;">Paint & Wall Finishes</td><td id="pdf-bd-paint" style="text-align: right;">...</td></tr>
+                <tr><td style="padding-bottom: 4px;">Decorative Lights & Accessories</td><td id="pdf-bd-decorative" style="text-align: right;">...</td></tr>
+                <tr><td style="padding-bottom: 4px;">Design, Project Management & Site Supervision</td><td id="pdf-bd-design" style="text-align: right;">...</td></tr>
                 
                 <tr id="pdf-row-addon-8" style="display: none;"><td style="padding-bottom: 4px; color:#e8591c;">+ Civil work</td><td id="pdf-bd-addon-8" style="text-align: right; color:#e8591c;">...</td></tr>
                 <tr id="pdf-row-addon-10" style="display: none;"><td style="padding-bottom: 4px; color:#e8591c;">+ Flooring</td><td id="pdf-bd-addon-10" style="text-align: right; color:#e8591c;">...</td></tr>
@@ -865,6 +851,17 @@
             <div id="pdf-material-specs" style="font-size: 9px; line-height: 1.6;">
                 <!-- Filled dynamically -->
             </div>
+        </div>
+
+        <!-- User Details Section -->
+        <div style="margin-top: 20px; border-top: 1px solid #eeeeee; padding-top: 15px;">
+            <p style="font-size: 11px; margin-bottom: 5px; color: #333;"><strong>Name:</strong> <span id="pdf-lead-name">________</span></p>
+            <p style="font-size: 11px; margin-bottom: 5px; color: #333;"><strong>Contact Number:</strong> <span id="pdf-lead-contact">________</span></p>
+            <p style="font-size: 11px; margin-bottom: 15px; color: #333;"><strong>Location:</strong> <span id="pdf-lead-location">________</span></p>
+            <p style="font-size: 10px; line-height: 1.5; color: #666; font-style: italic;">
+                This quotation has been prepared based on your requirements. Kindly review the scope of work, specifications, and pricing. We look forward to bringing your vision to life.<br><br>
+                <strong>Kalp Interior Design Studio</strong>
+            </p>
         </div>
     </div>
     </div>
@@ -937,6 +934,192 @@
 
 </section>
 
+<!-- Lead Capture Modal -->
+<style>
+#calc-lead-modal .login-card-wrapper {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 440px;
+    padding: 0 20px;
+}
+#calc-lead-modal .shield-icon-container {
+    position: absolute;
+    top: -42px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 84px;
+    height: 84px;
+    background: #111;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #EAB136;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    z-index: 15;
+}
+#calc-lead-modal .shield-icon-container i {
+    color: #EAB136;
+    font-size: 32px;
+}
+#calc-lead-modal .login-card {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 60px 40px 40px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    position: relative;
+    border-top: 3px solid #EAB136;
+    text-align: left;
+}
+#calc-lead-modal .login-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+#calc-lead-modal .login-header h1 {
+    font-family: 'League Spartan', sans-serif;
+    font-size: 36px;
+    color: #1E2723;
+    margin-bottom: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+#calc-lead-modal .login-header h1 span {
+    color: #EAB136;
+}
+#calc-lead-modal .login-header p {
+    color: #66756C;
+    font-size: 14px;
+    line-height: 1.6;
+}
+#calc-lead-modal .form-group {
+    margin-bottom: 20px;
+}
+#calc-lead-modal .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1E2723;
+    margin-bottom: 8px;
+}
+#calc-lead-modal .input-wrapper {
+    position: relative;
+}
+#calc-lead-modal .input-wrapper .input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #66756C;
+    font-size: 16px;
+    z-index: 2;
+}
+#calc-lead-modal .form-control {
+    width: 100%;
+    padding: 14px 16px 14px 45px;
+    background: #F6F6F6;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1E2723;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    box-sizing: border-box;
+}
+#calc-lead-modal .form-control:focus {
+    outline: none;
+    background: #FFFFFF;
+    border-color: #EAB136;
+    box-shadow: 0 0 0 4px rgba(234, 177, 54, 0.1);
+}
+#calc-lead-modal .btn-login {
+    width: 100%;
+    padding: 14px;
+    background: #EAB136;
+    color: #1E2723;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(234, 177, 54, 0.3);
+    font-family: 'Inter', sans-serif;
+    margin-top: 10px;
+}
+#calc-lead-modal .btn-login:hover {
+    transform: translateY(-2px);
+    background: #D69E2B;
+    box-shadow: 0 6px 15px rgba(234, 177, 54, 0.4);
+}
+#calc-lead-modal #calc-lead-close {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    color: #66756C;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    text-decoration: underline;
+    font-family: 'Inter', sans-serif;
+}
+#calc-lead-modal #calc-lead-close:hover {
+    color: #1E2723;
+}
+</style>
+<div id="calc-lead-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
+    <div class="login-card-wrapper">
+        <div class="shield-icon-container">
+            <i class="fa-solid fa-calculator"></i>
+        </div>
+        
+        <div class="login-card">
+            <div class="login-header">
+                <h1>Get <span>Estimate</span></h1>
+                <p>Please provide your details to view<br>the detailed cost estimate.</p>
+            </div>
+            
+            <form id="calc-lead-form">
+                <div class="form-group">
+                    <label for="lead-name">Name *</label>
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-user input-icon"></i>
+                        <input type="text" id="lead-name" class="form-control" placeholder="Enter your full name" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="lead-contact">Contact Number *</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-phone input-icon"></i>
+                        <input type="text" id="lead-contact" class="form-control" placeholder="Enter your phone number" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="lead-location">Location *</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-location-dot input-icon"></i>
+                        <input type="text" id="lead-location" class="form-control" placeholder="Enter your city or area" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-login">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                    View Estimate
+                </button>
+                <button type="button" id="calc-lead-close">Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Include Javascript for logic -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="assets/js/calculator.js?v=1.3"></script>
+<script src="assets/js/calculator.js?v=1.4"></script>

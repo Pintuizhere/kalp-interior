@@ -1,4 +1,39 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // --- Lead Capture Modal Logic ---
+    window.isLeadCaptured = false;
+    window.currentCalcBtn = null;
+    
+    const leadModal = document.getElementById('calc-lead-modal');
+    const leadForm = document.getElementById('calc-lead-form');
+    const leadCloseBtn = document.getElementById('calc-lead-close');
+
+    if (leadForm) {
+        leadForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const pdfName = document.getElementById('pdf-lead-name');
+            const pdfContact = document.getElementById('pdf-lead-contact');
+            const pdfLocation = document.getElementById('pdf-lead-location');
+            
+            if (pdfName) pdfName.textContent = document.getElementById('lead-name').value;
+            if (pdfContact) pdfContact.textContent = document.getElementById('lead-contact').value;
+            if (pdfLocation) pdfLocation.textContent = document.getElementById('lead-location').value;
+            
+            window.isLeadCaptured = true;
+            if (leadModal) leadModal.style.display = 'none';
+            
+            if (window.currentCalcBtn) {
+                window.currentCalcBtn.click();
+            }
+        });
+    }
+    
+    if (leadCloseBtn) {
+        leadCloseBtn.addEventListener('click', function() {
+            if (leadModal) leadModal.style.display = 'none';
+        });
+    }
+
     // Handling custom radio buttons (Property Type, Design Style, Finish Level)
     const radioGroups = document.querySelectorAll('.calc-options-grid');
     
@@ -39,16 +74,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
                 
-                // Toggle entire form if category is kitchen
+                // Toggle standard steps vs kitchen steps
                 if (this.closest('.main-category-options')) {
-                    const mainForm = document.getElementById('estimate-calculator-form');
-                    const kitchenForm = document.getElementById('kitchen-calculator-form');
+                    const standardSteps = document.getElementById('standard-calc-steps');
+                    const specificTypeLabel = document.getElementById('specific-type-label');
+                    const kitchenOptions = document.getElementById('kitchen-options');
+                    
                     if (this.getAttribute('data-target') === 'kitchen-options' || this.id === 'cat-kitchen') {
-                        mainForm.style.display = 'none';
-                        kitchenForm.style.display = 'block';
+                        if (standardSteps) standardSteps.style.display = 'none';
+                        if (specificTypeLabel) specificTypeLabel.style.display = 'none';
+                        if (kitchenOptions) kitchenOptions.style.display = 'block';
                     } else {
-                        mainForm.style.display = 'block';
-                        kitchenForm.style.display = 'none';
+                        if (standardSteps) standardSteps.style.display = 'block';
+                        if (specificTypeLabel) specificTypeLabel.style.display = 'flex';
+                        if (kitchenOptions) kitchenOptions.style.display = 'none';
                     }
                 }
             });
@@ -106,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- Modular Kitchen Wizard Logic ---
-    const kitchenForm = document.getElementById('kitchen-calculator-form');
+    const kitchenForm = document.getElementById('kitchen-options');
     if (kitchenForm) {
         let currentKStep = 1;
         const totalKSteps = 5;
@@ -293,38 +332,52 @@ document.addEventListener('DOMContentLoaded', function() {
         // Package selection visual
         const pkgCards = document.querySelectorAll('.k-package-card');
         pkgCards.forEach(card => {
-            card.addEventListener('click', function() {
-                pkgCards.forEach(c => {
-                    c.classList.remove('active');
-                    c.querySelector('.k-pkg-radio').style.borderColor = 'rgba(255,255,255,0.3)';
+            const input = card.querySelector('input[type="radio"]');
+            if (input) {
+                input.addEventListener('change', function() {
+                    if (this.checked) {
+                        pkgCards.forEach(c => {
+                            c.classList.remove('active');
+                            const radio = c.querySelector('.k-pkg-radio');
+                            if(radio) radio.style.borderColor = 'rgba(255,255,255,0.3)';
+                        });
+                        card.classList.add('active');
+                        const radio = card.querySelector('.k-pkg-radio');
+                        if(radio) radio.style.borderColor = 'white';
+                    }
                 });
-                this.classList.add('active');
-                this.querySelector('.k-pkg-radio').style.borderColor = 'white';
-            });
+            }
         });
         
         // Accessory checkbox visual
         const accCards = document.querySelectorAll('.calc-checkbox-card');
         accCards.forEach(card => {
             const input = card.querySelector('input');
-            card.addEventListener('click', (e) => {
-                if(e.target !== input) {
-                    input.checked = !input.checked;
-                }
-                if(input.checked) {
-                    card.style.background = 'rgba(244, 180, 26, 0.1)';
-                    card.style.borderColor = '#F4B41A';
-                } else {
-                    card.style.background = 'rgba(255,255,255,0.05)';
-                    card.style.borderColor = 'rgba(255,255,255,0.1)';
-                }
-            });
+            if (input) {
+                input.addEventListener('change', () => {
+                    if(input.checked) {
+                        card.style.background = 'rgba(244, 180, 26, 0.1)';
+                        card.style.borderColor = '#F4B41A';
+                    } else {
+                        card.style.background = 'rgba(255,255,255,0.05)';
+                        card.style.borderColor = 'rgba(255,255,255,0.1)';
+                    }
+                });
+            }
         });
 
         const kCalcBtn = document.getElementById('kitchen-calculate-btn');
         if (kCalcBtn) {
             kCalcBtn.addEventListener('click', function(e) {
                 e.preventDefault();
+                
+                if (!window.isLeadCaptured) {
+                    window.currentCalcBtn = this;
+                    const leadModal = document.getElementById('calc-lead-modal');
+                    if(leadModal) leadModal.style.display = 'flex';
+                    return;
+                }
+                
                 currentKStep = 5;
                 updateKStep();
                 
@@ -361,7 +414,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     const formatNum = (num) => '₹' + Math.round(num).toLocaleString('en-IN');
                     
                     checkedAccs.forEach(acc => {
-                        const cost = parseFloat(acc.value);
+                        const ratePerFt = parseFloat(acc.value);
+                        const cost = ratePerFt * totalFt; // Calculate based on rft!
                         addonsCost += cost;
                         accList.innerHTML += `
                             <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
@@ -410,6 +464,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if(calcBtn) {
         calcBtn.addEventListener('click', function(e) {
             e.preventDefault();
+            
+            if (!window.isLeadCaptured) {
+                window.currentCalcBtn = this;
+                const leadModal = document.getElementById('calc-lead-modal');
+                if(leadModal) leadModal.style.display = 'flex';
+                return;
+            }
             
             // In a real scenario, you'd fetch the selected values:
             // const type = document.querySelector('input[name="property_type"]:checked').value;
@@ -504,13 +565,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('bd-total').innerText = `${formatNum(totalCost)}`;
                 
                 // Update breakdown with new percentages based on subtotal
-                const furnitureCost = Math.round(subtotal * 0.29);
-                const wardrobesCost = Math.round(subtotal * 0.21);
-                const kitchenCost = Math.round(subtotal * 0.15);
-                const falseCeilingCost = Math.round(subtotal * 0.10);
-                const electricalCost = Math.round(subtotal * 0.09);
-                const designCost = Math.round(subtotal * 0.06);
-                const paintCost = Math.round(subtotal * 0.04);
+                const furnitureCost = Math.round(subtotal * 0.285);
+                const wardrobesCost = Math.round(subtotal * 0.204);
+                const kitchenCost = Math.round(subtotal * 0.155);
+                const falseCeilingCost = Math.round(subtotal * 0.097);
+                const electricalCost = Math.round(subtotal * 0.089);
+                const designCost = Math.round(subtotal * 0.07);
+                const paintCost = Math.round(subtotal * 0.075);
                 // Make sure decorative sums to exactly the remainder to avoid rounding issues
                 const decorativeCost = subtotal - (furnitureCost + wardrobesCost + kitchenCost + falseCeilingCost + electricalCost + designCost + paintCost);
                 
@@ -707,13 +768,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                 const subtotal = Math.round(baseCost + designStyleCost);
                                 const totalCost = Math.round(subtotal + addonsCost);
                                 computedCosts = {
-                                    'furniture': Math.round(subtotal * 0.29),
-                                    'wardrobes': Math.round(subtotal * 0.21),
-                                    'kitchen': Math.round(subtotal * 0.15),
-                                    'false-ceiling': Math.round(subtotal * 0.10),
-                                    'electrical': Math.round(subtotal * 0.09),
-                                    'design': Math.round(subtotal * 0.06),
-                                    'paint': Math.round(subtotal * 0.04),
+                                    'furniture': Math.round(subtotal * 0.285),
+                                    'wardrobes': Math.round(subtotal * 0.204),
+                                    'kitchen': Math.round(subtotal * 0.155),
+                                    'false-ceiling': Math.round(subtotal * 0.097),
+                                    'electrical': Math.round(subtotal * 0.089),
+                                    'design': Math.round(subtotal * 0.07),
+                                    'paint': Math.round(subtotal * 0.075),
                                     'total': totalCost
                                 };
                                 computedCosts['decorative'] = subtotal - (computedCosts['furniture'] + computedCosts['wardrobes'] + computedCosts['kitchen'] + computedCosts['false-ceiling'] + computedCosts['electrical'] + computedCosts['design'] + computedCosts['paint']);
