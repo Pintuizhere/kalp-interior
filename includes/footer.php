@@ -1,3 +1,22 @@
+<?php
+// Fetch global settings for footer if not already fetched
+if (!isset($global_settings)) {
+    $global_settings = [];
+    if (isset($conn)) {
+        $res_g = $conn->query("SELECT setting_key, setting_value FROM site_settings");
+        if ($res_g) {
+            while($row_g = $res_g->fetch_assoc()) {
+                $global_settings[$row_g['setting_key']] = $row_g['setting_value'];
+            }
+        }
+    }
+}
+if (!function_exists('gval')) {
+    function gval($key, $data, $default = '') {
+        return (isset($data[$key]) && $data[$key] !== '') ? htmlspecialchars($data[$key]) : $default;
+    }
+}
+?>
     <?php // include 'includes/components/cta-banner.php'; ?>
     
     <footer class="site-footer" style="position: relative;">
@@ -14,13 +33,24 @@
                     <a href="index.php" class="footer-logo" style="display: block; margin-bottom: 20px;">
                         <img src="assets/images/logo.png" alt="Kalp Interior Studio" style="max-height: 50px; width: auto; object-fit: contain;">
                     </a>
-                    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">A home is built with emotions before it is built with materials.</p>
+                    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;"><?php echo gval('footer_text', $global_settings, 'A home is built with emotions before it is built with materials.'); ?></p>
                     
                     <div class="social-links" style="display: flex; gap: 10px;">
-                        <a href="#" style="width: 35px; height: 35px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white;"><i class="fa-brands fa-x-twitter"></i></a>
-                        <a href="#" style="width: 35px; height: 35px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white;"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#" style="width: 35px; height: 35px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white;"><i class="fa-brands fa-linkedin-in"></i></a>
-                        <a href="#" style="width: 35px; height: 35px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white;"><i class="fa-brands fa-instagram"></i></a>
+                        <?php if (gval('social_twitter', $global_settings)): ?>
+                        <a href="<?php echo gval('social_twitter', $global_settings); ?>" style="width: 35px; height: 35px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white;"><i class="fa-brands fa-x-twitter"></i></a>
+                        <?php endif; ?>
+                        
+                        <?php if (gval('social_facebook', $global_settings)): ?>
+                        <a href="<?php echo gval('social_facebook', $global_settings); ?>" style="width: 35px; height: 35px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white;"><i class="fa-brands fa-facebook-f"></i></a>
+                        <?php endif; ?>
+                        
+                        <?php if (gval('social_linkedin', $global_settings)): ?>
+                        <a href="<?php echo gval('social_linkedin', $global_settings); ?>" style="width: 35px; height: 35px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white;"><i class="fa-brands fa-linkedin-in"></i></a>
+                        <?php endif; ?>
+                        
+                        <?php if (gval('social_instagram', $global_settings)): ?>
+                        <a href="<?php echo gval('social_instagram', $global_settings); ?>" style="width: 35px; height: 35px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white;"><i class="fa-brands fa-instagram"></i></a>
+                        <?php endif; ?>
                     </div>
                 </div>
                 
@@ -48,19 +78,19 @@
                 <div class="footer-widget">
                     <h4 style="font-size: 16px; margin-bottom: 25px; color: white;">Contact Us</h4>
                     <ul class="footer-links">
-                        <li>+91 9234772288</li>
-                        <li>info@kalpinteriors.com</li>
-                        <li style="line-height: 1.6;">KALP INTERIOR DESIGN STUDIO,<br>ISM ROAD, opp. SRDAV, Pundag,<br>Ranchi, Jharkhand 834001</li>
+                        <li><?php echo gval('contact_phone', $global_settings, '+91 9234772288'); ?></li>
+                        <li><?php echo gval('contact_email', $global_settings, 'info@kalpinteriors.com'); ?></li>
+                        <li style="line-height: 1.6;"><?php echo nl2br(gval('contact_address', $global_settings, "KALP INTERIOR DESIGN STUDIO,\nISM ROAD, opp. SRDAV, Pundag,\nRanchi, Jharkhand 834001")); ?></li>
                     </ul>
                 </div>
             </div>
             
             <div class="footer-bottom">
-                <p>Copyright &copy; <?php echo date("Y"); ?> <span style="color: var(--accent-color);">Kalp Studio.</span> All Rights Reserved.</p>
+                <p>Copyright &copy; <?php echo date("Y"); ?> <span style="color: var(--accent-color);"><?php echo gval('footer_copyright_name', $global_settings, 'Kalp Studio.'); ?></span> All Rights Reserved.</p>
                 <div class="footer-bottom-links">
-                    <a href="#">User Terms & Conditions</a>
+                    <a href="<?php echo gval('footer_terms_url', $global_settings, '#'); ?>">User Terms & Conditions</a>
                     <span class="divider">|</span>
-                    <a href="#">Privacy Policy</a>
+                    <a href="<?php echo gval('footer_privacy_url', $global_settings, '#'); ?>">Privacy Policy</a>
                 </div>
             </div>
         </div>

@@ -58,11 +58,6 @@
                     <i class="fa-regular fa-image"></i> Media Library
                 </a>
             </li>
-            <li>
-                <a href="stripe_logos.php" class="<?php echo ($currentPage == 'stripe_logos') ? 'active' : ''; ?>">
-                    <i class="fa-solid fa-rectangle-ad"></i> Stripe Logos
-                </a>
-            </li>
             <li class="menu-label" style="margin-top: 15px; font-size: 11px; color: var(--text-muted); padding: 0 15px; font-weight: 600; letter-spacing: 1px;">FRONTEND PAGES</li>
             <li>
                 <a href="editor-home.php" class="<?php echo ($currentPage == 'page_home') ? 'active' : ''; ?>">
@@ -75,8 +70,13 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="<?php echo ($currentPage == 'menus') ? 'active' : ''; ?>">
-                    <i class="fa-solid fa-list-ul"></i> Menus
+                <a href="stripe_logos.php" class="<?php echo ($currentPage == 'stripe_logos') ? 'active' : ''; ?>">
+                    <i class="fa-solid fa-rectangle-ad"></i> Stripe Logos
+                </a>
+            </li>
+            <li>
+                <a href="manage_before_after.php" class="<?php echo ($currentPage == 'manage_before_after') ? 'active' : ''; ?>">
+                    <i class="fa-solid fa-images"></i> Before & After
                 </a>
             </li>
         </ul>

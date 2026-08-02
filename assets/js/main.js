@@ -32,18 +32,21 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Before/After Slider Logic
-    const baSlider = document.getElementById('ba-slider');
-    if (baSlider) {
-        const beforeImage = document.querySelector('.ba-image-before');
-        const sliderHandle = document.getElementById('ba-slider-handle');
+    // Before/After Slider Logic (Multiple instances)
+    const baContainers = document.querySelectorAll('.ba-slider-container');
+    baContainers.forEach(container => {
+        const baSlider = container.querySelector('.ba-slider-input');
+        const beforeImage = container.querySelector('.ba-image-before');
+        const sliderHandle = container.querySelector('.ba-slider-handle');
         
-        baSlider.addEventListener('input', function(e) {
-            const sliderValue = e.target.value;
-            // Update the width of the before image
-            beforeImage.style.width = sliderValue + "%";
-            // Move the custom handle position
-            sliderHandle.style.left = sliderValue + "%";
-        });
-    }
+        if (baSlider && beforeImage && sliderHandle) {
+            baSlider.addEventListener('input', function(e) {
+                const sliderValue = e.target.value;
+                // Update the width of the before image
+                beforeImage.style.width = sliderValue + "%";
+                // Move the custom handle position
+                sliderHandle.style.left = sliderValue + "%";
+            });
+        }
+    });
 });
