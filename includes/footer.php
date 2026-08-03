@@ -17,7 +17,7 @@ if (!function_exists('gval')) {
     }
 }
 ?>
-    <?php // include 'includes/components/cta-banner.php'; ?>
+    <?php include 'includes/components/cta-banner.php'; ?>
     
     <footer class="site-footer" style="position: relative;">
         <!-- Footer Wave Divider -->
@@ -88,9 +88,16 @@ if (!function_exists('gval')) {
             <div class="footer-bottom">
                 <p>Copyright &copy; <?php echo date("Y"); ?> <span style="color: var(--accent-color);"><?php echo gval('footer_copyright_name', $global_settings, 'Kalp Studio.'); ?></span> All Rights Reserved.</p>
                 <div class="footer-bottom-links">
-                    <a href="<?php echo gval('footer_terms_url', $global_settings, '#'); ?>">User Terms & Conditions</a>
+                    <?php 
+                        $terms_url = gval('footer_terms_url', $global_settings);
+                        $terms_url = ($terms_url == '#' || $terms_url == '') ? 'terms-conditions.php' : $terms_url;
+                        
+                        $privacy_url = gval('footer_privacy_url', $global_settings);
+                        $privacy_url = ($privacy_url == '#' || $privacy_url == '') ? 'privacy-policy.php' : $privacy_url;
+                    ?>
+                    <a href="<?php echo $terms_url; ?>">User Terms & Conditions</a>
                     <span class="divider">|</span>
-                    <a href="<?php echo gval('footer_privacy_url', $global_settings, '#'); ?>">Privacy Policy</a>
+                    <a href="<?php echo $privacy_url; ?>">Privacy Policy</a>
                 </div>
             </div>
         </div>

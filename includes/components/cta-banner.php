@@ -4,8 +4,9 @@
     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 17, 17, 0.75); z-index: 1;"></div>
     
     <div class="container" style="position: relative; z-index: 2; max-width: 900px; margin: 0 auto;">
-        <h2 style="font-family: var(--font-headline); font-size: 4.5rem; line-height: 1.1; font-weight: 800; text-transform: uppercase; margin-bottom: 25px;">
-            <span style="font-family: var(--font-accent); color: var(--accent-color); text-transform: lowercase; font-weight: bold; font-style: normal;">beautiful spaces</span> Happen.<br>We Make Them Yours.
+        <h2 style="font-family: var(--font-headline); font-size: 4.5rem; line-height: 1.1; font-weight: 800; text-transform: uppercase; margin-bottom: 25px; position: relative; z-index: 2;">
+            <span style="display: inline-block; font-family: var(--font-accent); color: var(--accent-color); text-transform: lowercase; font-weight: 700; font-size: 6rem; z-index: 3; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); transform: rotate(-5deg); margin-bottom: -25px;">beautiful spaces</span><br>
+            <span style="position: relative; z-index: 1;">HAPPEN.<br>WE MAKE THEM YOURS.</span>
         </h2>
         
         <p style="font-size: 1.2rem; line-height: 1.6; opacity: 0.9; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto;">
