@@ -17,7 +17,7 @@ if (!function_exists('gval')) {
     }
 }
 ?>
-    <?php include 'includes/components/cta-banner.php'; ?>
+    <?php include __DIR__ . '/components/cta-banner.php'; ?>
     
     <footer class="site-footer" style="position: relative;">
         <!-- Footer Wave Divider -->

@@ -68,107 +68,47 @@
             </div>
             
             <div class="press-accordion-container">
-                <!-- Panel 1 (Active by default) -->
-                <div class="press-panel active" style="background-image: url('assets/images/banner-1.webp');">
+                <?php
+                if (!isset($conn)) {
+                    require_once __DIR__ . '/../../admin/config/db.php';
+                }
+                $awards_query = $conn->query("SELECT * FROM awards ORDER BY display_order ASC, id ASC");
+                $is_first = true;
+                
+                if ($awards_query && $awards_query->num_rows > 0):
+                    while($award = $awards_query->fetch_assoc()):
+                        $active_class = $is_first ? 'active' : '';
+                        $is_first = false;
+                        
+                        // Ensure image path is correct relative to frontend
+                        $bg_image = $award['image'];
+                        if (strpos($bg_image, 'uploads/') === 0) {
+                            $bg_image = $bg_image;
+                        }
+                ?>
+                <div class="press-panel <?php echo $active_class; ?>" style="background-image: url('<?php echo htmlspecialchars($bg_image); ?>');">
                     <div class="press-panel-overlay"></div>
                     <div class="press-panel-content">
                         <div class="press-brand">
-                            <i class="fa-solid fa-award" style="color: var(--accent-color);"></i> Ranchi Express
+                            <i class="<?php echo htmlspecialchars($award['icon']); ?>" style="color: var(--accent-color);"></i> <?php echo htmlspecialchars($award['brand']); ?>
                         </div>
                         <div class="press-bottom">
-                            <h3 class="press-title">Featured: Ranchi Express</h3>
+                            <h3 class="press-title"><?php echo htmlspecialchars($award['title']); ?></h3>
                             <div class="press-date">
-                                <span>Sunday</span>
-                                <span>Oct 02, 2022</span>
+                                <span><?php echo htmlspecialchars($award['day_text']); ?></span>
+                                <span><?php echo htmlspecialchars($award['date_text']); ?></span>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Panel 2 -->
-                <div class="press-panel" style="background-image: url('assets/images/banner-3.webp');">
-                    <div class="press-panel-overlay"></div>
-                    <div class="press-panel-content">
-                        <div class="press-brand">
-                            <i class="fa-solid fa-newspaper" style="color: var(--accent-color);"></i> ArchDigest
-                        </div>
-                        <div class="press-bottom">
-                            <h3 class="press-title">Featured: Luxury Mumbai Apartment</h3>
-                            <div class="press-date">
-                                <span>Monday</span>
-                                <span>Nov 10, 2025</span>
-                            </div>
-                        </div>
-                    </div>
+                <?php 
+                    endwhile;
+                else: 
+                ?>
+                <div style="width: 100%; text-align: center; color: white; padding: 50px;">
+                    <p>No awards to display. Please add them from the admin panel.</p>
                 </div>
-
-                <!-- Panel 3 -->
-                <div class="press-panel" style="background-image: url('assets/images/banner-2.jpeg');">
-                    <div class="press-panel-overlay"></div>
-                    <div class="press-panel-content">
-                        <div class="press-brand">
-                            <i class="fa-solid fa-trophy" style="color: var(--accent-color);"></i> Best Materials
-                        </div>
-                        <div class="press-bottom">
-                            <h3 class="press-title">Sustainable Sourcing Award</h3>
-                            <div class="press-date">
-                                <span>Wednesday</span>
-                                <span>Oct 15, 2025</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Panel 4 -->
-                <div class="press-panel" style="background-image: url('assets/images/banner-4.webp');">
-                    <div class="press-panel-overlay"></div>
-                    <div class="press-panel-content">
-                        <div class="press-brand">
-                            <i class="fa-solid fa-star" style="color: var(--accent-color);"></i> 5-Star Rated
-                        </div>
-                        <div class="press-bottom">
-                            <h3 class="press-title">Top 10 Studios in India</h3>
-                            <div class="press-date">
-                                <span>Tuesday</span>
-                                <span>Oct 21, 2025</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Panel 5 -->
-                <div class="press-panel" style="background-image: url('assets/images/banner-5.webp');">
-                    <div class="press-panel-overlay"></div>
-                    <div class="press-panel-content">
-                        <div class="press-brand">
-                            <i class="fa-solid fa-medal" style="color: var(--accent-color);"></i> Recognition
-                        </div>
-                        <div class="press-bottom">
-                            <h3 class="press-title">Kalp Interior Global Expansion</h3>
-                            <div class="press-date">
-                                <span>Wednesday</span>
-                                <span>Aug 27, 2025</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Panel 6 -->
-                <div class="press-panel" style="background-image: url('assets/images/banner-6.webp');">
-                    <div class="press-panel-overlay"></div>
-                    <div class="press-panel-content">
-                        <div class="press-brand">
-                            <i class="fa-solid fa-crown" style="color: var(--accent-color);"></i> Industry Leader
-                        </div>
-                        <div class="press-bottom">
-                            <h3 class="press-title">Outstanding Contribution to Design</h3>
-                            <div class="press-date">
-                                <span>Friday</span>
-                                <span>Aug 15, 2025</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <?php endif; ?>
             </div>
         </div>
     </section>

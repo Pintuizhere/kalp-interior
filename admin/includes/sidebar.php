@@ -79,6 +79,11 @@
                     <i class="fa-solid fa-images"></i> Before & After
                 </a>
             </li>
+            <li>
+                <a href="manage_awards.php" class="<?php echo ($currentPage == 'manage_awards') ? 'active' : ''; ?>">
+                    <i class="fa-solid fa-award"></i> Awards & Press
+                </a>
+            </li>
         </ul>
 
         <p class="menu-label">OTHERS</p>

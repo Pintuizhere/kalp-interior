@@ -41,7 +41,7 @@ $avatar_4 = !empty($home_content['hero_avatar_4']) ? htmlspecialchars($home_cont
     @import url('../assets/css/style.css');
 
     /* Hide frontend navigation and footer elements that might come from style.css */
-    .navbar, footer, .main-footer, .footer-bottom { display: none !important; }
+    .navbar, footer, .main-footer, .footer-bottom, .cta-banner { display: none !important; }
     
     /* Fix topbar padding overridden by frontend CSS */
     header.topbar { padding: 0 30px !important; }
