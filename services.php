@@ -21,134 +21,41 @@ include 'includes/header.php';
                 <p class="section-subtitle" style="justify-content: center;">OUR SERVICES</p>
                 <h2 class="section-title">Explore Our Services:<br><span class="accent-text" style="font-family: var(--font-accent); font-style: italic; font-weight: 400;">Your Path to Success</span></h2>
             </div>
-            
-                        <div class="new-services-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 50px;">
+            <div class="new-services-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 50px;">
                 
-                <!-- Service 1: Interior Design -->
+                <?php
+                require_once 'admin/config/db.php';
+                $services = $conn->query("SELECT * FROM services WHERE status = 'Active' ORDER BY display_order ASC, id ASC");
+                if ($services && $services->num_rows > 0):
+                    $count = 1;
+                    while($srv = $services->fetch_assoc()):
+                        $srv_img = (strpos($srv['cover_image'], 'http') === 0) ? $srv['cover_image'] : $srv['cover_image'];
+                        $num = str_pad($count, 2, '0', STR_PAD_LEFT);
+                ?>
+                <!-- Service Card -->
                 <div class="hp-service-card">
                     <div class="hp-sc-image">
-                        <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Interior Design">
-                        <div class="hp-sc-icon"><i class="fa-solid fa-couch"></i></div>
+                        <img src="<?php echo htmlspecialchars($srv_img); ?>" alt="<?php echo htmlspecialchars($srv['name']); ?>">
+                        <div class="hp-sc-icon"><i class="<?php echo htmlspecialchars($srv['icon']); ?>"></i></div>
                     </div>
                     <div class="hp-sc-content">
-                        <div class="hp-sc-number">01</div>
-                        <h3>INTERIOR DESIGN</h3>
-                        <p>Beautiful interiors that reflect your personality and enhance everyday living.</p>
-                        <a href="service-details.php" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
+                        <div class="hp-sc-number"><?php echo $num; ?></div>
+                        <h3><?php echo htmlspecialchars(strtoupper($srv['name'])); ?></h3>
+                        <p><?php echo htmlspecialchars($srv['short_desc']); ?></p>
+                        <a href="service-details.php?id=<?php echo $srv['id']; ?>" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </div>
-
-                <!-- Service 2: Residential Design -->
-                <div class="hp-service-card">
-                    <div class="hp-sc-image">
-                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Residential Design">
-                        <div class="hp-sc-icon"><i class="fa-solid fa-house-chimney"></i></div>
-                    </div>
-                    <div class="hp-sc-content">
-                        <div class="hp-sc-number">02</div>
-                        <h3>RESIDENTIAL DESIGN</h3>
-                        <p>Thoughtful designs for homes that combine comfort, style, and functionality.</p>
-                        <a href="service-details.php" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
+                <?php 
+                    $count++;
+                    endwhile;
+                else:
+                ?>
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: #f9f9f9; border-radius: 10px;">
+                    <p style="color: #666;">No services available at the moment.</p>
                 </div>
-
-                <!-- Service 3: Commercial Design -->
-                <div class="hp-service-card">
-                    <div class="hp-sc-image">
-                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Commercial Design">
-                        <div class="hp-sc-icon"><i class="fa-solid fa-building"></i></div>
-                    </div>
-                    <div class="hp-sc-content">
-                        <div class="hp-sc-number">03</div>
-                        <h3>COMMERCIAL DESIGN</h3>
-                        <p>Innovative spaces for businesses that inspire productivity and leave a lasting impression.</p>
-                        <a href="service-details.php" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <!-- Service 4: Furniture Design -->
-                <div class="hp-service-card">
-                    <div class="hp-sc-image">
-                        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Furniture Design">
-                        <div class="hp-sc-icon"><i class="fa-solid fa-chair"></i></div>
-                    </div>
-                    <div class="hp-sc-content">
-                        <div class="hp-sc-number">04</div>
-                        <h3>FURNITURE DESIGN</h3>
-                        <p>Custom furniture designs that blend aesthetics, comfort, and durability.</p>
-                        <a href="service-details.php" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <!-- Service 5: Architectural Design -->
-                <div class="hp-service-card">
-                    <div class="hp-sc-image">
-                        <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Architectural Design">
-                        <div class="hp-sc-icon"><i class="fa-solid fa-pen-ruler"></i></div>
-                    </div>
-                    <div class="hp-sc-content">
-                        <div class="hp-sc-number">05</div>
-                        <h3>ARCHITECTURAL DESIGN</h3>
-                        <p>Architectural solutions that are functional, sustainable, and timeless.</p>
-                        <a href="service-details.php" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <!-- Service 6: Kitchen Design -->
-                <div class="hp-service-card">
-                    <div class="hp-sc-image">
-                        <img src="https://images.unsplash.com/photo-1556910103-1c02745a8728?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Kitchen Design">
-                        <div class="hp-sc-icon"><i class="fa-solid fa-kitchen-set"></i></div>
-                    </div>
-                    <div class="hp-sc-content">
-                        <div class="hp-sc-number">06</div>
-                        <h3>KITCHEN DESIGN</h3>
-                        <p>Ergonomic and elegant kitchen designs that make cooking a delightful experience.</p>
-                        <a href="service-details.php" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <!-- Service 7: 3D Rendering -->
-                <div class="hp-service-card">
-                    <div class="hp-sc-image">
-                        <img src="https://images.unsplash.com/photo-1617806118233-18e1c0945594?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="3D Rendering">
-                        <div class="hp-sc-icon"><i class="fa-solid fa-cube"></i></div>
-                    </div>
-                    <div class="hp-sc-content">
-                        <div class="hp-sc-number">07</div>
-                        <h3>3D RENDERING</h3>
-                        <p>High-quality 3D visualizations that help you see your space before it's built.</p>
-                        <a href="service-details.php" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <!-- Service 8: Space Planning -->
-                <div class="hp-service-card">
-                    <div class="hp-sc-image">
-                        <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Space Planning">
-                        <div class="hp-sc-icon"><i class="fa-solid fa-border-all"></i></div>
-                    </div>
-                    <div class="hp-sc-content">
-                        <div class="hp-sc-number">08</div>
-                        <h3>SPACE PLANNING</h3>
-                        <p>Smart space planning to optimize flow, function, and comfort.</p>
-                        <a href="service-details.php" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <!-- Service 9: Home Automation -->
-                <div class="hp-service-card">
-                    <div class="hp-sc-image">
-                        <img src="https://images.unsplash.com/photo-1558002038-1055907df827?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Home Automation">
-                        <div class="hp-sc-icon"><i class="fa-solid fa-wifi"></i></div>
-                    </div>
-                    <div class="hp-sc-content">
-                        <div class="hp-sc-number">09</div>
-                        <h3>HOME AUTOMATION</h3>
-                        <p>Intelligent automation solutions for modern, convenient, and secure living.</p>
-                        <a href="service-details.php" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
+                <?php endif; ?>
+                
+            </div>
     </section>
     <section class="services-features" style="background-color: var(--bg-light); padding-bottom: 80px;">
         <div class="container" style="max-width: 1300px;">

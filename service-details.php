@@ -1,5 +1,78 @@
 <?php 
 $currentPage = 'services';
+require_once 'admin/config/db.php';
+
+// Validate ID
+if (!isset($_GET['id'])) {
+    header("Location: services.php");
+    exit();
+}
+$service_id = (int)$_GET['id'];
+
+// Get service base info
+$res = $conn->query("SELECT * FROM services WHERE id = $service_id AND status = 'Active'");
+if (!$res || $res->num_rows === 0) {
+    header("Location: services.php");
+    exit();
+}
+$service = $res->fetch_assoc();
+
+// Fetch dynamic content for this service
+$page_name = 'service_' . $service_id;
+$service_content = [];
+$stmt = $conn->prepare("SELECT section_key, content_value FROM page_content WHERE page_name = ?");
+$stmt->bind_param("s", $page_name);
+$stmt->execute();
+$result = $stmt->get_result();
+while($row = $result->fetch_assoc()) {
+    $service_content[$row['section_key']] = $row['content_value'];
+}
+$stmt->close();
+
+// Fallbacks
+$cover_img_fallback = (strpos($service['cover_image'], 'http') === 0) ? $service['cover_image'] : $service['cover_image'];
+$sd_hero_title = !empty($service_content['sd_hero_title']) ? $service_content['sd_hero_title'] : strtoupper($service['name']);
+$sd_hero_signature = !empty($service_content['sd_hero_signature']) ? $service_content['sd_hero_signature'] : 'Designed Around You';
+$sd_hero_desc = !empty($service_content['sd_hero_desc']) ? $service_content['sd_hero_desc'] : 'We create beautiful, functional interiors that reflect your personality and lifestyle. From concept to completion, we handle every detail to deliver spaces that inspire.';
+$sd_hero_img = !empty($service_content['sd_hero_img']) ? $service_content['sd_hero_img'] : $cover_img_fallback;
+
+$sd_f1_title = !empty($service_content['sd_f1_title']) ? $service_content['sd_f1_title'] : 'Personalized Approach';
+$sd_f1_desc = !empty($service_content['sd_f1_desc']) ? $service_content['sd_f1_desc'] : 'Tailored designs that reflect your style and needs.';
+$sd_f2_title = !empty($service_content['sd_f2_title']) ? $service_content['sd_f2_title'] : 'Smart Space Planning';
+$sd_f2_desc = !empty($service_content['sd_f2_desc']) ? $service_content['sd_f2_desc'] : 'Maximizing space, functionality and natural flow.';
+$sd_f3_title = !empty($service_content['sd_f3_title']) ? $service_content['sd_f3_title'] : 'Premium Materials';
+$sd_f3_desc = !empty($service_content['sd_f3_desc']) ? $service_content['sd_f3_desc'] : 'High-quality finishes and carefully curated materials.';
+$sd_f4_title = !empty($service_content['sd_f4_title']) ? $service_content['sd_f4_title'] : 'End-to-End Service';
+$sd_f4_desc = !empty($service_content['sd_f4_desc']) ? $service_content['sd_f4_desc'] : 'From concept and design to execution and styling.';
+
+$sd_why_title = !empty($service_content['sd_why_title']) ? $service_content['sd_why_title'] : 'What Makes Our';
+$sd_why_signature = !empty($service_content['sd_why_signature']) ? $service_content['sd_why_signature'] : 'Service Unique?';
+$sd_why_desc = !empty($service_content['sd_why_desc']) ? $service_content['sd_why_desc'] : 'We blend creativity with functionality to design spaces that are not only beautiful but also practical and timeless. Every project is managed with attention to detail, ensuring seamless execution and complete client satisfaction.';
+$sd_why_img = !empty($service_content['sd_why_img']) ? $service_content['sd_why_img'] : 'uploads/media/3d_rendering_cover.png';
+
+$sd_why_l1_title = !empty($service_content['sd_why_l1_title']) ? $service_content['sd_why_l1_title'] : 'Creative & Functional Designs';
+$sd_why_l1_desc = !empty($service_content['sd_why_l1_desc']) ? $service_content['sd_why_l1_desc'] : 'Spaces that look stunning and work beautifully for everyday living.';
+$sd_why_l2_title = !empty($service_content['sd_why_l2_title']) ? $service_content['sd_why_l2_title'] : 'Client-Centric Process';
+$sd_why_l2_desc = !empty($service_content['sd_why_l2_desc']) ? $service_content['sd_why_l2_desc'] : 'Your vision is our priority. We listen, collaborate and deliver.';
+$sd_why_l3_title = !empty($service_content['sd_why_l3_title']) ? $service_content['sd_why_l3_title'] : 'Timely Delivery';
+$sd_why_l3_desc = !empty($service_content['sd_why_l3_desc']) ? $service_content['sd_why_l3_desc'] : 'On-time project completion with transparency at every step.';
+$sd_why_l4_title = !empty($service_content['sd_why_l4_title']) ? $service_content['sd_why_l4_title'] : 'Quality You Can Trust';
+$sd_why_l4_desc = !empty($service_content['sd_why_l4_desc']) ? $service_content['sd_why_l4_desc'] : 'We use top-grade materials and partner with skilled craftsmen.';
+
+$sd_process_title = !empty($service_content['sd_process_title']) ? $service_content['sd_process_title'] : 'Simple Steps to Your';
+$sd_process_signature = !empty($service_content['sd_process_signature']) ? $service_content['sd_process_signature'] : 'Dream Space';
+
+$sd_p1_title = !empty($service_content['sd_p1_title']) ? $service_content['sd_p1_title'] : 'Consultation';
+$sd_p1_desc = !empty($service_content['sd_p1_desc']) ? $service_content['sd_p1_desc'] : 'We understand your needs, style, and budget.';
+$sd_p2_title = !empty($service_content['sd_p2_title']) ? $service_content['sd_p2_title'] : 'Concept & Planning';
+$sd_p2_desc = !empty($service_content['sd_p2_desc']) ? $service_content['sd_p2_desc'] : 'Our team creates layouts, mood boards & 3D visuals.';
+$sd_p3_title = !empty($service_content['sd_p3_title']) ? $service_content['sd_p3_title'] : 'Design Development';
+$sd_p3_desc = !empty($service_content['sd_p3_desc']) ? $service_content['sd_p3_desc'] : 'Finalizing materials, colors, furniture & finishes.';
+$sd_p4_title = !empty($service_content['sd_p4_title']) ? $service_content['sd_p4_title'] : 'Execution';
+$sd_p4_desc = !empty($service_content['sd_p4_desc']) ? $service_content['sd_p4_desc'] : 'We manage the entire process with precision.';
+$sd_p5_title = !empty($service_content['sd_p5_title']) ? $service_content['sd_p5_title'] : 'Final Styling';
+$sd_p5_desc = !empty($service_content['sd_p5_desc']) ? $service_content['sd_p5_desc'] : 'Adding the perfect finishing touches to bring it all together.';
+
 include 'includes/header.php'; 
 ?>
 
@@ -10,7 +83,7 @@ include 'includes/header.php';
         <div class="container">
             <h1 class="banner-title">SERVICES</h1>
             <div class="breadcrumbs">
-                <a href="index.php">Home</a> <span class="divider">/</span> <span class="current">Services</span>
+                <a href="index.php">Home</a> <span class="divider">/</span> <a href="services.php">Services</a> <span class="divider">/</span> <span class="current"><?php echo htmlspecialchars($service['name']); ?></span>
             </div>
         </div>
     </section>
@@ -25,11 +98,11 @@ include 'includes/header.php';
                         <span style="display: block; width: 40px; height: 2px; background: var(--accent-color);"></span>
                         <p class="section-subtitle" style="margin-bottom: 0;">OUR SERVICE</p>
                     </div>
-                    <h1 class="sd-hero-title">INTERIOR DESIGN</h1>
-                    <h2 class="sd-hero-signature signature-text">Designed Around You</h2>
+                    <h1 class="sd-hero-title"><?php echo $sd_hero_title; ?></h1>
+                    <h2 class="sd-hero-signature signature-text"><?php echo $sd_hero_signature; ?></h2>
                     
                     <p class="sd-hero-desc">
-                        We create beautiful, functional interiors that reflect your personality and lifestyle. From concept to completion, we handle every detail to deliver spaces that inspire.
+                        <?php echo $sd_hero_desc; ?>
                     </p>
                     
                     <div class="sd-hero-buttons">
@@ -39,7 +112,7 @@ include 'includes/header.php';
                     </div>
                 </div>
                 <div class="sd-hero-img-box">
-                    <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Interior Design Living Room">
+                    <img src="<?php echo $sd_hero_img; ?>" alt="<?php echo htmlspecialchars(strip_tags($sd_hero_title)); ?>">
                 </div>
             </div>
         </div>
@@ -51,23 +124,23 @@ include 'includes/header.php';
             <div class="sd-features-wrapper">
                 <div class="sd-f-col">
                     <div class="sd-f-icon"><i class="fa-solid fa-pen-ruler"></i></div>
-                    <h4>Personalized Approach</h4>
-                    <p>Tailored designs that reflect your style and needs.</p>
+                    <h4><?php echo $sd_f1_title; ?></h4>
+                    <p><?php echo $sd_f1_desc; ?></p>
                 </div>
                 <div class="sd-f-col">
                     <div class="sd-f-icon"><i class="fa-solid fa-layer-group"></i></div>
-                    <h4>Smart Space Planning</h4>
-                    <p>Maximizing space, functionality and natural flow.</p>
+                    <h4><?php echo $sd_f2_title; ?></h4>
+                    <p><?php echo $sd_f2_desc; ?></p>
                 </div>
                 <div class="sd-f-col">
                     <div class="sd-f-icon"><i class="fa-solid fa-couch"></i></div>
-                    <h4>Premium Materials</h4>
-                    <p>High-quality finishes and carefully curated materials.</p>
+                    <h4><?php echo $sd_f3_title; ?></h4>
+                    <p><?php echo $sd_f3_desc; ?></p>
                 </div>
                 <div class="sd-f-col">
                     <div class="sd-f-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
-                    <h4>End-to-End Service</h4>
-                    <p>From concept and design to execution and styling.</p>
+                    <h4><?php echo $sd_f4_title; ?></h4>
+                    <p><?php echo $sd_f4_desc; ?></p>
                 </div>
             </div>
         </div>
@@ -82,43 +155,43 @@ include 'includes/header.php';
                         <span style="display: block; width: 40px; height: 2px; background: var(--accent-color);"></span>
                         <p class="section-subtitle" style="margin-bottom: 0;">WHY CHOOSE US</p>
                     </div>
-                    <h2 class="sd-why-title">What Makes Our<br><span class="signature-text" style="color: var(--accent-color); font-weight: 400; text-transform: none;">Interior Design Unique?</span></h2>
+                    <h2 class="sd-why-title"><?php echo $sd_why_title; ?><br><span class="signature-text" style="color: var(--accent-color); font-weight: 400; text-transform: none;"><?php echo $sd_why_signature; ?></span></h2>
                     
                     <p class="sd-why-desc">
-                        We blend creativity with functionality to design interiors that are not only beautiful but also practical and timeless. Every project is managed with attention to detail, ensuring seamless execution and complete client satisfaction.
+                        <?php echo $sd_why_desc; ?>
                     </p>
                     
                     <div class="sd-why-img">
-                        <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Detail interior">
+                        <img src="<?php echo $sd_why_img; ?>" alt="Why Choose Us">
                     </div>
                 </div>
                 <div class="sd-why-right">
                     <div class="why-list-item">
                         <div class="why-check"><i class="fa-solid fa-check"></i></div>
                         <div class="why-text">
-                            <h4>Creative & Functional Designs</h4>
-                            <p>Spaces that look stunning and work beautifully for everyday living.</p>
+                            <h4><?php echo $sd_why_l1_title; ?></h4>
+                            <p><?php echo $sd_why_l1_desc; ?></p>
                         </div>
                     </div>
                     <div class="why-list-item">
                         <div class="why-check"><i class="fa-solid fa-check"></i></div>
                         <div class="why-text">
-                            <h4>Client-Centric Process</h4>
-                            <p>Your vision is our priority. We listen, collaborate and deliver.</p>
+                            <h4><?php echo $sd_why_l2_title; ?></h4>
+                            <p><?php echo $sd_why_l2_desc; ?></p>
                         </div>
                     </div>
                     <div class="why-list-item">
                         <div class="why-check"><i class="fa-solid fa-check"></i></div>
                         <div class="why-text">
-                            <h4>Timely Delivery</h4>
-                            <p>On-time project completion with transparency at every step.</p>
+                            <h4><?php echo $sd_why_l3_title; ?></h4>
+                            <p><?php echo $sd_why_l3_desc; ?></p>
                         </div>
                     </div>
                     <div class="why-list-item">
                         <div class="why-check"><i class="fa-solid fa-check"></i></div>
                         <div class="why-text">
-                            <h4>Quality You Can Trust</h4>
-                            <p>We use top-grade materials and partner with skilled craftsmen.</p>
+                            <h4><?php echo $sd_why_l4_title; ?></h4>
+                            <p><?php echo $sd_why_l4_desc; ?></p>
                         </div>
                     </div>
                 </div>
@@ -130,7 +203,7 @@ include 'includes/header.php';
     <section class="sd-process-timeline" style="padding: 100px 0; background-color: #F8F5F0;">
         <div class="container" style="max-width: 1200px; text-align: center;">
             <p class="section-subtitle" style="margin-bottom: 10px; justify-content: center;">OUR PROCESS</p>
-            <h2 class="sd-process-title">Simple Steps to Your <span class="signature-text" style="color: var(--accent-color); font-weight: 400; text-transform: none;">Dream Space</span></h2>
+            <h2 class="sd-process-title"><?php echo $sd_process_title; ?> <span class="signature-text" style="color: var(--accent-color); font-weight: 400; text-transform: none;"><?php echo $sd_process_signature; ?></span></h2>
             
             <div class="timeline-horizontal">
                 <!-- Step 1 -->
@@ -139,8 +212,8 @@ include 'includes/header.php';
                         <i class="fa-solid fa-clipboard-list"></i>
                         <span class="tl-number">1</span>
                     </div>
-                    <h4>Consultation</h4>
-                    <p>We understand your needs, style, and budget.</p>
+                    <h4><?php echo $sd_p1_title; ?></h4>
+                    <p><?php echo $sd_p1_desc; ?></p>
                 </div>
                 
                 <div class="tl-arrow"><i class="fa-solid fa-arrow-right-long" style="color: #df916b; opacity: 0.5;"></i></div>
@@ -151,8 +224,8 @@ include 'includes/header.php';
                         <i class="fa-solid fa-compass-drafting"></i>
                         <span class="tl-number">2</span>
                     </div>
-                    <h4>Concept & Planning</h4>
-                    <p>Our team creates layouts, mood boards & 3D visuals.</p>
+                    <h4><?php echo $sd_p2_title; ?></h4>
+                    <p><?php echo $sd_p2_desc; ?></p>
                 </div>
                 
                 <div class="tl-arrow"><i class="fa-solid fa-arrow-right-long" style="color: #df916b; opacity: 0.5;"></i></div>
@@ -163,8 +236,8 @@ include 'includes/header.php';
                         <i class="fa-solid fa-pen-nib"></i>
                         <span class="tl-number">3</span>
                     </div>
-                    <h4>Design Development</h4>
-                    <p>Finalizing materials, colors, furniture & finishes.</p>
+                    <h4><?php echo $sd_p3_title; ?></h4>
+                    <p><?php echo $sd_p3_desc; ?></p>
                 </div>
                 
                 <div class="tl-arrow"><i class="fa-solid fa-arrow-right-long" style="color: #df916b; opacity: 0.5;"></i></div>
@@ -175,8 +248,8 @@ include 'includes/header.php';
                         <i class="fa-solid fa-hammer"></i>
                         <span class="tl-number">4</span>
                     </div>
-                    <h4>Execution</h4>
-                    <p>We manage the entire process with precision.</p>
+                    <h4><?php echo $sd_p4_title; ?></h4>
+                    <p><?php echo $sd_p4_desc; ?></p>
                 </div>
                 
                 <div class="tl-arrow"><i class="fa-solid fa-arrow-right-long" style="color: #df916b; opacity: 0.5;"></i></div>
@@ -187,8 +260,8 @@ include 'includes/header.php';
                         <i class="fa-solid fa-star"></i>
                         <span class="tl-number">5</span>
                     </div>
-                    <h4>Final Styling</h4>
-                    <p>Adding the perfect finishing touches to bring it all together.</p>
+                    <h4><?php echo $sd_p5_title; ?></h4>
+                    <p><?php echo $sd_p5_desc; ?></p>
                 </div>
             </div>
         </div>
@@ -215,7 +288,7 @@ include 'includes/header.php';
             <div class="more-projects-grid sd-three-cols">
                 <!-- Card 1 -->
                 <div class="mp-card">
-                    <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="Living Room" class="mp-card-bg">
+                    <img src="uploads/media/after_1785707371_620.webp" alt="Living Room" class="mp-card-bg">
                     <div class="mp-card-top">
                         <div class="mp-tag">Residential Design</div>
 
@@ -237,7 +310,7 @@ include 'includes/header.php';
 
                 <!-- Card 2 -->
                 <div class="mp-card">
-                    <img src="https://images.unsplash.com/photo-1556910103-1c02745a8728?w=800&q=80" alt="Kitchen" class="mp-card-bg">
+                    <img src="uploads/media/kitchen_design_cover.png" alt="Kitchen" class="mp-card-bg">
                     <div class="mp-card-top">
                         <div class="mp-tag">Interior Design</div>
                         <div class="mp-like"><i class="fa-regular fa-heart"></i></div>
@@ -259,7 +332,7 @@ include 'includes/header.php';
 
                 <!-- Card 3 -->
                 <div class="mp-card">
-                    <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80" alt="Bedroom" class="mp-card-bg">
+                    <img src="uploads/media/3d_rendering_cover.png" alt="Bedroom" class="mp-card-bg">
                     <div class="mp-card-top">
                         <div class="mp-tag">Residential Design</div>
                         <div class="mp-like"><i class="fa-regular fa-heart"></i></div>
@@ -352,4 +425,3 @@ include 'includes/header.php';
 </main>
 
 <?php include 'includes/footer.php'; ?>
-
