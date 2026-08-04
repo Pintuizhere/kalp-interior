@@ -12,11 +12,12 @@ $error_msg = '';
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_category'])) {
     $name = $conn->real_escape_string($_POST['name']);
     $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name), '-'));
+    $icon = isset($_POST['icon']) ? $conn->real_escape_string($_POST['icon']) : '';
 
     if (!empty($name)) {
-        $stmt = $conn->prepare("INSERT INTO categories (name, slug) VALUES (?, ?)");
+        $stmt = $conn->prepare("INSERT INTO categories (name, slug, icon) VALUES (?, ?, ?)");
         if ($stmt) {
-            $stmt->bind_param("ss", $name, $slug);
+            $stmt->bind_param("sss", $name, $slug, $icon);
             if ($stmt->execute()) {
                 $success_msg = "Category added successfully!";
             } else {
@@ -45,7 +46,7 @@ if (isset($_GET['delete_id'])) {
 }
 
 // Fetch categories
-$cat_query = "SELECT * FROM categories ORDER BY created_at DESC";
+$cat_query = "SELECT * FROM categories ORDER BY order_index ASC, name ASC";
 $cat_result = $conn->query($cat_query);
 ?>
 
@@ -83,6 +84,22 @@ $cat_result = $conn->query($cat_query);
                         <p style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">The name is how it appears on your site.</p>
                     </div>
 
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display:block; margin-bottom:8px; font-weight:500;">Icon</label>
+                        <select name="icon" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:5px;">
+                            <option value="fa-solid fa-chair">Chair (Interior)</option>
+                            <option value="fa-solid fa-house">House (Exterior)</option>
+                            <option value="fa-regular fa-building">Building (Residence)</option>
+                            <option value="fa-solid fa-briefcase">Briefcase (Offices)</option>
+                            <option value="fa-solid fa-kitchen-set">Kitchen</option>
+                            <option value="fa-solid fa-couch">Couch (Living Room)</option>
+                            <option value="fa-solid fa-bed">Bed (Bed Room)</option>
+                            <option value="fa-solid fa-house-user">Residential Design</option>
+                            <option value="fa-solid fa-building-user">Commercial Design</option>
+                            <option value="fa-solid fa-border-all">All (Grid)</option>
+                        </select>
+                    </div>
+
                     <button type="submit" class="btn-primary" style="padding: 10px 20px; width:100%; justify-content:center;">
                         Add New Category
                     </button>
@@ -103,7 +120,10 @@ $cat_result = $conn->query($cat_query);
                         <?php if($cat_result && $cat_result->num_rows > 0): ?>
                             <?php while($cat = $cat_result->fetch_assoc()): ?>
                             <tr>
-                                <td><strong style="color:var(--text-dark);"><?php echo htmlspecialchars($cat['name']); ?></strong></td>
+                                <td>
+                                    <?php if(!empty($cat['icon'])): ?><i class="<?php echo htmlspecialchars($cat['icon']); ?>" style="margin-right: 8px; color: var(--accent-color);"></i><?php endif; ?>
+                                    <strong style="color:var(--text-dark);"><?php echo htmlspecialchars($cat['name']); ?></strong>
+                                </td>
                                 <td style="color:var(--text-muted);"><?php echo htmlspecialchars($cat['slug']); ?></td>
                                 <td>
                                     <div class="action-btns">

@@ -159,20 +159,19 @@
                     <li><a href="services.php" class="<?php echo (isset($currentPage) && $currentPage == 'services') ? 'active' : ''; ?>">Services</a></li>
                     <li><a href="projects.php" class="<?php echo (isset($currentPage) && $currentPage == 'projects') ? 'active' : ''; ?>">Projects</a></li>
                     <li><a href="blog.php" class="<?php echo (isset($currentPage) && $currentPage == 'blog') ? 'active' : ''; ?>">Blog</a></li>
-                    <li><a href="calculator.php" class="<?php echo (isset($currentPage) && $currentPage == 'calculator') ? 'active' : ''; ?>">Get Estimate</a></li>
                     <li><a href="contact.php" class="<?php echo (isset($currentPage) && $currentPage == 'contact') ? 'active' : ''; ?>">Contact Us</a></li>
                     <li class="mobile-only-li">
-                        <a href="https://wa.me/919234772288" class="mobile-book-btn" style="background: var(--accent-color); color: var(--text-dark); font-weight: 700; padding: 15px 30px; border-radius: 40px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 16px; text-transform: uppercase;">
-                            Book Now <i class="fa-solid fa-arrow-right" style="margin-left: 10px; transform: rotate(-45deg);"></i>
+                        <a href="calculator.php" class="mobile-book-btn" style="background: var(--accent-color); color: var(--text-dark); font-weight: 700; padding: 15px 30px; border-radius: 40px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 16px; text-transform: uppercase;">
+                            Get Estimate <i class="fa-solid fa-calculator" style="margin-left: 10px;"></i>
                         </a>
                     </li>
                 </ul>
                 
                 <div class="nav-right" style="display: flex; align-items: center; gap: 15px;">
-                    <a href="https://wa.me/919234772288" class="btn nav-book-call-btn" style="background: var(--accent-color); color: var(--text-dark); font-weight: 600; padding: 8px 8px 8px 24px; border-radius: 40px; display: inline-flex; align-items: center; gap: 15px; font-size: 16px;">
-                        Book Now 
+                    <a href="calculator.php" class="btn nav-book-call-btn" style="background: var(--accent-color); color: var(--text-dark); font-weight: 600; padding: 8px 8px 8px 24px; border-radius: 40px; display: inline-flex; align-items: center; gap: 15px; font-size: 16px;">
+                        Get Estimate 
                         <span class="nav-btn-circle" style="background: var(--text-dark); color: var(--text-light); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                            <i class="fa-solid fa-arrow-right nav-btn-arrow" style="transform: rotate(-45deg); font-size: 14px; transition: transform 0.3s ease;"></i>
+                            <i class="fa-solid fa-calculator nav-btn-arrow" style="font-size: 14px; transition: transform 0.3s ease;"></i>
                         </span>
                     </a>
                     <style>

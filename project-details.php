@@ -1,6 +1,17 @@
 <?php 
+require_once 'admin/config/db.php';
 $currentPage = 'projects';
 include 'includes/header.php'; 
+
+// Fetch 3 recent projects for More Projects section
+$more_projects_query = "
+    SELECT p.*, c.icon as cat_icon 
+    FROM projects p 
+    LEFT JOIN categories c ON p.category COLLATE utf8mb4_unicode_ci = c.name COLLATE utf8mb4_unicode_ci
+    ORDER BY p.created_at DESC 
+    LIMIT 3
+";
+$more_projects_result = $conn->query($more_projects_query);
 ?>
 
 <main>
@@ -259,7 +270,6 @@ include 'includes/header.php';
             <div class="more-projects-header">
                 <div class="mp-header-left">
                     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
-                        <span style="display: block; width: 40px; height: 2px; background: var(--accent-color);"></span>
                         <p class="section-subtitle" style="margin-bottom: 0;">MORE PROJECTS</p>
                     </div>
                     <h2 class="section-title">Explore More <span class="accent-text signature-text" style="color: var(--accent-color); font-weight: 400; text-transform: none;">Inspiring Spaces</span></h2>
@@ -272,71 +282,40 @@ include 'includes/header.php';
             </div>
 
             <div class="more-projects-grid">
-                <!-- Card 1 -->
-                <div class="mp-card">
-                    <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="Villa" class="mp-card-bg">
-                    <div class="mp-card-top">
-                        <div class="mp-tag"><i class="fa-solid fa-house"></i> Residential Design</div>
-                        <div class="mp-like"><i class="fa-regular fa-heart"></i></div>
-                    </div>
-                    <div class="mp-card-bottom">
-                        <div class="mp-card-title-row">
-                            <a href="#" class="mp-link-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                            <div class="mp-title-col">
-                                <h3>LUXURY 5 BHK VILLA</h3>
-                                <p><i class="fa-solid fa-location-dot"></i> Pune, India</p>
+                <?php if($more_projects_result && $more_projects_result->num_rows > 0): ?>
+                    <?php while($proj = $more_projects_result->fetch_assoc()): ?>
+                    <!-- Card -->
+                    <div class="mp-card">
+                        <img src="<?php echo !empty($proj['cover_image']) ? htmlspecialchars($proj['cover_image']) : 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80'; ?>" alt="<?php echo htmlspecialchars($proj['title']); ?>" class="mp-card-bg">
+                        <div class="mp-card-top">
+                            <div class="mp-tag">
+                                <?php if(!empty($proj['cat_icon'])): ?><i class="<?php echo htmlspecialchars($proj['cat_icon']); ?>"></i> <?php endif; ?>
+                                <?php echo htmlspecialchars($proj['category'] ?: 'Project'); ?>
+                            </div>
+                            <div class="mp-like"><i class="fa-regular fa-heart"></i></div>
+                        </div>
+                        <div class="mp-card-bottom">
+                            <div class="mp-card-title-row">
+                                <a href="project-details.php?id=<?php echo $proj['id']; ?>" class="mp-link-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                                <div class="mp-title-col">
+                                    <h3><?php echo htmlspecialchars(strtoupper($proj['title'] ?: 'Untitled')); ?></h3>
+                                    <p><i class="fa-solid fa-location-dot"></i> <?php echo htmlspecialchars($proj['location'] ?: 'N/A'); ?></p>
+                                </div>
+                            </div>
+                            <div class="mp-tags-row">
+                                <?php if(!empty($proj['property_type'])): ?>
+                                    <span class="mp-pill"><?php echo htmlspecialchars($proj['property_type']); ?></span>
+                                <?php endif; ?>
+                                <?php if(!empty($proj['category'])): ?>
+                                    <span class="mp-pill"><?php echo htmlspecialchars($proj['category']); ?></span>
+                                <?php endif; ?>
                             </div>
                         </div>
-                        <div class="mp-tags-row">
-                            <span class="mp-pill">Villa</span>
-                            <span class="mp-pill">Residential Design</span>
-                        </div>
                     </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="mp-card">
-                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80" alt="Office" class="mp-card-bg">
-                    <div class="mp-card-top">
-                        <div class="mp-tag"><i class="fa-solid fa-building"></i> Commercial Design</div>
-                        <div class="mp-like"><i class="fa-regular fa-heart"></i></div>
-                    </div>
-                    <div class="mp-card-bottom">
-                        <div class="mp-card-title-row">
-                            <a href="#" class="mp-link-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                            <div class="mp-title-col">
-                                <h3>CORPORATE OFFICE SPACE</h3>
-                                <p><i class="fa-solid fa-location-dot"></i> Bangalore, India</p>
-                            </div>
-                        </div>
-                        <div class="mp-tags-row">
-                            <span class="mp-pill">Offices</span>
-                            <span class="mp-pill">Commercial Design</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="mp-card">
-                    <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80" alt="Apartment" class="mp-card-bg">
-                    <div class="mp-card-top">
-                        <div class="mp-tag"><i class="fa-solid fa-house"></i> Residential Design</div>
-                        <div class="mp-like"><i class="fa-regular fa-heart"></i></div>
-                    </div>
-                    <div class="mp-card-bottom">
-                        <div class="mp-card-title-row">
-                            <a href="#" class="mp-link-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                            <div class="mp-title-col">
-                                <h3>MINIMALIST 3 BHK HOME</h3>
-                                <p><i class="fa-solid fa-location-dot"></i> Delhi, India</p>
-                            </div>
-                        </div>
-                        <div class="mp-tags-row">
-                            <span class="mp-pill">Apartment</span>
-                            <span class="mp-pill">Residential Design</span>
-                        </div>
-                    </div>
-                </div>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <p style="grid-column: 1 / -1; text-align: center; color: #888;">No projects found.</p>
+                <?php endif; ?>
             </div>
         </div>
     </section>

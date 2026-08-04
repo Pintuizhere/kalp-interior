@@ -1,13 +1,100 @@
 <?php
+require_once 'config/db.php';
+
+// --- AJAX Handlers for inline categories ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
+    header('Content-Type: application/json');
+    if ($_POST['ajax_action'] === 'add_category') {
+        $name = $conn->real_escape_string($_POST['name'] ?? '');
+        $icon = $conn->real_escape_string($_POST['icon'] ?? '');
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name), '-'));
+        if (!empty($name)) {
+            $stmt = $conn->prepare("INSERT INTO categories (name, slug, icon) VALUES (?, ?, ?)");
+            if ($stmt) {
+                $stmt->bind_param("sss", $name, $slug, $icon);
+                if ($stmt->execute()) {
+                    echo json_encode(['success' => true, 'id' => $conn->insert_id, 'name' => $name, 'icon' => $icon]);
+                } else {
+                    echo json_encode(['success' => false, 'error' => $stmt->error]);
+                }
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Name cannot be empty']);
+        }
+    } elseif ($_POST['ajax_action'] === 'delete_category') {
+        $name = $conn->real_escape_string($_POST['name'] ?? '');
+        if (!empty($name)) {
+            $stmt = $conn->prepare("DELETE FROM categories WHERE name = ?");
+            if ($stmt) {
+                $stmt->bind_param("s", $name);
+                if ($stmt->execute()) {
+                    echo json_encode(['success' => true]);
+                } else {
+                    echo json_encode(['success' => false, 'error' => $stmt->error]);
+                }
+            }
+        }
+    } elseif ($_POST['ajax_action'] === 'update_category_order') {
+        $order_data = json_decode($_POST['order_data'], true);
+        if (is_array($order_data)) {
+            $stmt = $conn->prepare("UPDATE categories SET order_index = ? WHERE name = ?");
+            if ($stmt) {
+                foreach ($order_data as $index => $name) {
+                    $stmt->bind_param("is", $index, $name);
+                    $stmt->execute();
+                }
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'error' => $conn->error]);
+            }
+        }
+    }
+    exit;
+}
+// --- End AJAX Handlers ---
 $pageTitle = 'Projects';
 $currentPage = 'projects';
 $success_msg = '';
 $error_msg = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Backend logic disabled for UI demonstration purposes
-    $success_msg = "Project added successfully! (UI Demo Mode)";
+    $title = $conn->real_escape_string($_POST['title'] ?? '');
+    $location = $conn->real_escape_string($_POST['location'] ?? '');
+    $category = $conn->real_escape_string($_POST['project_category'] ?? '');
+    $property_type = $conn->real_escape_string($_POST['property_type'] ?? '');
+    $area = $conn->real_escape_string($_POST['area'] ?? '');
+    $year = $conn->real_escape_string($_POST['year'] ?? '');
+    $style = $conn->real_escape_string($_POST['style'] ?? '');
+    $scope = $conn->real_escape_string($_POST['scope'] ?? '');
+    $short_desc = $conn->real_escape_string($_POST['short_desc'] ?? '');
+    $about_title = $conn->real_escape_string($_POST['about_title'] ?? '');
+    $about_subtitle = $conn->real_escape_string($_POST['about_subtitle'] ?? '');
+    $long_desc = $conn->real_escape_string($_POST['long_desc'] ?? '');
+    $meta_title = $conn->real_escape_string($_POST['meta_title'] ?? '');
+    $meta_keywords = $conn->real_escape_string($_POST['meta_keywords'] ?? '');
+    $meta_description = $conn->real_escape_string($_POST['meta_description'] ?? '');
+
+    $stmt = $conn->prepare("INSERT INTO projects (title, location, category, property_type, area, year, style, scope, short_desc, about_title, about_subtitle, long_desc, meta_title, meta_keywords, meta_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    if ($stmt) {
+        $stmt->bind_param("sssssssssssssss", $title, $location, $category, $property_type, $area, $year, $style, $scope, $short_desc, $about_title, $about_subtitle, $long_desc, $meta_title, $meta_keywords, $meta_description);
+        if ($stmt->execute()) {
+            $success_msg = "Project added successfully!";
+        } else {
+            $error_msg = "Database error: " . $stmt->error;
+        }
+        $stmt->close();
+    } else {
+        $error_msg = "Database error: " . $conn->error;
+    }
 }
+
+// Fetch Categories for the form
+$cat_query = "SELECT * FROM categories ORDER BY order_index ASC, name ASC";
+$categories = $conn->query($cat_query);
+
+// Fetch Projects for the table
+$proj_query = "SELECT * FROM projects ORDER BY created_at DESC";
+$projects = $conn->query($proj_query);
 
 include 'includes/header.php';
 include 'includes/sidebar.php';
@@ -62,44 +149,32 @@ include 'includes/sidebar.php';
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <div class="project-item">
-                                    <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=100&h=80&fit=crop" class="project-thumb" alt="Project">
-                                    <div class="user-details">
-                                        <h4>Modern Luxury Villa</h4>
-                                        <p>Client: Mr. Sharma</p>
+                        <?php if($projects && $projects->num_rows > 0): ?>
+                            <?php while($proj = $projects->fetch_assoc()): ?>
+                            <tr>
+                                <td>
+                                    <div class="project-item">
+                                        <img src="<?php echo !empty($proj['cover_image']) ? htmlspecialchars($proj['cover_image']) : 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=100&h=80&fit=crop'; ?>" class="project-thumb" alt="Project">
+                                        <div class="user-details">
+                                            <h4><?php echo htmlspecialchars($proj['title'] ?: 'Untitled Project'); ?></h4>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td>Bangalore, Karnataka</td>
-                            <td>Residential</td>
-                            <td>
-                                <div class="action-btns">
-                                    <a href="#" class="btn-icon" onclick="editProject(); return false;"><i class="fa-solid fa-pen"></i></a>
-                                    <a href="#" class="btn-icon delete"><i class="fa-solid fa-trash"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="project-item">
-                                    <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=100&h=80&fit=crop" class="project-thumb" alt="Project">
-                                    <div class="user-details">
-                                        <h4>Minimalist Apartment</h4>
-                                        <p>Client: Mrs. Mehta</p>
+                                </td>
+                                <td><?php echo htmlspecialchars($proj['location'] ?: 'N/A'); ?></td>
+                                <td><?php echo htmlspecialchars($proj['category'] ?: 'N/A'); ?></td>
+                                <td>
+                                    <div class="action-btns">
+                                        <a href="#" class="btn-icon" onclick="editProject(); return false;"><i class="fa-solid fa-pen"></i></a>
+                                        <a href="#" class="btn-icon delete"><i class="fa-solid fa-trash"></i></a>
                                     </div>
-                                </div>
-                            </td>
-                            <td>Mumbai, Maharashtra</td>
-                            <td>Residential</td>
-                            <td>
-                                <div class="action-btns">
-                                    <a href="#" class="btn-icon" onclick="editProject(); return false;"><i class="fa-solid fa-pen"></i></a>
-                                    <a href="#" class="btn-icon delete"><i class="fa-solid fa-trash"></i></a>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="4" style="text-align:center; padding: 20px;">No projects found.</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -123,14 +198,451 @@ include 'includes/sidebar.php';
                 </div>
             </div>
             
-            <div class="preview-panel" style="width: 100%; height: 75vh; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                <iframe id="editor-iframe" src="editor-project.php" style="width: 100%; height: 100%; border: none;"></iframe>
-            </div>
+            <form id="live-add-form" action="projects.php" method="POST" enctype="multipart/form-data">
+                
+                <!-- Category and SEO Section -->
+                <div class="project-meta-section" style="background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <h4 style="margin-top: 0; margin-bottom: 15px; color: var(--text-dark); font-size: 16px;">Project Category</h4>
+                    
+                    <style>
+                        .category-selector {
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 10px;
+                            margin-bottom: 20px;
+                            align-items: center;
+                        }
+                        .category-selector label {
+                            cursor: pointer;
+                            display: inline-block;
+                            position: relative;
+                        }
+                        .category-selector input[type="radio"] {
+                            display: none;
+                        }
+                        .category-selector .tag-span {
+                            background-color: white; 
+                            border: 1px solid rgba(0,0,0,0.1); 
+                            padding: 10px 20px; 
+                            border-radius: 25px;
+                            font-size: 14px;
+                            color: var(--text-dark);
+                            display: flex;
+                            align-items: center;
+                            transition: all 0.3s ease;
+                        }
+                        .category-selector .tag-span i.cat-icon {
+                            margin-right: 8px;
+                            color: var(--text-muted);
+                        }
+                        .category-selector input[type="radio"]:checked + .tag-span {
+                            background-color: #fcebdc;
+                            border-color: #fcebdc;
+                            font-weight: 600;
+                        }
+                        .category-selector input[type="radio"]:checked + .tag-span i.cat-icon {
+                            color: var(--text-dark);
+                        }
+                        .del-cat-btn {
+                            position: absolute;
+                            top: -5px;
+                            right: -5px;
+                            background: #ef4444;
+                            color: white;
+                            border: none;
+                            border-radius: 50%;
+                            width: 18px;
+                            height: 18px;
+                            font-size: 10px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            opacity: 0;
+                            transition: opacity 0.2s;
+                        }
+                        .category-selector label:hover .del-cat-btn {
+                            opacity: 1;
+                        }
+                        .add-cat-btn {
+                            background: #fff;
+                            border: 1px dashed rgba(0,0,0,0.2);
+                            padding: 10px 15px;
+                            border-radius: 25px;
+                            cursor: pointer;
+                            font-size: 14px;
+                            color: var(--text-muted);
+                            display: flex;
+                            align-items: center;
+                            transition: all 0.2s;
+                        }
+                        .add-cat-btn:hover {
+                            border-color: var(--accent-color);
+                            color: var(--text-dark);
+                        }
+                        #inline-add-cat-form {
+                            display: none;
+                            align-items: center;
+                            gap: 10px;
+                            background: #f9f9f9;
+                            padding: 5px 10px;
+                            border-radius: 25px;
+                            border: 1px solid #ddd;
+                            cursor: grab;
+                        }
+                        .category-selector label:active {
+                            cursor: grabbing;
+                        }
+                    </style>
+                    
+                    <div class="category-selector" id="cat-selector-container">
+                        <?php 
+                        if ($categories && $categories->num_rows > 0): 
+                            $first = true;
+                            while($cat = $categories->fetch_assoc()):
+                        ?>
+                        <label data-catname="<?php echo htmlspecialchars($cat['name']); ?>" draggable="true" class="draggable-cat">
+                            <input type="radio" name="project_category" value="<?php echo htmlspecialchars($cat['name']); ?>" <?php echo $first ? 'checked' : ''; ?>>
+                            <span class="tag-span">
+                                <?php if(!empty($cat['icon'])): ?><i class="cat-icon <?php echo htmlspecialchars($cat['icon']); ?>"></i><?php endif; ?>
+                                <?php echo htmlspecialchars($cat['name']); ?>
+                            </span>
+                            <button type="button" class="del-cat-btn" onclick="deleteInlineCategory('<?php echo htmlspecialchars(addslashes($cat['name'])); ?>')"><i class="fa-solid fa-xmark"></i></button>
+                        </label>
+                        <?php 
+                                $first = false;
+                            endwhile;
+                            $categories->data_seek(0);
+                        endif; 
+                        ?>
+                        
+                        <div id="inline-add-cat-form">
+                            <input type="text" id="inline_cat_name" placeholder="Category Name" style="padding: 5px 10px; border: 1px solid #ddd; border-radius: 15px; font-size: 13px; width: 120px;" required>
+                            
+                            <div style="position: relative; display: inline-block;">
+                                <div style="display: flex; align-items: center; border: 1px solid #ddd; border-radius: 15px; background: white; padding: 2px;">
+                                    <div id="selected-icon-display" style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border-radius: 12px; margin-right: 5px; border: 1px solid #eee;">
+                                        <i id="selected-icon-preview" class="fa-solid fa-couch" style="color: #333;"></i>
+                                    </div>
+                                    <input type="text" id="inline_cat_icon" value="fa-solid fa-couch" onfocus="toggleIconPicker(true)" oninput="updateIconPreview(this.value)" placeholder="fa-solid fa-couch" style="border: none; outline: none; font-size: 13px; width: 130px; background: transparent; padding: 5px;">
+                                    <button type="button" onclick="toggleIconPicker()" style="background: #6b7280; color: white; border: none; padding: 6px 12px; border-radius: 10px; font-size: 12px; cursor: pointer; margin-right: 2px;">Select</button>
+                                </div>
 
-            <!-- Hidden Form for Image Uploads triggered by iframe -->
-            <form id="live-add-form" style="display:none;" action="projects.php" method="POST" enctype="multipart/form-data">
-                <input type="file" id="hidden_cover_image" name="cover_image" accept="image/*">
-                <!-- Data fields to submit to backend -->
+                                <div id="icon-picker-dropdown" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 5px; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 320px; padding: 15px; z-index: 100;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                        <strong style="font-size: 12px; color: #333;">SELECT AN ICON</strong>
+                                        <button type="button" onclick="toggleIconPicker(false)" style="background: none; border: none; cursor: pointer; color: #888;"><i class="fa-solid fa-xmark"></i></button>
+                                    </div>
+                                    <input type="text" id="icon-search" placeholder="Search icons..." oninput="filterIcons()" style="width: 100%; padding: 8px; border: 1px solid #eee; border-radius: 4px; margin-bottom: 15px; font-size: 13px; box-sizing: border-box;">
+                                    <div id="icon-grid" style="display: flex; flex-wrap: wrap; gap: 8px; max-height: 150px; overflow-y: auto;">
+                                        <!-- Icons populated by JS -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" onclick="saveInlineCategory()" style="background: var(--accent-color); color: var(--text-dark); border: none; padding: 8px 20px; border-radius: 15px; font-size: 13px; cursor: pointer;">Save</button>
+                            <button type="button" onclick="toggleInlineAddCat()" style="background: none; border: none; color: #888; cursor: pointer; padding: 5px;"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <button type="button" class="add-cat-btn" id="add-cat-btn-trigger" onclick="toggleInlineAddCat()">
+                            <i class="fa-solid fa-plus" style="margin-right: 5px;"></i> Add Category
+                        </button>
+                    </div>
+
+                    <!-- Custom Delete Confirmation Modal -->
+                    <div id="delete-cat-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;">
+                        <div style="background: white; padding: 25px; border-radius: 10px; width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center;">
+                            <div style="font-size: 40px; color: #ef4444; margin-bottom: 15px;"><i class="fa-solid fa-circle-exclamation"></i></div>
+                            <h3 style="margin-top: 0; color: var(--text-dark);">Delete Category?</h3>
+                            <p style="color: var(--text-muted); margin-bottom: 25px;">Are you sure you want to delete "<strong id="delete-cat-name-display"></strong>"? This action cannot be undone.</p>
+                            <div style="display: flex; gap: 10px; justify-content: center;">
+                                <button type="button" onclick="closeDeleteCatModal()" style="padding: 10px 20px; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer; color: var(--text-dark); font-weight: 500;">Cancel</button>
+                                <button type="button" id="confirm-delete-cat-btn" style="padding: 10px 20px; border: none; background: #ef4444; color: white; border-radius: 6px; cursor: pointer; font-weight: 500;">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        const iconList = [
+                            'fa-solid fa-couch', 'fa-solid fa-house', 'fa-regular fa-building', 'fa-solid fa-chair', 
+                            'fa-solid fa-pen-ruler', 'fa-solid fa-mug-hot', 'fa-solid fa-cube', 'fa-solid fa-border-all', 
+                            'fa-solid fa-wifi', 'fa-solid fa-lightbulb', 'fa-solid fa-paint-roller', 'fa-solid fa-hammer', 
+                            'fa-solid fa-screwdriver-wrench', 'fa-solid fa-palette', 'fa-solid fa-bed', 'fa-solid fa-kitchen-set',
+                            'fa-solid fa-briefcase', 'fa-solid fa-house-user', 'fa-solid fa-building-user'
+                        ];
+
+                        function initIconPicker() {
+                            const grid = document.getElementById('icon-grid');
+                            grid.innerHTML = '';
+                            iconList.forEach(icon => {
+                                const btn = document.createElement('button');
+                                btn.type = 'button';
+                                btn.className = 'icon-picker-item';
+                                btn.style.cssText = 'width: 36px; height: 36px; border: 1px solid #eee; border-radius: 6px; background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #333; transition: all 0.2s;';
+                                btn.innerHTML = `<i class="${icon}"></i>`;
+                                btn.onclick = () => selectIcon(icon);
+                                btn.onmouseover = () => btn.style.borderColor = '#aaa';
+                                btn.onmouseout = () => btn.style.borderColor = '#eee';
+                                grid.appendChild(btn);
+                            });
+                        }
+
+                        function toggleIconPicker(forceState) {
+                            const picker = document.getElementById('icon-picker-dropdown');
+                            if (forceState === true) {
+                                picker.style.display = 'block';
+                            } else if (forceState === false) {
+                                picker.style.display = 'none';
+                            } else {
+                                picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+                            }
+                            if(picker.style.display === 'block') {
+                                initIconPicker();
+                                document.getElementById('icon-search').value = '';
+                                filterIcons();
+                            }
+                        }
+
+                        function updateIconPreview(val) {
+                            document.getElementById('selected-icon-preview').className = val;
+                        }
+
+                        function selectIcon(icon) {
+                            document.getElementById('inline_cat_icon').value = icon;
+                            updateIconPreview(icon);
+                            toggleIconPicker(false);
+                        }
+
+                        function filterIcons() {
+                            const term = document.getElementById('icon-search').value.toLowerCase();
+                            const items = document.querySelectorAll('.icon-picker-item');
+                            items.forEach(item => {
+                                const iconClass = item.querySelector('i').className.toLowerCase();
+                                if (iconClass.includes(term)) {
+                                    item.style.display = 'flex';
+                                } else {
+                                    item.style.display = 'none';
+                                }
+                            });
+                        }
+
+                        // Close dropdown when clicking outside
+                        document.addEventListener('click', function(event) {
+                            const dropdown = document.getElementById('icon-picker-dropdown');
+                            const inputContainer = document.getElementById('inline-add-cat-form');
+                            if (dropdown && dropdown.style.display === 'block' && !inputContainer.contains(event.target)) {
+                                toggleIconPicker(false);
+                            }
+                        });
+
+                        function toggleInlineAddCat() {
+                            const form = document.getElementById('inline-add-cat-form');
+                            const btn = document.getElementById('add-cat-btn-trigger');
+                            if (form.style.display === 'flex') {
+                                form.style.display = 'none';
+                                btn.style.display = 'flex';
+                            } else {
+                                form.style.display = 'flex';
+                                btn.style.display = 'none';
+                            }
+                        }
+
+                        function saveInlineCategory() {
+                            const name = document.getElementById('inline_cat_name').value;
+                            const icon = document.getElementById('inline_cat_icon').value;
+                            if(!name) { alert('Please enter a category name'); return; }
+
+                            const formData = new FormData();
+                            formData.append('ajax_action', 'add_category');
+                            formData.append('name', name);
+                            formData.append('icon', icon);
+
+                            fetch('projects.php', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if(data.success) {
+                                    const label = document.createElement('label');
+                                    label.setAttribute('data-catname', data.name);
+                                    label.innerHTML = `
+                                        <input type="radio" name="project_category" value="${data.name}" checked>
+                                        <span class="tag-span">
+                                            ${data.icon ? '<i class="cat-icon ' + data.icon + '"></i> ' : ''}${data.name}
+                                        </span>
+                                        <button type="button" class="del-cat-btn" onclick="deleteInlineCategory('${data.name}')"><i class="fa-solid fa-xmark"></i></button>
+                                    `;
+                                    const container = document.getElementById('cat-selector-container');
+                                    container.insertBefore(label, document.getElementById('inline-add-cat-form'));
+                                    
+                                    document.getElementById('inline_cat_name').value = '';
+                                    toggleInlineAddCat();
+                                } else {
+                                    alert('Error adding category: ' + (data.error || 'Unknown error'));
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                alert('Failed to save category. Check console.');
+                            });
+                        }
+
+                        let categoryToDelete = '';
+
+                        function deleteInlineCategory(name) {
+                            categoryToDelete = name;
+                            document.getElementById('delete-cat-name-display').innerText = name;
+                            document.getElementById('delete-cat-modal').style.display = 'flex';
+                        }
+                        
+                        function closeDeleteCatModal() {
+                            document.getElementById('delete-cat-modal').style.display = 'none';
+                            categoryToDelete = '';
+                        }
+                        
+                        document.getElementById('confirm-delete-cat-btn').addEventListener('click', function() {
+                            if(!categoryToDelete) return;
+                            
+                            const formData = new FormData();
+                            formData.append('ajax_action', 'delete_category');
+                            formData.append('name', categoryToDelete);
+
+                            fetch('projects.php', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if(data.success) {
+                                    const label = document.querySelector('label[data-catname="' + categoryToDelete + '"]');
+                                    if(label) label.remove();
+                                    closeDeleteCatModal();
+                                } else {
+                                    alert('Error deleting category: ' + (data.error || 'Unknown error'));
+                                    closeDeleteCatModal();
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                closeDeleteCatModal();
+                            });
+                        });
+
+                        // Drag and drop for categories
+                        const catContainer = document.getElementById('cat-selector-container');
+                        let draggedItem = null;
+
+                        catContainer.addEventListener('dragstart', function(e) {
+                            if(e.target.closest('.draggable-cat')) {
+                                draggedItem = e.target.closest('.draggable-cat');
+                                setTimeout(() => draggedItem.style.opacity = '0.5', 0);
+                            }
+                        });
+
+                        catContainer.addEventListener('dragend', function(e) {
+                            if(draggedItem) {
+                                draggedItem.style.opacity = '1';
+                                draggedItem = null;
+                                saveCategoryOrder();
+                            }
+                        });
+
+                        catContainer.addEventListener('dragover', function(e) {
+                            e.preventDefault();
+                            if(!draggedItem) return;
+                            const afterElement = getDragAfterElement(catContainer, e.clientX, e.clientY);
+                            if (afterElement == null) {
+                                // insert before the add form
+                                const addForm = document.getElementById('inline-add-cat-form');
+                                if(addForm && addForm.parentNode === catContainer) {
+                                    catContainer.insertBefore(draggedItem, addForm);
+                                } else {
+                                    catContainer.appendChild(draggedItem);
+                                }
+                            } else {
+                                catContainer.insertBefore(draggedItem, afterElement);
+                            }
+                        });
+
+                        function getDragAfterElement(container, x, y) {
+                            const draggableElements = [...container.querySelectorAll('.draggable-cat:not([style*="opacity: 0.5"])')];
+                            return draggableElements.reduce((closest, child) => {
+                                const box = child.getBoundingClientRect();
+                                const offsetX = x - box.left - box.width / 2;
+                                const offsetY = y - box.top - box.height / 2;
+                                if (offsetX < 0 && offsetY < box.height && offsetY > -box.height && offsetX > closest.offset) {
+                                    return { offset: offsetX, element: child };
+                                } else {
+                                    return closest;
+                                }
+                            }, { offset: Number.NEGATIVE_INFINITY }).element;
+                        }
+
+                        function saveCategoryOrder() {
+                            const items = [...document.querySelectorAll('.draggable-cat')];
+                            const orderData = items.map(item => item.getAttribute('data-catname'));
+                            
+                            const formData = new FormData();
+                            formData.append('ajax_action', 'update_category_order');
+                            formData.append('order_data', JSON.stringify(orderData));
+
+                            fetch('projects.php', {
+                                method: 'POST',
+                                body: formData
+                            }).catch(err => console.error(err));
+                        }
+
+                        // Live preview update for category
+                        document.addEventListener('change', function(e) {
+                            if(e.target && e.target.name === 'project_category') {
+                                const catName = e.target.value;
+                                const label = e.target.closest('label');
+                                const iconEl = label.querySelector('.cat-icon');
+                                const iconClass = iconEl ? iconEl.className.replace('cat-icon ', '').trim() : '';
+                                
+                                try {
+                                    const iframe = document.getElementById('editor-iframe');
+                                    if(!iframe) return;
+                                    const doc = iframe.contentDocument || iframe.contentWindow.document;
+                                    const catBadge = doc.querySelector('.hero-tag');
+                                    if (catBadge) {
+                                        catBadge.innerHTML = (iconClass ? `<i class="${iconClass}" style="margin-right: 5px;"></i> ` : '') + catName;
+                                    }
+                                    const metaCategory = doc.querySelector('.meta-value:nth-of-type(1)');
+                                    if(metaCategory) {
+                                        metaCategory.innerText = catName;
+                                    }
+                                } catch (err) {}
+                            }
+                        });
+                    </script>
+
+                    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+                    <h4 style="margin-top: 0; margin-bottom: 15px; color: var(--text-dark); font-size: 16px;">SEO Settings</h4>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px;">Meta Title</label>
+                            <input type="text" name="meta_title" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;" placeholder="e.g. Modern Luxury Villa Interior Design">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px;">Meta Keywords</label>
+                            <input type="text" name="meta_keywords" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;" placeholder="e.g. interior design, villa, luxury">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px;">Meta Description</label>
+                        <textarea name="meta_description" rows="2" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;" placeholder="Brief description for search engines..."></textarea>
+                    </div>
+                </div>
+
+                <div class="preview-panel" style="width: 100%; height: 75vh; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    <iframe id="editor-iframe" src="editor-project.php" style="width: 100%; height: 100%; border: none;"></iframe>
+                </div>
+
+                <!-- Hidden inputs for Image Uploads triggered by iframe and iframe extraction -->
+                <input type="file" id="hidden_cover_image" name="cover_image" accept="image/*" style="display:none;">
                 <input type="hidden" name="title" id="hdn_title">
                 <input type="hidden" name="location" id="hdn_location">
                 <input type="hidden" name="category" id="hdn_category">

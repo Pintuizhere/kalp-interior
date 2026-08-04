@@ -29,7 +29,13 @@
                 <!-- Left: 18 Years Experience -->
                 <div class="experience-card" style="border: 2px solid var(--primary-color); border-radius: 80px 20px 80px 20px; text-align: center; background: white; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; min-height: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; overflow: hidden; padding: 0;">
                     <!-- Image from the user's workspace -->
-                    <img src="assets/images/awards.jpeg" alt="Awards Ceremony" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;">
+                    <?php 
+                    $about_bg_src = isset($about_content['about_intro_image']) ? $about_content['about_intro_image'] : 'assets/images/awards.jpeg';
+                    if (isset($currentPage) && strpos($currentPage, 'editor_') === 0 && strpos($about_bg_src, 'http') !== 0 && strpos($about_bg_src, '../') !== 0) {
+                        $about_bg_src = '../' . $about_bg_src;
+                    }
+                    ?>
+                    <img src="<?php echo htmlspecialchars($about_bg_src); ?>" alt="Awards Ceremony" class="about-intro-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;">
                     
                     <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; background: linear-gradient(to top, rgba(26, 38, 30, 0.9), transparent); z-index: 1;"></div>
                     
@@ -68,7 +74,7 @@
                     </style>
                     <div class="award-capsule">
                         <i class="fa-solid fa-trophy"></i>
-                        <h3>Best Interior Designer 2025</h3>
+                        <h3 class="about-intro-award"><?php echo isset($about_content['about_intro_award_title']) ? $about_content['about_intro_award_title'] : 'Best Interior Designer 2025'; ?></h3>
                     </div>
                 </div>
 
@@ -81,22 +87,22 @@
                     
                     <div class="stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; border-bottom: 1px solid #eaeaea; padding-bottom: 40px;">
                         <div class="stat-item">
-                            <h3 style="font-size: 32px; margin-bottom: 5px; color: var(--text-dark); font-weight: 700;">250+</h3>
-                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Project Completed</p>
+                            <h3 class="about-stat1-val" style="font-size: 32px; margin-bottom: 5px; color: var(--text-dark); font-weight: 700;"><?php echo isset($about_content['about_intro_stat1_value']) ? $about_content['about_intro_stat1_value'] : '250+'; ?></h3>
+                            <p class="about-stat1-label" style="font-size: 13px; color: var(--text-muted); margin: 0;"><?php echo isset($about_content['about_intro_stat1_label']) ? $about_content['about_intro_stat1_label'] : 'Project Completed'; ?></p>
                         </div>
                         <div class="stat-item">
-                            <h3 style="font-size: 32px; margin-bottom: 5px; color: var(--text-dark); font-weight: 700;">35+</h3>
-                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Awards Gained</p>
+                            <h3 class="about-stat2-val" style="font-size: 32px; margin-bottom: 5px; color: var(--text-dark); font-weight: 700;"><?php echo isset($about_content['about_intro_stat2_value']) ? $about_content['about_intro_stat2_value'] : '35+'; ?></h3>
+                            <p class="about-stat2-label" style="font-size: 13px; color: var(--text-muted); margin: 0;"><?php echo isset($about_content['about_intro_stat2_label']) ? $about_content['about_intro_stat2_label'] : 'Awards Gained'; ?></p>
                         </div>
                         <div class="stat-item">
-                            <h3 style="font-size: 32px; margin-bottom: 5px; color: var(--text-dark); font-weight: 700;">99%</h3>
-                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Satisfied Customer</p>
+                            <h3 class="about-stat3-val" style="font-size: 32px; margin-bottom: 5px; color: var(--text-dark); font-weight: 700;"><?php echo isset($about_content['about_intro_stat3_value']) ? $about_content['about_intro_stat3_value'] : '99%'; ?></h3>
+                            <p class="about-stat3-label" style="font-size: 13px; color: var(--text-muted); margin: 0;"><?php echo isset($about_content['about_intro_stat3_label']) ? $about_content['about_intro_stat3_label'] : 'Satisfied Customer'; ?></p>
                         </div>
                     </div>
 
                     <div class="signature-block" style="display: flex; flex-direction: column; gap: 5px;">
-                        <span class="founder-signature" style="font-family: var(--font-accent); font-size: 2.5rem; color: var(--text-dark); opacity: 0.8; font-style: italic;">Reedam Kumar</span>
-                        <p style="font-size: 13px; color: var(--text-muted); margin: 0; padding-left: 5px;">Interior Designer <span style="color: var(--accent-color);">•</span> Founder</p>
+                        <span class="founder-signature about-sig-name" style="font-family: var(--font-accent); font-size: 2.5rem; color: var(--text-dark); opacity: 0.8; font-style: italic;"><?php echo isset($about_content['about_intro_signature_name']) ? $about_content['about_intro_signature_name'] : 'Reedam Kumar'; ?></span>
+                        <p class="about-sig-role" style="font-size: 13px; color: var(--text-muted); margin: 0; padding-left: 5px;"><?php echo isset($about_content['about_intro_signature_role']) ? $about_content['about_intro_signature_role'] : 'Interior Designer <span style="color: var(--accent-color);">•</span> Founder'; ?></p>
                     </div>
                 </div>
 

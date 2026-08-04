@@ -7,7 +7,7 @@ include '../includes/header.php';
     @import url('../assets/css/style.css');
 
     /* Hide frontend navigation and footer */
-    .navbar, .page-banner, footer, .main-footer, .footer-bottom { display: none !important; }
+    .navbar, .page-banner, footer, .main-footer, .footer-bottom, .cta-banner { display: none !important; }
     
     /* Live Editor Styles */
     [contenteditable="true"] {

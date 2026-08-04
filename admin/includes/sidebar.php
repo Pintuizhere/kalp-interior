@@ -65,6 +65,11 @@
                 </a>
             </li>
             <li>
+                <a href="editor-about.php" class="<?php echo ($currentPage == 'editor_about') ? 'active' : ''; ?>">
+                    <i class="fa-solid fa-users"></i> About Live Editor
+                </a>
+            </li>
+            <li>
                 <a href="manage_page.php?page=about" class="<?php echo ($currentPage == 'page_about') ? 'active' : ''; ?>">
                     <i class="fa-solid fa-users"></i> About Us
                 </a>

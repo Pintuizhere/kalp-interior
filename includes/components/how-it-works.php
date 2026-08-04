@@ -4,7 +4,7 @@
         
         <div class="text-center" style="margin-bottom: 60px;">
             <p class="section-subtitle" style="justify-content: center; margin-bottom: 15px;">HOW IT WORK</p>
-            <h2 class="section-title" style="text-transform: uppercase;">HOW WE HANDLE YOUR HOME'S<br>RENOVATIONS</h2>
+            <h2 class="section-title hiw-main-heading" style="text-transform: uppercase;"><?php echo isset($about_content['hiw_main_heading']) ? $about_content['hiw_main_heading'] : "HOW WE HANDLE YOUR HOME'S<br>RENOVATIONS"; ?></h2>
         </div>
 
         <style>
@@ -61,47 +61,58 @@
             <!-- Tabs -->
             <div class="hiw-tabs">
                 <button class="hiw-tab active" data-tab="1">
-                    <span class="hiw-num">01.</span> Consultation
+                    <span class="hiw-num">01.</span> <span class="hiw-tab-title-1"><?php echo isset($about_content['hiw_tab1_title']) ? htmlspecialchars($about_content['hiw_tab1_title']) : 'Consultation'; ?></span>
                 </button>
                 <button class="hiw-tab" data-tab="2">
-                    <span class="hiw-num">02.</span> Design
+                    <span class="hiw-num">02.</span> <span class="hiw-tab-title-2"><?php echo isset($about_content['hiw_tab2_title']) ? htmlspecialchars($about_content['hiw_tab2_title']) : 'Design'; ?></span>
                 </button>
                 <button class="hiw-tab" data-tab="3">
-                    <span class="hiw-num">03.</span> Construction
+                    <span class="hiw-num">03.</span> <span class="hiw-tab-title-3"><?php echo isset($about_content['hiw_tab3_title']) ? htmlspecialchars($about_content['hiw_tab3_title']) : 'Construction'; ?></span>
                 </button>
                 <button class="hiw-tab" data-tab="4">
-                    <span class="hiw-num">04.</span> Final Touch
+                    <span class="hiw-num">04.</span> <span class="hiw-tab-title-4"><?php echo isset($about_content['hiw_tab4_title']) ? htmlspecialchars($about_content['hiw_tab4_title']) : 'Final Touch'; ?></span>
                 </button>
             </div>
 
             <!-- Tab Content (Images) -->
+            <?php
+            if (!function_exists('get_hiw_image')) {
+                function get_hiw_image($key, $default, $content, $page) {
+                    $src = isset($content[$key]) ? $content[$key] : $default;
+                    if (isset($page) && strpos($page, 'editor_') === 0 && strpos($src, 'http') !== 0 && strpos($src, '../') !== 0) {
+                        return '../' . $src;
+                    }
+                    return $src;
+                }
+            }
+            ?>
             <div class="hiw-content">
                 <div class="hiw-pane active" id="hiw-pane-1">
-                    <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=80" alt="Consultation">
+                    <img src="<?php echo htmlspecialchars(get_hiw_image('hiw_tab1_image', 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=80', $about_content, isset($currentPage) ? $currentPage : null)); ?>" alt="Consultation" class="hiw-tab-img-1">
                     <div class="hiw-desc-overlay">
-                        <h4>Consultation</h4>
-                        <p>We begin with a detailed discussion to deeply understand your vision, functional requirements, style preferences, and budget constraints.</p>
+                        <h4 class="hiw-tab-heading-1"><?php echo isset($about_content['hiw_tab1_heading']) ? $about_content['hiw_tab1_heading'] : 'Consultation'; ?></h4>
+                        <p class="hiw-tab-desc-1"><?php echo isset($about_content['hiw_tab1_desc']) ? $about_content['hiw_tab1_desc'] : 'We begin with a detailed discussion to deeply understand your vision, functional requirements, style preferences, and budget constraints.'; ?></p>
                     </div>
                 </div>
                 <div class="hiw-pane" id="hiw-pane-2">
-                    <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&q=80" alt="Design">
+                    <img src="<?php echo htmlspecialchars(get_hiw_image('hiw_tab2_image', 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&q=80', $about_content, isset($currentPage) ? $currentPage : null)); ?>" alt="Design" class="hiw-tab-img-2">
                     <div class="hiw-desc-overlay">
-                        <h4>Design & Planning</h4>
-                        <p>Our experts create comprehensive 2D layouts and 3D renderings, bringing your ideas to life with precise material and lighting detailing.</p>
+                        <h4 class="hiw-tab-heading-2"><?php echo isset($about_content['hiw_tab2_heading']) ? $about_content['hiw_tab2_heading'] : 'Design & Planning'; ?></h4>
+                        <p class="hiw-tab-desc-2"><?php echo isset($about_content['hiw_tab2_desc']) ? $about_content['hiw_tab2_desc'] : 'Our experts create comprehensive 2D layouts and 3D renderings, bringing your ideas to life with precise material and lighting detailing.'; ?></p>
                     </div>
                 </div>
                 <div class="hiw-pane" id="hiw-pane-3">
-                    <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&q=80" alt="Construction">
+                    <img src="<?php echo htmlspecialchars(get_hiw_image('hiw_tab3_image', 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&q=80', $about_content, isset($currentPage) ? $currentPage : null)); ?>" alt="Construction" class="hiw-tab-img-3">
                     <div class="hiw-desc-overlay">
-                        <h4>Construction & Execution</h4>
-                        <p>Our skilled contractors and project managers execute the build with premium materials, rigorous quality control, and strict timelines.</p>
+                        <h4 class="hiw-tab-heading-3"><?php echo isset($about_content['hiw_tab3_heading']) ? $about_content['hiw_tab3_heading'] : 'Construction & Execution'; ?></h4>
+                        <p class="hiw-tab-desc-3"><?php echo isset($about_content['hiw_tab3_desc']) ? $about_content['hiw_tab3_desc'] : 'Our skilled contractors and project managers execute the build with premium materials, rigorous quality control, and strict timelines.'; ?></p>
                     </div>
                 </div>
                 <div class="hiw-pane" id="hiw-pane-4">
-                    <img src="https://images.unsplash.com/photo-1600607686527-6fb886090705?w=1200&q=80" alt="Final Touch">
+                    <img src="<?php echo htmlspecialchars(get_hiw_image('hiw_tab4_image', 'https://images.unsplash.com/photo-1600607686527-6fb886090705?w=1200&q=80', $about_content, isset($currentPage) ? $currentPage : null)); ?>" alt="Final Touch" class="hiw-tab-img-4">
                     <div class="hiw-desc-overlay">
-                        <h4>The Final Touch</h4>
-                        <p>We add the perfect styling, artwork, and décor elements, handing over a beautifully finished space that is ready for you to enjoy.</p>
+                        <h4 class="hiw-tab-heading-4"><?php echo isset($about_content['hiw_tab4_heading']) ? $about_content['hiw_tab4_heading'] : 'The Final Touch'; ?></h4>
+                        <p class="hiw-tab-desc-4"><?php echo isset($about_content['hiw_tab4_desc']) ? $about_content['hiw_tab4_desc'] : 'We add the perfect styling, artwork, and décor elements, handing over a beautifully finished space that is ready for you to enjoy.'; ?></p>
                     </div>
                 </div>
             </div>
