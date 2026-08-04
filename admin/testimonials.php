@@ -26,6 +26,36 @@ if (isset($_GET['delete'])) {
     $stmt->close();
 }
 
+// Handle Stats Submission
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_stats'])) {
+    $success = true;
+    $page_target = 'testimonial_stats';
+    $check_stmt = $conn->prepare("SELECT 1 FROM page_content WHERE page_name = ? AND section_key = ?");
+    $update_stmt = $conn->prepare("UPDATE page_content SET content_value = ? WHERE page_name = ? AND section_key = ?");
+    $insert_stmt = $conn->prepare("INSERT INTO page_content (page_name, section_key, content_value) VALUES (?, ?, ?)");
+
+    if (isset($_POST['stats']) && is_array($_POST['stats'])) {
+        foreach ($_POST['stats'] as $section_key => $content_value) {
+            $check_stmt->bind_param("ss", $page_target, $section_key);
+            $check_stmt->execute();
+            $res = $check_stmt->get_result();
+            if ($res->num_rows > 0) {
+                $update_stmt->bind_param("sss", $content_value, $page_target, $section_key);
+                if (!$update_stmt->execute()) $success = false;
+            } else {
+                $insert_stmt->bind_param("sss", $page_target, $section_key, $content_value);
+                if (!$insert_stmt->execute()) $success = false;
+            }
+        }
+    }
+    
+    if ($success) {
+        $success_msg = "Testimonial stats updated successfully!";
+    } else {
+        $error_msg = "Error saving stats.";
+    }
+}
+
 // Handle Form Submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_testimonial'])) {
     $testimonial_id = isset($_POST['testimonial_id']) ? (int)$_POST['testimonial_id'] : 0;
@@ -138,6 +168,16 @@ if (isset($_GET['edit'])) {
 
 include 'includes/header.php';
 include 'includes/sidebar.php';
+
+// Fetch Stats
+$stats_data = [];
+$stmt = $conn->prepare("SELECT section_key, content_value FROM page_content WHERE page_name = 'testimonial_stats'");
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $stats_data[$row['section_key']] = $row['content_value'];
+}
+$stmt->close();
 ?>
 
 <div class="main-wrapper">
@@ -147,9 +187,14 @@ include 'includes/sidebar.php';
         
         <div class="page-header">
             <h1>Manage Testimonials</h1>
-            <button class="btn-primary" onclick="switchTab('add-testimonial')">
-                <i class="fa-solid fa-plus"></i> Add New Testimonial
-            </button>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-primary" style="background-color: var(--accent-color); color: var(--text-dark);" onclick="switchTab('manage-stats')">
+                    <i class="fa-solid fa-chart-bar"></i> Manage Stats
+                </button>
+                <button class="btn-primary" onclick="switchTab('add-testimonial')">
+                    <i class="fa-solid fa-plus"></i> Add New Testimonial
+                </button>
+            </div>
         </div>
 
         <?php if(!empty($success_msg)): ?>
@@ -356,6 +401,29 @@ include 'includes/sidebar.php';
             </div>
         </div>
 
+        <!-- MANAGE STATS VIEW -->
+        <div class="tab-content" id="view-manage-stats">
+            <div style="background: #F6F6F6; padding: 40px; border-radius: 10px; position: relative;">
+                <style>
+                    #view-manage-stats .testimonial-section { padding: 0 !important; background: transparent !important; }
+                    #view-manage-stats .testi-top-area,
+                    #view-manage-stats .testi-slider-wrapper,
+                    #view-manage-stats .testi-pagination,
+                    #view-manage-stats button.testi-nav-arrow { display: none !important; }
+                    #view-manage-stats [contenteditable="true"] { outline: 1px dashed rgba(0,0,0,0.2); cursor: text; min-width: 30px; display: inline-block; padding: 2px; }
+                    #view-manage-stats [contenteditable="true"]:focus { outline: 2px solid var(--accent-color); background: rgba(255,255,255,0.5); }
+                </style>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="margin: 0; color: var(--text-dark);">Live Edit Testimonial Stats</h3>
+                    <button class="btn-primary" onclick="saveTestiStatsLive(this)">Save Stats</button>
+                </div>
+                
+                <?php include '../includes/components/testimonial.php'; ?>
+                
+            </div>
+        </div>
+
     </div>
 
     <div class="admin-footer">
@@ -460,6 +528,37 @@ function previewCompanyLogo(input) {
             document.getElementById('preview_company_wrapper').style.display = 'none';
         }
     }
+}
+
+function saveTestiStatsLive(btn) {
+    const originalText = btn.innerText;
+    btn.innerText = 'Saving...';
+    
+    const formData = new FormData();
+    formData.append('save_content', '1');
+    formData.append('content[testi_stat1_value]', document.querySelector('.testi-stat1-val').innerText);
+    formData.append('content[testi_stat1_label]', document.querySelector('.testi-stat1-label').innerText);
+    formData.append('content[testi_stat2_value]', document.querySelector('.testi-stat2-val').innerText);
+    formData.append('content[testi_stat2_label]', document.querySelector('.testi-stat2-label').innerText);
+    formData.append('content[testi_stat3_value]', document.querySelector('.testi-stat3-val').innerText);
+    formData.append('content[testi_stat3_label]', document.querySelector('.testi-stat3-label').innerText);
+    formData.append('content[testi_stat4_value]', document.querySelector('.testi-stat4-val').innerText);
+    formData.append('content[testi_stat4_label]', document.querySelector('.testi-stat4-label').innerText);
+    
+    fetch('manage_page.php?page=testimonial_stats', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(() => {
+        btn.innerText = 'Saved!';
+        setTimeout(() => { btn.innerText = originalText; }, 2000);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        btn.innerText = 'Error';
+        setTimeout(() => { btn.innerText = originalText; }, 2000);
+    });
 }
 </script>
 

@@ -1,4 +1,20 @@
-<?php require_once 'admin/config/db.php'; ?>
+<?php 
+if (!isset($conn)) {
+    if (file_exists('admin/config/db.php')) require_once 'admin/config/db.php';
+    elseif (file_exists('config/db.php')) require_once 'config/db.php';
+    elseif (file_exists('../admin/config/db.php')) require_once '../admin/config/db.php';
+}
+
+// Fetch Testimonial Stats
+$testi_stats_content = [];
+$testi_stats_stmt = $conn->prepare("SELECT section_key, content_value FROM page_content WHERE page_name = 'testimonial_stats'");
+$testi_stats_stmt->execute();
+$testi_stats_res = $testi_stats_stmt->get_result();
+while($row = $testi_stats_res->fetch_assoc()) {
+    $testi_stats_content[$row['section_key']] = $row['content_value'];
+}
+$testi_stats_stmt->close();
+?>
 <!-- Testimonial Section -->
 <style>
     @media (max-width: 992px) {
@@ -96,8 +112,9 @@
             <div class="stat-item" style="display: flex; align-items: center; gap: 20px;">
                 <div class="stat-icon" style="width: 50px; height: 50px; background: #fbf3ec; color: #EAB136; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="fa-solid fa-users"></i></div>
                 <div>
-                    <h3 style="font-size: 24px; margin: 0 0 5px 0; color: var(--text-dark);">250+</h3>
-                    <p style="margin: 0; color: var(--text-muted); font-size: 13px;">Happy Clients</p>
+                    <?php $is_testi_editor = (isset($currentPage) && $currentPage == 'testimonials'); ?>
+                    <h3 class="testi-stat1-val" <?php echo $is_testi_editor ? 'contenteditable="true"' : ''; ?> style="font-size: 24px; margin: 0 0 5px 0; color: var(--text-dark);"><?php echo isset($testi_stats_content['testi_stat1_value']) ? $testi_stats_content['testi_stat1_value'] : '250+'; ?></h3>
+                    <p class="testi-stat1-label" <?php echo $is_testi_editor ? 'contenteditable="true"' : ''; ?> style="margin: 0; color: var(--text-muted); font-size: 13px;"><?php echo isset($testi_stats_content['testi_stat1_label']) ? $testi_stats_content['testi_stat1_label'] : 'Happy Clients'; ?></p>
                 </div>
             </div>
             
@@ -106,8 +123,8 @@
             <div class="stat-item" style="display: flex; align-items: center; gap: 20px;">
                 <div class="stat-icon" style="width: 50px; height: 50px; background: #fbf3ec; color: #EAB136; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="fa-solid fa-comment-dots"></i></div>
                 <div>
-                    <h3 style="font-size: 24px; margin: 0 0 5px 0; color: var(--text-dark);">4.9/5</h3>
-                    <p style="margin: 0; color: var(--text-muted); font-size: 13px;">Average Rating</p>
+                    <h3 class="testi-stat2-val" <?php echo $is_testi_editor ? 'contenteditable="true"' : ''; ?> style="font-size: 24px; margin: 0 0 5px 0; color: var(--text-dark);"><?php echo isset($testi_stats_content['testi_stat2_value']) ? $testi_stats_content['testi_stat2_value'] : '4.9/5'; ?></h3>
+                    <p class="testi-stat2-label" <?php echo $is_testi_editor ? 'contenteditable="true"' : ''; ?> style="margin: 0; color: var(--text-muted); font-size: 13px;"><?php echo isset($testi_stats_content['testi_stat2_label']) ? $testi_stats_content['testi_stat2_label'] : 'Average Rating'; ?></p>
                 </div>
             </div>
 
@@ -116,8 +133,8 @@
             <div class="stat-item" style="display: flex; align-items: center; gap: 20px;">
                 <div class="stat-icon" style="width: 50px; height: 50px; background: #fbf3ec; color: #EAB136; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="fa-solid fa-medal"></i></div>
                 <div>
-                    <h3 style="font-size: 24px; margin: 0 0 5px 0; color: var(--text-dark);">150+</h3>
-                    <p style="margin: 0; color: var(--text-muted); font-size: 13px;">5 Star Reviews</p>
+                    <h3 class="testi-stat3-val" <?php echo $is_testi_editor ? 'contenteditable="true"' : ''; ?> style="font-size: 24px; margin: 0 0 5px 0; color: var(--text-dark);"><?php echo isset($testi_stats_content['testi_stat3_value']) ? $testi_stats_content['testi_stat3_value'] : '150+'; ?></h3>
+                    <p class="testi-stat3-label" <?php echo $is_testi_editor ? 'contenteditable="true"' : ''; ?> style="margin: 0; color: var(--text-muted); font-size: 13px;"><?php echo isset($testi_stats_content['testi_stat3_label']) ? $testi_stats_content['testi_stat3_label'] : '5 Star Reviews'; ?></p>
                 </div>
             </div>
 
@@ -126,8 +143,8 @@
             <div class="stat-item" style="display: flex; align-items: center; gap: 20px;">
                 <div class="stat-icon" style="width: 50px; height: 50px; background: #fbf3ec; color: #EAB136; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="fa-regular fa-face-smile"></i></div>
                 <div>
-                    <h3 style="font-size: 24px; margin: 0 0 5px 0; color: var(--text-dark);">98%</h3>
-                    <p style="margin: 0; color: var(--text-muted); font-size: 13px;">Client Satisfaction</p>
+                    <h3 class="testi-stat4-val" <?php echo $is_testi_editor ? 'contenteditable="true"' : ''; ?> style="font-size: 24px; margin: 0 0 5px 0; color: var(--text-dark);"><?php echo isset($testi_stats_content['testi_stat4_value']) ? $testi_stats_content['testi_stat4_value'] : '98%'; ?></h3>
+                    <p class="testi-stat4-label" <?php echo $is_testi_editor ? 'contenteditable="true"' : ''; ?> style="margin: 0; color: var(--text-muted); font-size: 13px;"><?php echo isset($testi_stats_content['testi_stat4_label']) ? $testi_stats_content['testi_stat4_label'] : 'Client Satisfaction'; ?></p>
                 </div>
             </div>
 
