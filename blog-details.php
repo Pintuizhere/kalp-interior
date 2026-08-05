@@ -68,7 +68,7 @@ if ($categories_result && $categories_result->num_rows > 0) {
         <div class="container">
             <h1 class="banner-title">Blog</h1>
             <div class="breadcrumbs">
-                <a href="index.php">Home</a> <span class="divider">/</span> <span class="current">Blog Details</span>
+                <a href="index">Home</a> <span class="divider">/</span> <span class="current">Blog Details</span>
             </div>
         </div>
     </section>

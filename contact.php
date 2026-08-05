@@ -9,7 +9,7 @@ include 'includes/header.php';
         <div class="container">
             <h1 class="banner-title">Contact Us</h1>
             <div class="breadcrumbs">
-                <a href="index.php">Home</a> <span class="divider">/</span> <span class="current">Contact Us</span>
+                <a href="index">Home</a> <span class="divider">/</span> <span class="current">Contact Us</span>
             </div>
         </div>
     </section>

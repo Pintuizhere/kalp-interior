@@ -20,7 +20,7 @@ $more_projects_result = $conn->query($more_projects_query);
         <div class="container">
             <h1 class="banner-title">Projects</h1>
             <div class="breadcrumbs">
-                <a href="index.php">Home</a> <span class="divider">/</span> <span class="current">Project Details</span>
+                <a href="index">Home</a> <span class="divider">/</span> <span class="current">Project Details</span>
             </div>
         </div>
     </section>

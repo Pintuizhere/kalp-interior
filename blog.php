@@ -10,7 +10,7 @@ require_once 'admin/config/db.php';
         <div class="container">
             <h1 class="banner-title">Blog</h1>
             <div class="breadcrumbs">
-                <a href="index.php">Home</a> <span class="divider">/</span> <span class="current">Blog</span>
+                <a href="index">Home</a> <span class="divider">/</span> <span class="current">Blog</span>
             </div>
         </div>
     </section>

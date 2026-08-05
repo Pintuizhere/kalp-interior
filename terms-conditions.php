@@ -8,7 +8,7 @@ include 'includes/header.php';
         <div class="container">
             <h1 class="banner-title">Terms & Conditions</h1>
             <div class="breadcrumbs">
-                <a href="index.php">Home</a> <span class="divider">/</span> <span class="current">Terms & Conditions</span>
+                <a href="index">Home</a> <span class="divider">/</span> <span class="current">Terms & Conditions</span>
             </div>
         </div>
     </section>

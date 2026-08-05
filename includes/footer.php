@@ -30,7 +30,7 @@ if (!function_exists('gval')) {
         <div class="container" style="position: relative; z-index: 2;">
             <div class="footer-top">
                 <div class="footer-col">
-                    <a href="index.php" class="footer-logo" style="display: block; margin-bottom: 20px;">
+                    <a href="index" class="footer-logo" style="display: block; margin-bottom: 20px;">
                         <img src="assets/images/logo.png" alt="Kalp Interior Studio" style="max-height: 50px; width: auto; object-fit: contain;">
                     </a>
                     <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;"><?php echo gval('footer_text', $global_settings, 'A home is built with emotions before it is built with materials.'); ?></p>
@@ -57,7 +57,7 @@ if (!function_exists('gval')) {
                 <div class="footer-col">
                     <h4>Quick Links</h4>
                     <div class="footer-links">
-                        <a href="index.php">Home</a>
+                        <a href="index">Home</a>
                         <a href="about.php">About Us</a>
                         <a href="services.php">Services</a>
                         <a href="projects.php">Projects</a>

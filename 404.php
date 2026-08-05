@@ -88,7 +88,7 @@ include 'includes/header.php';
                 <div class="error-code">404</div>
                 <h1 class="error-title">Oops! Page Not Found</h1>
                 <p class="error-desc">The page you are looking for might have been removed, had its name changed, or is temporarily unavailable. Let's get you back on track.</p>
-                <a href="index.php" class="back-home-btn">
+                <a href="index" class="back-home-btn">
                     <i class="fa-solid fa-house"></i> Back To Home
                 </a>
             </div>
