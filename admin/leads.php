@@ -26,9 +26,35 @@ if (isset($_GET['delete'])) {
     $stmt->close();
 }
 
+// Query params
+$search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
+$service_filter = isset($_GET['service']) ? $conn->real_escape_string($_GET['service']) : '';
+
+$where_clauses = [];
+if (!empty($search)) {
+    $where_clauses[] = "(name LIKE '%$search%' OR email LIKE '%$search%')";
+}
+if (!empty($service_filter)) {
+    $where_clauses[] = "service = '$service_filter'";
+}
+
+$where_sql = "";
+if (!empty($where_clauses)) {
+    $where_sql = "WHERE " . implode(" AND ", $where_clauses);
+}
+
 // Fetch leads from DB
-$leads_query = "SELECT * FROM leads ORDER BY created_at DESC";
+$leads_query = "SELECT * FROM leads $where_sql ORDER BY created_at DESC";
 $leads_result = $conn->query($leads_query);
+
+// Fetch unique services for dropdown
+$services_res = $conn->query("SELECT DISTINCT service FROM leads WHERE service IS NOT NULL AND service != '' ORDER BY service ASC");
+$available_services = [];
+if ($services_res) {
+    while($row = $services_res->fetch_assoc()) {
+        $available_services[] = $row['service'];
+    }
+}
 ?>
 
 <div class="main-wrapper">
@@ -59,22 +85,22 @@ $leads_result = $conn->query($leads_query);
         <!-- MANAGE LEADS VIEW -->
         <div class="tab-content active" id="view-manage">
             <div class="table-wrapper">
-                <div class="table-toolbar">
-                    <div class="search-box">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" placeholder="Search leads...">
+                <form method="GET" class="table-toolbar" style="display: flex; gap: 10px; align-items: center; margin-bottom: 20px;">
+                    <div class="search-box" style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 5px; padding: 0 10px; background: #fff; flex-grow: 1; max-width: 300px;">
+                        <input type="text" name="search" placeholder="Search leads..." value="<?php echo htmlspecialchars($search); ?>" style="border: none; padding: 8px 10px 8px 30px; outline: none; width: 100%;" onchange="this.form.submit()">
                     </div>
                     <div>
-                        <select class="form-control" style="padding: 8px 15px; width: 150px;">
-                            <option>All Status</option>
-                            <option>New</option>
-                            <option>Contacted</option>
-                            <option>In Progress</option>
-                            <option>Qualified</option>
-                            <option>Closed</option>
+                        <select name="service" class="form-control" style="padding: 8px 15px; width: 200px; border-radius: 5px; border: 1px solid var(--border-color);" onchange="this.form.submit()">
+                            <option value="">All Services</option>
+                            <?php foreach($available_services as $srv): ?>
+                                <option value="<?php echo htmlspecialchars($srv); ?>" <?php echo ($service_filter == $srv) ? 'selected' : ''; ?>><?php echo htmlspecialchars($srv); ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
-                </div>
+                    <?php if (!empty($search) || !empty($service_filter)): ?>
+                        <a href="leads.php" style="font-size: 13px; color: var(--text-muted); margin-left: 10px; text-decoration: underline;">Clear</a>
+                    <?php endif; ?>
+                </form>
 
                 <table class="admin-table">
                     <thead>
@@ -82,7 +108,6 @@ $leads_result = $conn->query($leads_query);
                             <th>Client Info</th>
                             <th>Contact Details</th>
                             <th>Service Requested</th>
-                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -110,7 +135,6 @@ $leads_result = $conn->query($leads_query);
                                     <div style="font-size: 12px; color: var(--text-main); margin-bottom: 4px;"><i class="fa-regular fa-envelope" style="margin-right:5px; color:var(--text-muted);"></i> <?php echo htmlspecialchars($lead['email']); ?></div>
                                 </td>
                                 <td><?php echo htmlspecialchars($lead['service']); ?></td>
-                                <td><span class="pill <?php echo $status_class; ?>"><?php echo htmlspecialchars($lead['status']); ?></span></td>
                                 <td>
                                     <div class="action-btns">
                                         <button type="button" class="btn-icon view-lead-btn" style="border:none; background:none; cursor:pointer;"
@@ -128,7 +152,7 @@ $leads_result = $conn->query($leads_query);
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="5" style="text-align:center; padding: 20px;">No leads found.</td>
+                                <td colspan="4" style="text-align:center; padding: 20px; color: var(--text-muted);">No leads found.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>

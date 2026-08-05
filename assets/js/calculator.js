@@ -7,88 +7,187 @@ document.addEventListener('DOMContentLoaded', function() {
     const leadForm = document.getElementById('calc-lead-form');
     const leadCloseBtn = document.getElementById('calc-lead-close');
 
+    const leadDetailsSection = document.getElementById('lead-details-section');
+    const otpSection = document.getElementById('otp-section');
+    const verifyOtpBtn = document.getElementById('verify-otp-btn');
+    const otpBackBtn = document.getElementById('otp-back-btn');
+    const leadSubmitBtn = document.getElementById('lead-submit-btn');
+
+    function handleSuccessfulLogin() {
+        document.getElementById('otp-error').style.display = 'none';
+        
+        const nameVal = document.getElementById('lead-name').value;
+        const contactVal = document.getElementById('lead-contact').value;
+        const locationVal = document.getElementById('lead-location').value;
+        
+        const pdfName = document.getElementById('pdf-lead-name');
+        const pdfContact = document.getElementById('pdf-lead-contact');
+        const pdfLocation = document.getElementById('pdf-lead-location');
+        
+        if (pdfName) pdfName.textContent = nameVal;
+        if (pdfContact) pdfContact.textContent = contactVal;
+        if (pdfLocation) pdfLocation.textContent = locationVal;
+        
+        window.isLeadCaptured = true;
+        if (leadModal) leadModal.style.display = 'none';
+        
+        if (window.currentCalcBtn) {
+            window.currentCalcBtn.click();
+        }
+
+        // Wait for the 800ms calculation animation to finish, then gather data and save lead
+        setTimeout(() => {
+            const categoryEl = document.querySelector('input[name="property_category"]:checked');
+            const finishEl = document.querySelector('input[name="finish_level"]:checked');
+            const styleEl = document.querySelector('input[name="design_style"]:checked');
+            const typeEl = document.querySelector('input[name="property_type"]:checked');
+            const sqftInput = document.getElementById('sqft-input');
+            const isKitchen = categoryEl && categoryEl.value === 'kitchen';
+
+            const categoryText = categoryEl ? categoryEl.nextElementSibling.nextElementSibling.textContent.trim() : 'N/A';
+            let typeText = 'N/A';
+            let styleText = 'N/A';
+            let packageText = 'N/A';
+
+            if (isKitchen) {
+                const layoutEl = document.querySelector('input[name="k_layout"]:checked');
+                if(layoutEl) typeText = layoutEl.nextElementSibling.nextElementSibling.textContent.trim();
+                styleText = 'Modular Kitchen Custom Design';
+                const packageEl = document.querySelector('input[name="k_package"]:checked');
+                if (packageEl) {
+                    if (packageEl.value == 1500) packageText = 'Essentials';
+                    else if (packageEl.value == 2000) packageText = 'Premium';
+                    else packageText = 'Luxury';
+                }
+            } else {
+                if (typeEl) {
+                    typeText = typeEl.nextElementSibling.nextElementSibling.textContent.trim();
+                    if (sqftInput && sqftInput.value) {
+                        typeText += ` (${sqftInput.value} sqft)`;
+                    }
+                }
+                styleText = styleEl ? styleEl.nextElementSibling.nextElementSibling.textContent.trim() : 'N/A';
+                if (finishEl) {
+                    const labelDiv = finishEl.nextElementSibling.nextElementSibling;
+                    if(labelDiv) {
+                        packageText = labelDiv.querySelector('span:first-child').textContent.trim();
+                    }
+                }
+            }
+
+            const totalEl = document.getElementById('bd-total');
+            const estimatedCost = totalEl ? totalEl.textContent : '₹0';
+
+            const saveFormData = new FormData();
+            saveFormData.append('name', nameVal);
+            saveFormData.append('phone', contactVal);
+            saveFormData.append('location', locationVal);
+            saveFormData.append('property_category', categoryText);
+            saveFormData.append('property_type', typeText);
+            saveFormData.append('design_style', styleText);
+            saveFormData.append('package', packageText);
+            saveFormData.append('estimated_cost', estimatedCost);
+
+            fetch('admin/ajax/save_estimate_request.php', {
+                method: 'POST',
+                body: saveFormData
+            }).catch(e => console.error("Error saving lead", e));
+            
+        }, 1000);
+    }
+
     if (leadForm) {
         leadForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const nameVal = document.getElementById('lead-name').value;
             const contactVal = document.getElementById('lead-contact').value;
-            const locationVal = document.getElementById('lead-location').value;
             
-            const pdfName = document.getElementById('pdf-lead-name');
-            const pdfContact = document.getElementById('pdf-lead-contact');
-            const pdfLocation = document.getElementById('pdf-lead-location');
-            
-            if (pdfName) pdfName.textContent = nameVal;
-            if (pdfContact) pdfContact.textContent = contactVal;
-            if (pdfLocation) pdfLocation.textContent = locationVal;
-            
-            window.isLeadCaptured = true;
-            if (leadModal) leadModal.style.display = 'none';
-            
-            if (window.currentCalcBtn) {
-                window.currentCalcBtn.click();
-            }
+            // Send OTP
+            const originalText = leadSubmitBtn.innerHTML;
+            leadSubmitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
+            leadSubmitBtn.disabled = true;
 
-            // Wait for the 800ms calculation animation to finish, then gather data and save lead
-            setTimeout(() => {
-                const categoryEl = document.querySelector('input[name="property_category"]:checked');
-                const finishEl = document.querySelector('input[name="finish_level"]:checked');
-                const styleEl = document.querySelector('input[name="design_style"]:checked');
-                const typeEl = document.querySelector('input[name="property_type"]:checked');
-                const sqftInput = document.getElementById('sqft-input');
-                const isKitchen = categoryEl && categoryEl.value === 'kitchen';
+            const formData = new FormData();
+            formData.append('phone', contactVal);
 
-                const categoryText = categoryEl ? categoryEl.nextElementSibling.nextElementSibling.textContent.trim() : 'N/A';
-                let typeText = 'N/A';
-                let styleText = 'N/A';
-                let packageText = 'N/A';
-
-                if (isKitchen) {
-                    const layoutEl = document.querySelector('input[name="k_layout"]:checked');
-                    if(layoutEl) typeText = layoutEl.nextElementSibling.nextElementSibling.textContent.trim();
-                    styleText = 'Modular Kitchen Custom Design';
-                    const packageEl = document.querySelector('input[name="k_package"]:checked');
-                    if (packageEl) {
-                        if (packageEl.value == 1500) packageText = 'Essentials';
-                        else if (packageEl.value == 2000) packageText = 'Premium';
-                        else packageText = 'Luxury';
+            fetch('admin/ajax/send_otp.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                leadSubmitBtn.innerHTML = originalText;
+                leadSubmitBtn.disabled = false;
+                
+                if (data.success) {
+                    if (data.is_free_login) {
+                        handleSuccessfulLogin();
+                    } else {
+                        leadDetailsSection.style.display = 'none';
+                        otpSection.style.display = 'block';
+                        document.getElementById('otp-success').style.display = 'block';
+                        document.getElementById('otp-error').style.display = 'none';
+                        setTimeout(() => { document.getElementById('otp-success').style.display = 'none'; }, 5000);
                     }
                 } else {
-                    if (typeEl) {
-                        typeText = typeEl.nextElementSibling.nextElementSibling.textContent.trim();
-                        if (sqftInput && sqftInput.value) {
-                            typeText += ` (${sqftInput.value} sqft)`;
-                        }
-                    }
-                    styleText = styleEl ? styleEl.nextElementSibling.nextElementSibling.textContent.trim() : 'N/A';
-                    if (finishEl) {
-                        const labelDiv = finishEl.nextElementSibling.nextElementSibling;
-                        if(labelDiv) {
-                            packageText = labelDiv.querySelector('span:first-child').textContent.trim();
-                        }
-                    }
+                    alert(data.message || 'Failed to send OTP');
                 }
+            })
+            .catch(err => {
+                console.error(err);
+                leadSubmitBtn.innerHTML = originalText;
+                leadSubmitBtn.disabled = false;
+                alert('An error occurred while sending OTP.');
+            });
+        });
+    }
 
-                const totalEl = document.getElementById('bd-total');
-                const estimatedCost = totalEl ? totalEl.textContent : '₹0';
+    if (otpBackBtn) {
+        otpBackBtn.addEventListener('click', function() {
+            otpSection.style.display = 'none';
+            leadDetailsSection.style.display = 'block';
+        });
+    }
 
-                const formData = new FormData();
-                formData.append('name', nameVal);
-                formData.append('phone', contactVal);
-                formData.append('location', locationVal);
-                formData.append('property_category', categoryText);
-                formData.append('property_type', typeText);
-                formData.append('design_style', styleText);
-                formData.append('package', packageText);
-                formData.append('estimated_cost', estimatedCost);
+    if (verifyOtpBtn) {
+        verifyOtpBtn.addEventListener('click', function() {
+            const otpVal = document.getElementById('lead-otp').value;
+            if (!otpVal) {
+                document.getElementById('otp-error').textContent = 'Please enter OTP';
+                document.getElementById('otp-error').style.display = 'block';
+                return;
+            }
 
-                fetch('admin/ajax/save_estimate_request.php', {
-                    method: 'POST',
-                    body: formData
-                }).catch(e => console.error("Error saving lead", e));
-                
-            }, 1000);
+            const originalText = verifyOtpBtn.innerHTML;
+            verifyOtpBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Verifying...';
+            verifyOtpBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('otp', otpVal);
+
+            fetch('admin/ajax/verify_otp.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                verifyOtpBtn.innerHTML = originalText;
+                verifyOtpBtn.disabled = false;
+
+                if (data.success) {
+                    handleSuccessfulLogin();
+                } else {
+                    document.getElementById('otp-error').textContent = data.message || 'Invalid OTP';
+                    document.getElementById('otp-error').style.display = 'block';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                verifyOtpBtn.innerHTML = originalText;
+                verifyOtpBtn.disabled = false;
+                document.getElementById('otp-error').textContent = 'An error occurred';
+                document.getElementById('otp-error').style.display = 'block';
+            });
         });
     }
     
@@ -824,10 +923,19 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                             }
 
-                            document.getElementById('pdf-category').textContent = categoryText;
-                            document.getElementById('pdf-type').textContent = typeText;
-                            document.getElementById('pdf-style').textContent = styleText;
-                            document.getElementById('pdf-package').textContent = packageText;
+                            const setPdfText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+                            
+                            setPdfText('pdf-category', categoryText);
+                            setPdfText('pdf-type', typeText);
+                            setPdfText('pdf-style', styleText);
+                            setPdfText('pdf-package', packageText);
+
+                            const leadName = document.getElementById('lead-name');
+                            const leadPhone = document.getElementById('lead-contact');
+                            const leadLocation = document.getElementById('lead-location');
+                            setPdfText('pdf-user-name', leadName ? leadName.value : '');
+                            setPdfText('pdf-user-phone', leadPhone ? leadPhone.value : '');
+                            setPdfText('pdf-user-location', leadLocation ? leadLocation.value : '');
 
                             let computedCosts = null;
                             const formatNum = (num) => '₹' + Math.round(num).toLocaleString('en-IN');
@@ -895,7 +1003,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                             });
 
-                            document.getElementById('pdf-cost-total').textContent = computedCosts ? formatNum(computedCosts['total']) : document.getElementById('bd-total').textContent;
+                            const pdfCostTotal = document.getElementById('pdf-cost-total');
+                            if (pdfCostTotal) {
+                                const bdTotal = document.getElementById('bd-total');
+                                pdfCostTotal.textContent = computedCosts ? formatNum(computedCosts['total']) : (bdTotal ? bdTotal.textContent : '0');
+                            }
 
                             // Kitchen Accessories
                             const pdfKAccList = document.getElementById('pdf-kitchen-accessories-list');

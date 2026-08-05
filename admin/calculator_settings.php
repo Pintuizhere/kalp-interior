@@ -11,11 +11,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $action = $_POST['action'] ?? '';
     
     // Breakdowns & PDF Template save
+    // Breakdowns & General Settings save
     if ($action == 'save_breakdowns') {
         if (isset($_POST['settings']) && is_array($_POST['settings'])) {
-            $stmt = $conn->prepare("UPDATE calculator_settings SET setting_value = ? WHERE setting_key = ?");
+            $stmt = $conn->prepare("INSERT INTO calculator_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
             foreach ($_POST['settings'] as $key => $value) {
-                $stmt->bind_param("ss", $value, $key);
+                $stmt->bind_param("sss", $key, $value, $value);
                 $stmt->execute();
             }
             $stmt->close();
@@ -206,7 +207,13 @@ include 'includes/sidebar.php';
                         </div>
                         <div class="form-group">
                             <label class="form-label">Icon Class (e.g. fa-solid fa-house)</label>
-                            <input type="text" name="icon" id="cat_icon" required class="form-control">
+                            <div class="icon-input-group">
+                                <div class="icon-input-preview">
+                                    <i id="cat_icon_preview" class="fa-solid fa-house"></i>
+                                </div>
+                                <input type="text" name="icon" id="cat_icon" required class="form-control" onkeyup="updatePreview(this, 'cat_icon_preview', 'fa-house')">
+                                <button type="button" class="btn-select" onclick="openIconPicker('cat_icon', 'cat_icon_preview')">Select</button>
+                            </div>
                         </div>
                         <button type="submit" class="btn-primary">Save Category</button>
                         <button type="button" class="btn-primary" style="background:#ccc; color:#333; margin-left:10px;" onclick="resetForm('cat')">Reset</button>
@@ -260,7 +267,13 @@ include 'includes/sidebar.php';
                         </div>
                         <div class="form-group">
                             <label class="form-label">Icon Class</label>
-                            <input type="text" name="icon" id="type_icon" required class="form-control">
+                            <div class="icon-input-group">
+                                <div class="icon-input-preview">
+                                    <i id="type_icon_preview" class="fa-solid fa-bed"></i>
+                                </div>
+                                <input type="text" name="icon" id="type_icon" required class="form-control" onkeyup="updatePreview(this, 'type_icon_preview', 'fa-bed')">
+                                <button type="button" class="btn-select" onclick="openIconPicker('type_icon', 'type_icon_preview')">Select</button>
+                            </div>
                         </div>
                         <button type="submit" class="btn-primary">Save Type</button>
                         <button type="button" class="btn-primary" style="background:#ccc; color:#333; margin-left:10px;" onclick="resetForm('type')">Reset</button>
@@ -308,7 +321,13 @@ include 'includes/sidebar.php';
                         </div>
                         <div class="form-group">
                             <label class="form-label">Icon Class</label>
-                            <input type="text" name="icon" id="style_icon" required class="form-control">
+                            <div class="icon-input-group">
+                                <div class="icon-input-preview">
+                                    <i id="style_icon_preview" class="fa-solid fa-couch"></i>
+                                </div>
+                                <input type="text" name="icon" id="style_icon" required class="form-control" onkeyup="updatePreview(this, 'style_icon_preview', 'fa-couch')">
+                                <button type="button" class="btn-select" onclick="openIconPicker('style_icon', 'style_icon_preview')">Select</button>
+                            </div>
                         </div>
                         <button type="submit" class="btn-primary">Save Style</button>
                         <button type="button" class="btn-primary" style="background:#ccc; color:#333; margin-left:10px;" onclick="resetForm('style')">Reset</button>
@@ -565,6 +584,139 @@ include 'includes/sidebar.php';
             </div>
         </div>
 
+        </div>
+
+<!-- Icon Picker Component -->
+<style>
+.icon-input-group {
+    display: flex;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    overflow: hidden;
+}
+.icon-input-preview {
+    width: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    border-right: 1px solid var(--border-color);
+    color: var(--accent-color);
+    font-size: 18px;
+}
+.icon-input-group input {
+    flex-grow: 1;
+    border: none !important;
+    border-radius: 0 !important;
+    outline: none;
+    box-shadow: none !important;
+}
+.icon-input-group .btn-select {
+    background: #6c757d;
+    color: #fff;
+    border: none;
+    padding: 0 15px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 13px;
+    transition: background 0.2s;
+}
+.icon-input-group .btn-select:hover {
+    background: #5a6268;
+}
+.icon-picker-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+    width: 350px;
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+}
+.icon-picker-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 999;
+    display: none;
+}
+.icon-picker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+.icon-picker-header h4 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: #333;
+    text-transform: uppercase;
+}
+.icon-picker-header .close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #888;
+    line-height: 1;
+}
+.icon-picker-body {
+    padding: 15px;
+}
+.icon-picker-body input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    outline: none;
+    font-size: 13px;
+}
+.icon-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+.icon-btn {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: #555;
+    transition: all 0.2s;
+}
+.icon-btn:hover {
+    background: #f8fafc;
+    border-color: #ddd;
+    color: var(--accent-color);
+}
+</style>
+
+<div class="icon-picker-overlay" id="iconPickerOverlay" onclick="closeIconPicker()"></div>
+<div class="icon-picker-modal" id="iconPickerModal">
+    <div class="icon-picker-header">
+        <h4>Select An Icon</h4>
+        <button type="button" class="close-btn" onclick="closeIconPicker()">&times;</button>
+    </div>
+    <div class="icon-picker-body">
+        <input type="text" id="iconSearchInput" placeholder="Search icons..." onkeyup="filterIcons()">
+        <div class="icon-grid" id="iconGrid"></div>
+    </div>
+</div>
+
     </div>
 </div>
 
@@ -590,16 +742,19 @@ function resetForm(prefix) {
     if(prefix == 'cat') {
         document.getElementById('cat_name').value = '';
         document.getElementById('cat_icon').value = '';
+        document.getElementById('cat_icon_preview').className = 'fa-solid fa-house';
     }
     if(prefix == 'type') {
         document.getElementById('type_name').value = '';
         document.getElementById('type_sqft').value = '';
         document.getElementById('type_icon').value = '';
+        document.getElementById('type_icon_preview').className = 'fa-solid fa-bed';
     }
     if(prefix == 'style') {
         document.getElementById('style_name').value = '';
         document.getElementById('style_pct').value = '';
         document.getElementById('style_icon').value = '';
+        document.getElementById('style_icon_preview').className = 'fa-solid fa-couch';
     }
     if(prefix == 'pkg') {
         document.getElementById('pkg_name').value = '';
@@ -616,6 +771,8 @@ function editCat(id, name, icon) {
     document.getElementById('cat_id').value = id;
     document.getElementById('cat_name').value = name;
     document.getElementById('cat_icon').value = icon;
+    let v = (icon || '').trim();
+    document.getElementById('cat_icon_preview').className = v ? (v.includes('fa-') ? v : 'fa-solid fa-' + v) : 'fa-solid fa-house';
 }
 function editType(id, cat, name, sqft, icon) {
     document.getElementById('type_id').value = id;
@@ -623,12 +780,16 @@ function editType(id, cat, name, sqft, icon) {
     document.getElementById('type_name').value = name;
     document.getElementById('type_sqft').value = sqft;
     document.getElementById('type_icon').value = icon;
+    let v = (icon || '').trim();
+    document.getElementById('type_icon_preview').className = v ? (v.includes('fa-') ? v : 'fa-solid fa-' + v) : 'fa-solid fa-bed';
 }
 function editStyle(id, name, pct, icon) {
     document.getElementById('style_id').value = id;
     document.getElementById('style_name').value = name;
     document.getElementById('style_pct').value = pct;
     document.getElementById('style_icon').value = icon;
+    let v = (icon || '').trim();
+    document.getElementById('style_icon_preview').className = v ? (v.includes('fa-') ? v : 'fa-solid fa-' + v) : 'fa-solid fa-couch';
 }
 function editPackage(id, cat, name, price, pdf) {
     document.getElementById('pkg_id').value = id;
@@ -661,6 +822,64 @@ function updateTotals() {
         comTotal.style.color = (comSum > 100) ? 'red' : '#333';
     }
 }
+
+// Icon Picker Logic
+const faIcons = [
+    'fa-house', 'fa-couch', 'fa-bed', 'fa-chair', 'fa-bath', 'fa-kitchen-set', 
+    'fa-building', 'fa-paint-roller', 'fa-hammer', 'fa-ruler-combined', 'fa-lightbulb', 
+    'fa-tree', 'fa-sink', 'fa-door-open', 'fa-window-maximize', 'fa-plug', 'fa-fan', 
+    'fa-tv', 'fa-utensils', 'fa-mug-hot', 'fa-cube', 'fa-table-cells', 'fa-wifi', 
+    'fa-tools', 'fa-palette', 'fa-key', 'fa-briefcase', 'fa-house-chimney', 'fa-building-user',
+    'fa-star', 'fa-heart', 'fa-check', 'fa-plus', 'fa-user', 'fa-image', 'fa-book', 
+    'fa-chess-rook', 'fa-crown', 'fa-gem', 'fa-trophy', 'fa-clock'
+];
+
+let targetIconInput = '';
+let targetIconPreview = '';
+
+function updatePreview(inputElem, previewId, defaultIcon) {
+    let v = inputElem.value.trim();
+    document.getElementById(previewId).className = v ? (v.includes('fa-') ? v : 'fa-solid fa-' + v) : 'fa-solid ' + defaultIcon;
+}
+
+function openIconPicker(inputId, previewId) {
+    targetIconInput = inputId;
+    targetIconPreview = previewId;
+    document.getElementById('iconPickerOverlay').style.display = 'block';
+    document.getElementById('iconPickerModal').style.display = 'flex';
+    document.getElementById('iconSearchInput').value = '';
+    renderIcons(faIcons);
+}
+
+function closeIconPicker() {
+    document.getElementById('iconPickerOverlay').style.display = 'none';
+    document.getElementById('iconPickerModal').style.display = 'none';
+}
+
+function renderIcons(icons) {
+    const grid = document.getElementById('iconGrid');
+    grid.innerHTML = '';
+    icons.forEach(icon => {
+        let fullClass = 'fa-solid ' + icon;
+        let btn = document.createElement('div');
+        btn.className = 'icon-btn';
+        btn.innerHTML = `<i class="${fullClass}"></i>`;
+        btn.title = icon;
+        btn.onclick = function() {
+            document.getElementById(targetIconInput).value = fullClass;
+            document.getElementById(targetIconPreview).className = fullClass;
+            closeIconPicker();
+        };
+        grid.appendChild(btn);
+    });
+}
+
+function filterIcons() {
+    let term = document.getElementById('iconSearchInput').value.toLowerCase();
+    let filtered = faIcons.filter(icon => icon.includes(term));
+    renderIcons(filtered);
+}
+
 document.querySelectorAll('.breakdown-input').forEach(inp => inp.addEventListener('input', updateTotals));
 updateTotals();
 </script>

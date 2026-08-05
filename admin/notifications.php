@@ -1,109 +1,82 @@
 <?php
-require_once 'config/db.php';
-$pageTitle = 'Notifications';
+$pageTitle = 'All Notifications';
 $currentPage = 'notifications';
 include 'includes/header.php';
 include 'includes/sidebar.php';
+require_once 'config/db.php';
 
-$success_msg = '';
-
-// Handle Clear Notifications
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['clear_all'])) {
-    $conn->query("DELETE FROM notifications");
-    $success_msg = "All notifications have been cleared.";
+// Handle Clear All
+if (isset($_GET['action']) && $_GET['action'] == 'clear_all') {
+    $conn->query("UPDATE leads SET is_cleared = 1");
+    $conn->query("UPDATE estimate_requests SET is_cleared = 1");
+    header("Location: notifications.php");
+    exit;
 }
 
-// Handle Mark as Read
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['mark_read'])) {
-    $conn->query("UPDATE notifications SET is_read = 1");
-    $success_msg = "All notifications marked as read.";
+// Fetch all notifications (Up to 100 recent)
+$notifs = [];
+if (isset($conn)) {
+    $q_leads = $conn->query("SELECT id, name, created_at, 'Lead' as type FROM leads WHERE is_cleared = 0 ORDER BY created_at DESC LIMIT 50");
+    if ($q_leads) {
+        while($r = $q_leads->fetch_assoc()) $notifs[] = $r;
+    }
+    $q_ests = $conn->query("SELECT id, name, created_at, 'Estimate' as type FROM estimate_requests WHERE is_cleared = 0 ORDER BY created_at DESC LIMIT 50");
+    if ($q_ests) {
+        while($r = $q_ests->fetch_assoc()) $notifs[] = $r;
+    }
+    usort($notifs, function($a, $b) {
+        return strtotime($b['created_at']) - strtotime($a['created_at']);
+    });
 }
-
 ?>
 
 <div class="main-wrapper">
     <?php include 'includes/topbar.php'; ?>
     
     <div class="main-content">
-        
-        <?php if(!empty($success_msg)): ?>
-            <div style="background:#d4edda; color:#155724; padding:15px; border-radius:5px; margin-bottom:20px;">
-                <?php echo $success_msg; ?>
+        <div style="background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h3 style="margin: 0; font-size: 18px; color: #333;">Recent Activity & Notifications</h3>
+                <?php if(!empty($notifs)): ?>
+                <a href="?action=clear_all" class="btn-primary" style="background-color: #dc3545; color: #fff; padding: 8px 15px; font-size: 13px; text-decoration: none;" onclick="return confirm('Are you sure you want to clear all notifications?');">Clear All</a>
+                <?php endif; ?>
             </div>
-        <?php endif; ?>
-
-        <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-            <div>
-                <h1 style="margin:0;">Notifications</h1>
-                <p style="color:var(--text-muted); margin-top:5px;">System alerts and recent activities.</p>
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <form action="notifications.php" method="POST">
-                    <input type="hidden" name="mark_read" value="1">
-                    <button type="submit" class="btn" style="background-color: var(--bg-white); border: 1px solid var(--border-color); padding: 8px 15px; border-radius: 5px;">
-                        <i class="fa-solid fa-check-double"></i> Mark All Read
-                    </button>
-                </form>
-                <form action="notifications.php" method="POST" onsubmit="return confirm('Are you sure you want to clear all notifications?');">
-                    <input type="hidden" name="clear_all" value="1">
-                    <button type="submit" class="btn" style="background-color: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 5px;">
-                        <i class="fa-solid fa-trash"></i> Clear All
-                    </button>
-                </form>
+            
+            <div class="table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Notification</th>
+                            <th>Date & Time</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if(empty($notifs)): ?>
+                            <tr><td colspan="4" style="text-align:center;">No notifications found.</td></tr>
+                        <?php else: ?>
+                            <?php foreach($notifs as $n): ?>
+                                <tr>
+                                    <td>
+                                        <span style="background: #f8fafc; color: var(--accent-color); padding: 5px 10px; border-radius: 5px; font-size: 11px; text-transform: uppercase; border: 1px solid #eee;">
+                                            <i class="<?php echo $n['type'] == 'Lead' ? 'fa-solid fa-user-plus' : 'fa-solid fa-file-invoice'; ?>" style="margin-right: 5px;"></i> <?php echo $n['type']; ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <strong><?php echo htmlspecialchars($n['name']); ?></strong> submitted a new <?php echo strtolower($n['type']); ?> request.
+                                    </td>
+                                    <td><?php echo date('d M Y, h:i A', strtotime($n['created_at'])); ?></td>
+                                    <td>
+                                        <a href="<?php echo $n['type'] == 'Lead' ? 'leads.php' : 'estimate_requests.php'; ?>" class="btn-primary" style="padding: 5px 12px; font-size: 11px;">View</a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
-
-        <div class="table-wrapper" style="padding: 0;">
-            <ul style="list-style: none; padding: 0; margin: 0;">
-                <?php
-                $res = $conn->query("SELECT * FROM notifications ORDER BY created_at DESC");
-                if ($res->num_rows > 0) {
-                    while($row = $res->fetch_assoc()) {
-                        $bg = $row['is_read'] ? 'var(--bg-white)' : 'var(--bg-hover)';
-                        $icon = 'fa-bell';
-                        $iconColor = 'var(--text-muted)';
-                        
-                        if ($row['type'] == 'success') {
-                            $icon = 'fa-circle-check';
-                            $iconColor = '#10b981';
-                        } elseif ($row['type'] == 'warning') {
-                            $icon = 'fa-triangle-exclamation';
-                            $iconColor = '#f59e0b';
-                        } elseif ($row['type'] == 'error') {
-                            $icon = 'fa-circle-xmark';
-                            $iconColor = '#ef4444';
-                        }
-                        
-                        ?>
-                        <li style="padding: 20px 30px; border-bottom: 1px solid var(--border-color); background-color: <?php echo $bg; ?>; display: flex; align-items: flex-start; gap: 20px;">
-                            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg-light); display: flex; align-items: center; justify-content: center; color: <?php echo $iconColor; ?>; font-size: 18px; flex-shrink: 0;">
-                                <i class="fa-solid <?php echo $icon; ?>"></i>
-                            </div>
-                            <div style="flex-grow: 1;">
-                                <p style="margin: 0; margin-bottom: 5px; font-weight: <?php echo $row['is_read'] ? '400' : '600'; ?>; color: var(--text-dark);">
-                                    <?php echo htmlspecialchars($row['message']); ?>
-                                </p>
-                                <span style="font-size: 12px; color: var(--text-muted);">
-                                    <i class="fa-regular fa-clock" style="margin-right: 5px;"></i>
-                                    <?php echo date('M d, Y g:i A', strtotime($row['created_at'])); ?>
-                                </span>
-                            </div>
-                            <?php if(!$row['is_read']): ?>
-                            <div style="width: 10px; height: 10px; border-radius: 50%; background-color: var(--primary-color); margin-top: 5px;"></div>
-                            <?php endif; ?>
-                        </li>
-                        <?php
-                    }
-                } else {
-                    echo '<li style="padding: 40px; text-align: center; color: var(--text-muted);">
-                            <i class="fa-regular fa-bell-slash" style="font-size: 48px; margin-bottom: 15px; display: block; opacity: 0.3;"></i>
-                            No notifications available.
-                          </li>';
-                }
-                ?>
-            </ul>
-        </div>
-
     </div>
 </div>
 

@@ -64,6 +64,25 @@ if($res){ while($row = $res->fetch_assoc()){ $calc_settings[$row['setting_key']]
         .results-cta .cta-text strong { font-size: 14px !important; }
         .wi-text p { font-size: 12px !important; }
     }
+    
+    .k-package-card .k-pkg-radio {
+        transition: 0.2s all;
+        position: relative;
+    }
+    .k-package-card.active .k-pkg-radio {
+        border-color: white !important;
+    }
+    .k-package-card.active .k-pkg-radio::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 8px;
+        height: 8px;
+        background-color: white;
+        border-radius: 50%;
+    }
 </style>
 <section class="calculator-section" style="padding: 100px 0; background-color: var(--primary-color);">
     <div class="container" style="max-width: 1400px;">
@@ -396,7 +415,7 @@ if($res){ while($row = $res->fetch_assoc()){ $calc_settings[$row['setting_key']]
                         </div>
 
                         <div style="display: flex; justify-content: space-between; margin-top: 30px;">
-                            <button type="button" class="calc-submit-btn k-prev-btn" style="width: auto; padding: 10px 30px; background: rgba(255,255,255,0.1);"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                            <button type="button" class="calc-submit-btn k-prev-btn" style="width: auto; padding: 10px 30px; background: rgba(255,255,255,0.1); color: white;"><i class="fa-solid fa-arrow-left"></i> Back</button>
                             <button type="button" class="calc-submit-btn k-next-btn" style="width: auto; padding: 10px 30px;">Next <i class="fa-solid fa-arrow-right"></i></button>
                         </div>
                     </div>
@@ -412,17 +431,17 @@ if($res){ while($row = $res->fetch_assoc()){ $calc_settings[$row['setting_key']]
                             <label class="calc-option-card <?php echo $is_first_kpkg ? 'active' : ''; ?> k-package-card" style="padding: 20px; text-align: left; display: block;">
                                 <input type="radio" name="k_package" value="<?php echo $kpkg['price_per_sqft']; ?>" <?php echo $is_first_kpkg ? 'checked' : ''; ?>>
                                 <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
-                                    <div class="k-pkg-radio" style="width:16px; height:16px; border-radius:50%; border:2px solid <?php echo $is_first_kpkg ? 'white' : 'rgba(255,255,255,0.3)'; ?>; display:inline-block; margin-right:10px;"></div>
+                                    <div class="k-pkg-radio" style="width:16px; height:16px; border-radius:50%; border:2px solid rgba(255,255,255,0.3); display:inline-block; margin-right:10px;"></div>
                                     <?php echo htmlspecialchars($kpkg['name']); ?>
                                 </div>
-                                <p style="font-size: 14px; margin-bottom: 15px; text-align: center; color: #F4B41A; font-weight: bold;">₹<?php echo number_format($kpkg['price_per_sqft']); ?>/RFT</p>
+                                <p style="display: none; font-size: 14px; margin-bottom: 15px; text-align: center; color: #F4B41A; font-weight: bold;">₹<?php echo number_format($kpkg['price_per_sqft']); ?>/RFT</p>
                                 <?php echo $kpkg['pdf_specs']; ?>
                             </label>
                             <?php $is_first_kpkg = false; endforeach; endif; ?>
                         </div>
 
                         <div style="display: flex; justify-content: space-between; margin-top: 30px;">
-                            <button type="button" class="calc-submit-btn k-prev-btn" style="width: auto; padding: 10px 30px; background: rgba(255,255,255,0.1);"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                            <button type="button" class="calc-submit-btn k-prev-btn" style="width: auto; padding: 10px 30px; background: rgba(255,255,255,0.1); color: white;"><i class="fa-solid fa-arrow-left"></i> Back</button>
                             <button type="button" class="calc-submit-btn k-next-btn" style="width: auto; padding: 10px 30px;">Next <i class="fa-solid fa-arrow-right"></i></button>
                         </div>
                     </div>
@@ -459,7 +478,7 @@ if($res){ while($row = $res->fetch_assoc()){ $calc_settings[$row['setting_key']]
                         </div>
 
                         <div style="display: flex; justify-content: space-between; margin-top: 30px;">
-                            <button type="button" class="calc-submit-btn k-prev-btn" style="width: auto; padding: 10px 30px; background: rgba(255,255,255,0.1);"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                            <button type="button" class="calc-submit-btn k-prev-btn" style="width: auto; padding: 10px 30px; background: rgba(255,255,255,0.1); color: white;"><i class="fa-solid fa-arrow-left"></i> Back</button>
                             <button type="button" id="kitchen-calculate-btn" class="calc-submit-btn" style="width: auto; padding: 10px 30px;"><i class="fa-solid fa-calculator"></i> Get Quote</button>
                         </div>
                     </div>
@@ -851,35 +870,55 @@ if(!empty($calc_settings['pdf_template_html'])) {
             </div>
             
             <form id="calc-lead-form">
-                <div class="form-group">
-                    <label for="lead-name">Name *</label>
-                    <div class="input-wrapper">
-                        <i class="fa-regular fa-user input-icon"></i>
-                        <input type="text" id="lead-name" class="form-control" placeholder="Enter your full name" required>
+                <div id="lead-details-section">
+                    <div class="form-group">
+                        <label for="lead-name">Name *</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-user input-icon"></i>
+                            <input type="text" id="lead-name" class="form-control" placeholder="Enter your full name" required>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="lead-contact">Contact Number *</label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-phone input-icon"></i>
-                        <input type="tel" id="lead-contact" class="form-control" placeholder="Enter your phone number" required pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    
+                    <div class="form-group">
+                        <label for="lead-contact">Contact Number *</label>
+                        <div class="input-wrapper">
+                            <i class="fa-brands fa-whatsapp input-icon" style="color: #25D366; font-size: 1.2em;"></i>
+                            <input type="tel" id="lead-contact" class="form-control" placeholder="Enter your phone number" required pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        </div>
                     </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="lead-location">Location *</label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-location-dot input-icon"></i>
-                        <input type="text" id="lead-location" class="form-control" placeholder="Enter your city or area" required>
+                    
+                    <div class="form-group">
+                        <label for="lead-location">Location *</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-location-dot input-icon"></i>
+                            <input type="text" id="lead-location" class="form-control" placeholder="Enter your city or area" required>
+                        </div>
                     </div>
+                    
+                    <button type="submit" class="btn-login" id="lead-submit-btn">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        Send OTP
+                    </button>
+                    <button type="button" id="calc-lead-close">Cancel</button>
                 </div>
-                
-                <button type="submit" class="btn-login">
-                    <i class="fa-solid fa-file-invoice-dollar"></i>
-                    View Estimate
-                </button>
-                <button type="button" id="calc-lead-close">Cancel</button>
+
+                <div id="otp-section" style="display: none;">
+                    <div class="form-group">
+                        <label for="lead-otp">Enter OTP *</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-key input-icon"></i>
+                            <input type="text" id="lead-otp" class="form-control" placeholder="Enter 6-digit OTP" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        </div>
+                        <div id="otp-error" style="color: #E74C3C; font-size: 13px; margin-top: 8px; display: none;">Invalid OTP</div>
+                        <div id="otp-success" style="color: #27AE60; font-size: 13px; margin-top: 8px; display: none;">OTP Sent!</div>
+                    </div>
+                    
+                    <button type="button" class="btn-login" id="verify-otp-btn">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                        Verify & View Estimate
+                    </button>
+                    <button type="button" id="otp-back-btn" style="width: 100%; padding: 10px; background: transparent; color: #66756C; border: none; cursor: pointer; font-size: 14px; margin-top: 10px; text-decoration: underline; font-family: 'Inter', sans-serif;">Change Number</button>
+                </div>
             </form>
         </div>
     </div>

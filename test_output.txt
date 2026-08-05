@@ -1,0 +1,42 @@
+<div id="pdf-export-template" style="display: none; width: 794px; height: auto; font-family: 'Inter', sans-serif; background: #ffffff; color: #333333; overflow: hidden; box-sizing: border-box;">
+    <div style="display: flex; width: 100%; height: 100%;">
+        <!-- Left Sidebar -->
+        <div style="width: 35%; flex-shrink: 0; display: flex; flex-direction: column; background: #ffffff;">
+            <!-- Brown Top Section -->
+            <div style="background-color: #a49375; color: #ffffff; padding: 40px 30px; box-sizing: border-box; flex-grow: 0; min-height: 60%;">
+                <!-- Logo -->
+                <div style="margin-bottom: 60px;">
+                    <img src="assets/images/logo.png" style="max-width: 180px; height: auto; filter: brightness(0) invert(1);" alt="KALP Logo">
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <div style="font-size: 11px; margin-bottom: 5px;">Online Quotation.</div>
+                    <div style="font-size: 11px;">info@kalpinteriors.com</div>
+                </div>
+
+                <div style="margin-bottom: 40px; font-size: 11px; line-height: 1.6;">
+                    KALP INTERIOR DESIGN STUDIO.<br>
+                    ISM CHOWK ROAD, OPP<br>
+                    SR.DAV SCHOOL , PUNDAG,<br>
+                    RANCHI - 834004
+                </div>
+
+                <div style="margin-bottom: auto;">
+                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 15px; border-top: 2px solid white; padding-top: 15px; width: 50px;">CONTACT:</div>
+                    <div style="font-size: 11px; margin-bottom: 15px;">
+                        <strong>Office :</strong><br>
+                        +91 9472745288
+                    </div>
+                    <div style="font-size: 11px;">
+                        <strong>Studio Head :</strong><br>
+                        +91 9234772288
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 15px;">BUDGET DISCLAIMER</div>
+                    <div style="font-size: 9px; line-height: 1.5; opacity: 0.9;">
+                        The cost mentioned in this quotation is an estimated budget based on the current project scope and preliminary requirements. It is not the final project cost. The actual project budget will be finalized only after the design is approved, detailed measurements are completed, material selections are confirmed, and the final BOQ (Bill of Quantities) is prepared. Any changes in design, specifications, materials, finishes, or scope of work may result in a revision of the final project cost.
+                    </div>
+                </div>
+            </div>

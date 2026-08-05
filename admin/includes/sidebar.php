@@ -41,6 +41,25 @@
             </li>
         </ul>
         
+        <p class="menu-label">CALCULATOR</p>
+        <ul class="menu-list">
+            <li>
+                <a href="calculator_settings.php" class="<?php echo ($currentPage == 'calculator') ? 'active' : ''; ?>">
+                    <i class="fa-solid fa-calculator"></i> Calculator Settings
+                </a>
+            </li>
+            <li>
+                <a href="free_numbers.php" class="<?php echo ($currentPage == 'free_numbers') ? 'active' : ''; ?>">
+                    <i class="fa-solid fa-phone-slash"></i> Free Numbers
+                </a>
+            </li>
+            <li>
+                <a href="security.php" class="<?php echo ($currentPage == 'security') ? 'active' : ''; ?>">
+                    <i class="fa-solid fa-shield-halved"></i> Security
+                </a>
+            </li>
+        </ul>
+
         <p class="menu-label">CONTENT</p>
         <ul class="menu-list">
             <li>
@@ -56,11 +75,6 @@
             <li>
                 <a href="media.php" class="<?php echo ($currentPage == 'media') ? 'active' : ''; ?>">
                     <i class="fa-regular fa-image"></i> Media Library
-                </a>
-            </li>
-            <li>
-                <a href="calculator_settings.php" class="<?php echo ($currentPage == 'calculator') ? 'active' : ''; ?>">
-                    <i class="fa-solid fa-calculator"></i> Calculator Settings
                 </a>
             </li>
             <li class="menu-label" style="margin-top: 15px; font-size: 11px; color: var(--text-muted); padding: 0 15px; font-weight: 600; letter-spacing: 1px;">FRONTEND PAGES</li>
