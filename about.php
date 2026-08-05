@@ -56,11 +56,11 @@ include 'includes/header.php';
         <div class="container">
             <h2 style="font-size: 42px; margin-bottom: 50px;">The Dream Project: <span class="accent-text" style="font-weight: 400; color: var(--accent-color);">Your<br>Journey Begins Here!</span></h2>
             
-            <a href="contact.php" class="rotating-badge" style="display: inline-block; margin: 0 auto; position: relative; width: 150px; height: 150px; border-radius: 50%; background: var(--primary-color);">
+            <a href="calculator.php" class="rotating-badge" style="display: inline-block; margin: 0 auto; position: relative; width: 150px; height: 150px; border-radius: 50%; background: var(--primary-color);">
                 <svg viewBox="0 0 150 150" class="rotating-text" style="animation: rotate 15s linear infinite;">
                     <path id="badge-curve" d="M 25, 75 a 50,50 0 1,1 100,0 a 50,50 0 1,1 -100,0" fill="transparent" />
                     <text font-size="14" letter-spacing="3" fill="var(--text-light)" font-weight="500">
-                        <textPath href="#badge-curve">GET IN TOUCH • GET IN TOUCH • </textPath>
+                        <textPath href="#badge-curve">GET ESTIMATE • GET ESTIMATE • </textPath>
                     </text>
                 </svg>
                 <div class="badge-icon" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: var(--accent-color); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-size: 20px;">

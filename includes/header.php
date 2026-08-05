@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/../admin/config/db.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalp Interior Studio</title>
     <meta name="description" content="Experience Modern Luxury in Architecture with Kalp Interior Studio.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

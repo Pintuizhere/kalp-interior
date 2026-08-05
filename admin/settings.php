@@ -197,6 +197,16 @@ function val($key, $data) {
                         <label class="settings-label">Office Address</label>
                         <textarea name="settings[contact_address]" required class="settings-input"><?php echo val('contact_address', $settings); ?></textarea>
                     </div>
+
+                    <div class="settings-form-group">
+                        <label class="settings-label">Open Time (Weekdays)</label>
+                        <input type="text" name="settings[open_time_weekdays]" value="<?php echo val('open_time_weekdays', $settings); ?>" class="settings-input">
+                    </div>
+
+                    <div class="settings-form-group">
+                        <label class="settings-label">Open Time (Weekends)</label>
+                        <input type="text" name="settings[open_time_weekends]" value="<?php echo val('open_time_weekends', $settings); ?>" class="settings-input">
+                    </div>
                 </div>
                 
                 <!-- Social Media -->

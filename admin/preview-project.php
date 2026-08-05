@@ -114,7 +114,6 @@ include '../includes/header.php';
             <div class="project-about-split">
                 <div class="about-left">
                     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-                        <span style="display: block; width: 40px; height: 2px; background: var(--accent-color);"></span>
                         <p class="section-subtitle" style="margin-bottom: 0;">ABOUT THE PROJECT</p>
                     </div>
                     <h2 class="section-title"><span id="pv_about_title">Crafted for Comfort.</span><br><span id="pv_about_subtitle" class="accent-text signature-text" style="color: var(--accent-color); font-weight: 400; text-transform: none;">Designed for Living.</span></h2>
@@ -230,7 +229,7 @@ include '../includes/header.php';
                         <p>Let's create a space that's uniquely yours.</p>
                     </div>
                 </div>
-                <a href="contact.php" class="btn btn-primary" style="display: flex; align-items: center; gap: 10px;">Book a Consultation <span class="icon-circle" style="background: transparent; border: 1px solid rgba(0,0,0,0.3); color: var(--text-dark); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i></span></a>
+                <a href="calculator.php" class="btn btn-primary" style="display: flex; align-items: center; gap: 10px;">Get Estimate <span class="icon-circle" style="background: transparent; border: 1px solid rgba(0,0,0,0.3); color: var(--text-dark); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i></span></a>
             </div>
 
             <!-- 6. Bottom Features Row -->

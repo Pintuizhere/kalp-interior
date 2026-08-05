@@ -95,7 +95,6 @@ include 'includes/header.php';
             <div class="sd-hero-split">
                 <div class="sd-hero-text">
                     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
-                        <span style="display: block; width: 40px; height: 2px; background: var(--accent-color);"></span>
                         <p class="section-subtitle" style="margin-bottom: 0;">OUR SERVICE</p>
                     </div>
                     <h1 class="sd-hero-title"><?php echo $sd_hero_title; ?></h1>
@@ -106,7 +105,7 @@ include 'includes/header.php';
                     </p>
                     
                     <div class="sd-hero-buttons">
-                        <a href="contact.php" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 10px;">Book a Consultation <span class="icon-circle" style="background: var(--text-dark); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i></span></a>
+                        <a href="calculator.php" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 10px;">Get Estimate <span class="icon-circle" style="background: var(--text-dark); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i></span></a>
                         
                         <a href="projects.php" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 10px; border: 1px solid #ccc; border-radius: 30px; padding: 12px 25px; color: var(--text-dark); text-decoration: none;">View Our Projects <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i></a>
                     </div>
@@ -273,7 +272,6 @@ include 'includes/header.php';
             <div class="more-projects-header">
                 <div class="mp-header-left">
                     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
-                        <span style="display: block; width: 40px; height: 2px; background: var(--accent-color);"></span>
                         <p class="section-subtitle" style="margin-bottom: 0;">EXPLORE OUR WORK</p>
                     </div>
                     <h2 class="section-title">More Interior Design <span class="accent-text signature-text" style="font-family: var(--font-accent); color: var(--accent-color); font-weight: 400; text-transform: none;">Projects</span></h2>
@@ -286,71 +284,61 @@ include 'includes/header.php';
             </div>
 
             <div class="more-projects-grid sd-three-cols">
-                <!-- Card 1 -->
-                <div class="mp-card">
-                    <img src="uploads/media/after_1785707371_620.webp" alt="Living Room" class="mp-card-bg">
-                    <div class="mp-card-top">
-                        <div class="mp-tag">Residential Design</div>
+                <?php
+                if (!isset($conn)) {
+                    require_once __DIR__ . '/admin/config/db.php';
+                }
+                $proj_res = $conn->query("SELECT id, title, location, category, cover_image, area FROM projects ORDER BY id DESC LIMIT 3");
+                
+                $fallback_images = [
+                    "uploads/media/after_1785707371_620.webp",
+                    "uploads/media/kitchen_design_cover.png",
+                    "uploads/media/3d_rendering_cover.png"
+                ];
+                $img_idx = 0;
 
-                    </div>
-                    <div class="mp-card-bottom">
-                        <div class="mp-card-title-row" style="margin-bottom: 10px;">
-                            <a href="#" class="mp-link-btn" style="width: 35px; height: 35px;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i></a>
-                            <div class="mp-title-col">
-                                <h3 style="font-size: 14px;">MODERN LIVING ROOM</h3>
-                                <p style="font-size: 11px;"><i class="fa-solid fa-location-dot"></i> Mumbai, India</p>
-                            </div>
-                        </div>
-                        <div class="mp-tags-row">
-                            <span class="mp-pill" style="font-size: 10px; padding: 4px 10px;">Living Room</span>
-                            <span class="mp-pill" style="font-size: 10px; padding: 4px 10px;">Residential</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2 -->
+                if ($proj_res && $proj_res->num_rows > 0) {
+                    while($p = $proj_res->fetch_assoc()) {
+                        // Use DB cover image if available, otherwise use a fallback
+                        if (!empty($p['cover_image'])) {
+                            $p_img = 'uploads/projects/' . htmlspecialchars($p['cover_image']);
+                        } else {
+                            $p_img = $fallback_images[$img_idx % 3];
+                        }
+                        
+                        $p_title = htmlspecialchars($p['title']);
+                        $p_location = !empty($p['location']) ? htmlspecialchars($p['location']) : 'India';
+                        $p_cat = !empty($p['category']) ? htmlspecialchars($p['category']) : 'Design';
+                        $p_area = !empty($p['area']) ? htmlspecialchars($p['area']) : $p_cat;
+                        $p_id = $p['id'];
+                        $img_idx++;
+                ?>
                 <div class="mp-card">
-                    <img src="uploads/media/kitchen_design_cover.png" alt="Kitchen" class="mp-card-bg">
+                    <img src="<?php echo $p_img; ?>" alt="<?php echo $p_title; ?>" class="mp-card-bg">
                     <div class="mp-card-top">
-                        <div class="mp-tag">Interior Design</div>
+                        <div class="mp-tag"><?php echo $p_cat; ?></div>
                         <div class="mp-like"><i class="fa-regular fa-heart"></i></div>
                     </div>
                     <div class="mp-card-bottom">
                         <div class="mp-card-title-row" style="margin-bottom: 10px;">
-                            <a href="#" class="mp-link-btn" style="width: 35px; height: 35px;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i></a>
+                            <a href="project-details.php?id=<?php echo $p_id; ?>" class="mp-link-btn" style="width: 35px; height: 35px;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i></a>
                             <div class="mp-title-col">
-                                <h3 style="font-size: 14px;">LUXKRR MODULAR KITCHEN</h3>
-                                <p style="font-size: 11px;"><i class="fa-solid fa-location-dot"></i> Pune, India</p>
+                                <h3 style="font-size: 14px;"><?php echo strtoupper($p_title); ?></h3>
+                                <p style="font-size: 11px;"><i class="fa-solid fa-location-dot"></i> <?php echo $p_location; ?></p>
                             </div>
                         </div>
                         <div class="mp-tags-row">
-                            <span class="mp-pill" style="font-size: 10px; padding: 4px 10px;">Kitchen</span>
-                            <span class="mp-pill" style="font-size: 10px; padding: 4px 10px;">Interior Design</span>
+                            <span class="mp-pill" style="font-size: 10px; padding: 4px 10px;"><?php echo $p_area; ?></span>
+                            <span class="mp-pill" style="font-size: 10px; padding: 4px 10px;"><?php echo $p_cat; ?></span>
                         </div>
                     </div>
                 </div>
-
-                <!-- Card 3 -->
-                <div class="mp-card">
-                    <img src="uploads/media/3d_rendering_cover.png" alt="Bedroom" class="mp-card-bg">
-                    <div class="mp-card-top">
-                        <div class="mp-tag">Residential Design</div>
-                        <div class="mp-like"><i class="fa-regular fa-heart"></i></div>
-                    </div>
-                    <div class="mp-card-bottom">
-                        <div class="mp-card-title-row" style="margin-bottom: 10px;">
-                            <a href="#" class="mp-link-btn" style="width: 35px; height: 35px;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i></a>
-                            <div class="mp-title-col">
-                                <h3 style="font-size: 14px;">CONTEMPORARY BEDROOM</h3>
-                                <p style="font-size: 11px;"><i class="fa-solid fa-location-dot"></i> Bengaluru, India</p>
-                            </div>
-                        </div>
-                        <div class="mp-tags-row">
-                            <span class="mp-pill" style="font-size: 10px; padding: 4px 10px;">Bedroom</span>
-                            <span class="mp-pill" style="font-size: 10px; padding: 4px 10px;">Residential</span>
-                        </div>
-                    </div>
-                </div>
+                <?php 
+                    }
+                } else {
+                    echo "<p>No projects found.</p>";
+                }
+                ?>
             </div>
         </div>
     </section>
@@ -365,7 +353,7 @@ include 'includes/header.php';
                     <p>Let's create a space that's uniquely yours.</p>
                 </div>
             </div>
-            <a href="contact.php" class="btn btn-primary" style="display: flex; align-items: center; gap: 10px;">Book a Consultation <span class="icon-circle" style="background: transparent; border: 1px solid rgba(0,0,0,0.3); color: var(--text-dark); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i></span></a>
+            <a href="calculator.php" class="btn btn-primary" style="display: flex; align-items: center; gap: 10px;">Get Estimate <span class="icon-circle" style="background: transparent; border: 1px solid rgba(0,0,0,0.3); color: var(--text-dark); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i></span></a>
         </div>
     </div>
 

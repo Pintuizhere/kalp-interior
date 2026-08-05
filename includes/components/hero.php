@@ -85,23 +85,30 @@ $avatar_4 = !empty($home_content['hero_avatar_4']) ? htmlspecialchars($home_cont
     </section>
 
     <style>
+    .hero-line-1 {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        column-gap: 15px;
+        min-height: 80px;
+        margin-bottom: 5px;
+    }
+    .hero-line-sub {
+        display: block;
+    }
     .new-hero-title .accent-text {
         display: inline-block;
         white-space: nowrap;
-        border-right: 2px solid var(--accent-color);
-        padding-right: 5px;
-        animation: blink-cursor 0.75s step-end infinite;
-        min-width: 280px;
+        width: 350px;
         text-align: left;
     }
     @media (max-width: 768px) {
-        .new-hero-title .accent-text {
-            min-width: 180px;
+        .hero-line-1 {
+            min-height: 140px;
         }
-    }
-    @keyframes blink-cursor {
-        from, to { border-color: transparent }
-        50% { border-color: var(--accent-color); }
+        .new-hero-title .accent-text {
+            width: 220px;
+        }
     }
     </style>
     <script>

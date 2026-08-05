@@ -167,7 +167,7 @@ include 'includes/header.php';
                         <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 15px;">Let's create a space that's uniquely yours.</p>
                     </div>
                 </div>
-                <a href="contact.php" class="btn" style="background-color: var(--accent-color); color: var(--text-dark); padding: 12px 35px; border-radius: 30px; font-weight: 600; display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">Book a Consultation <i class="fa-solid fa-arrow-right" style="background-color: var(--text-dark); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; transform: rotate(-45deg);"></i></a>
+                <a href="calculator.php" class="btn" style="background-color: var(--accent-color); color: var(--text-dark); padding: 12px 35px; border-radius: 30px; font-weight: 600; display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">Get Estimate <i class="fa-solid fa-arrow-right" style="background-color: var(--text-dark); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; transform: rotate(-45deg);"></i></a>
             </div>
             
         </div>

@@ -187,7 +187,6 @@ include 'includes/header.php';
                         <div class="sd-hero-split">
                             <div class="sd-hero-text">
                                 <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
-                                    <span style="display: block; width: 40px; height: 2px; background: var(--accent-color);"></span>
                                     <p class="section-subtitle" style="margin-bottom: 0;">OUR SERVICE</p>
                                 </div>
                                 <h1 class="sd-hero-title" contenteditable="true" id="v-sd_hero_title"><?php echo $sd_hero_title; ?></h1>
@@ -196,7 +195,7 @@ include 'includes/header.php';
                                 <p class="sd-hero-desc" contenteditable="true" id="v-sd_hero_desc"><?php echo $sd_hero_desc; ?></p>
                                 
                                 <div class="sd-hero-buttons">
-                                    <a href="#" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 10px; pointer-events: none;">Book a Consultation</a>
+                                    <a href="#" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 10px; pointer-events: none;">Get Estimate</a>
                                 </div>
                             </div>
                             <div class="sd-hero-img-box">

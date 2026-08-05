@@ -139,11 +139,11 @@ require_once 'admin/config/db.php';
         <div class="container">
             <h2 style="font-size: 42px; margin-bottom: 50px;">The Dream Project: <span class="accent-text" style="font-family: var(--font-accent); font-style: italic; font-weight: 400;">Your<br>Journey Begins Here!</span></h2>
             
-            <a href="contact.php" class="rotating-badge">
+            <a href="calculator.php" class="rotating-badge">
                 <svg viewBox="0 0 150 150" class="rotating-text">
                     <path id="badge-curve" d="M 25, 75 a 50,50 0 1,1 100,0 a 50,50 0 1,1 -100,0" fill="transparent" />
                     <text font-size="16" letter-spacing="4" fill="var(--text-light)" font-weight="500">
-                        <textPath href="#badge-curve">GET IN TOUCH • GET IN TOUCH • </textPath>
+                        <textPath href="#badge-curve">GET ESTIMATE • GET ESTIMATE • </textPath>
                     </text>
                 </svg>
                 <div class="badge-icon">

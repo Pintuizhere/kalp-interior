@@ -1,3 +1,26 @@
+<?php
+if (!isset($global_settings)) {
+    $global_settings = [];
+    if(isset($conn)) {
+        $res_g = $conn->query("SELECT setting_key, setting_value FROM site_settings");
+        if($res_g) {
+            while($row = $res_g->fetch_assoc()) {
+                $global_settings[$row['setting_key']] = $row['setting_value'];
+            }
+        }
+    }
+}
+$g_addr = !empty($global_settings['contact_address']) ? nl2br(htmlspecialchars($global_settings['contact_address'])) : 'KALP INTERIOR DESIGN STUDIO,<br>ISM ROAD, opp. SRDAV, Pundag,<br>Ranchi, Jharkhand 834001';
+$g_phone = !empty($global_settings['contact_phone']) ? htmlspecialchars($global_settings['contact_phone']) : '+91 9234772288';
+$g_email = !empty($global_settings['contact_email']) ? htmlspecialchars($global_settings['contact_email']) : 'info@kalpinteriors.com';
+$g_open_wk = !empty($global_settings['open_time_weekdays']) ? htmlspecialchars($global_settings['open_time_weekdays']) : 'Monday - Friday : 10:00 - 20:00';
+$g_open_we = !empty($global_settings['open_time_weekends']) ? htmlspecialchars($global_settings['open_time_weekends']) : 'Saturday - Sunday : 11:00 - 18:00';
+
+$g_fb = !empty($global_settings['social_facebook']) ? $global_settings['social_facebook'] : '#';
+$g_ig = !empty($global_settings['social_instagram']) ? $global_settings['social_instagram'] : '#';
+$g_tw = !empty($global_settings['social_twitter']) ? $global_settings['social_twitter'] : '#';
+$g_in = !empty($global_settings['social_linkedin']) ? $global_settings['social_linkedin'] : '#';
+?>
     <!-- Contact Section -->
     <style>
         @media (max-width: 992px) {
@@ -63,24 +86,24 @@
             <div class="contact-info-block">
                 <div class="info-item">
                     <h4>Address</h4>
-                    <p>KALP INTERIOR DESIGN STUDIO,<br>ISM ROAD, opp. SRDAV, Pundag,<br>Ranchi, Jharkhand 834001</p>
+                    <p><?php echo $g_addr; ?></p>
                 </div>
 
                 <div class="info-item">
                     <h4>Contact</h4>
-                    <p>Phone : +91 9234772288<br>Email : info@kalpinteriors.com</p>
+                    <p>Phone : <?php echo $g_phone; ?><br>Email : <?php echo $g_email; ?></p>
                 </div>
                 <div class="info-item">
                     <h4>Open Time</h4>
-                    <p>Monday - Friday : 10:00 - 20:00<br>Saturday - Sunday : 11:00 - 18:00</p>
+                    <p><?php echo $g_open_wk; ?><br><?php echo $g_open_we; ?></p>
                 </div>
                 <div class="info-item">
                     <h4>Stay Connected</h4>
                     <div class="contact-social">
-                        <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
-                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
-                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="<?php echo htmlspecialchars($g_tw); ?>"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="<?php echo htmlspecialchars($g_fb); ?>"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="<?php echo htmlspecialchars($g_in); ?>"><i class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="<?php echo htmlspecialchars($g_ig); ?>"><i class="fa-brands fa-instagram"></i></a>
                     </div>
                 </div>
             </div>

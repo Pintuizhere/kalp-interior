@@ -15,11 +15,11 @@
         
         <div class="cta-buttons" style="display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap;">
             <a href="calculator.php" style="background: var(--accent-color); color: var(--text-dark); padding: 16px 32px; border-radius: 50px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 12px; transition: transform 0.3s ease, background 0.3s ease;">
-                <i class="fa-regular fa-calendar-check"></i> Book a free call
+                <i class="fa-solid fa-calculator"></i> Get estimate
             </a>
             
-            <a href="projects.php" style="color: white; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 10px; transition: color 0.3s ease;">
-                See our work first 
+            <a href="contact.php" style="color: white; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 10px; transition: color 0.3s ease;">
+                Book a free call 
                 <span style="background: white; color: var(--text-dark); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
                     <i class="fa-solid fa-arrow-right"></i>
                 </span>

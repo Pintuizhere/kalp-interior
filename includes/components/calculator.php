@@ -435,7 +435,9 @@ if($res){ while($row = $res->fetch_assoc()){ $calc_settings[$row['setting_key']]
                                     <?php echo htmlspecialchars($kpkg['name']); ?>
                                 </div>
                                 <p style="display: none; font-size: 14px; margin-bottom: 15px; text-align: center; color: #F4B41A; font-weight: bold;">₹<?php echo number_format($kpkg['price_per_sqft']); ?>/RFT</p>
-                                <?php echo $kpkg['pdf_specs']; ?>
+                                <div style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                                    <?php echo $kpkg['pdf_specs']; ?>
+                                </div>
                             </label>
                             <?php $is_first_kpkg = false; endforeach; endif; ?>
                         </div>
