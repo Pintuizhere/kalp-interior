@@ -83,3 +83,71 @@ $avatar_4 = !empty($home_content['hero_avatar_4']) ? htmlspecialchars($home_cont
 
         </div>
     </section>
+
+    <style>
+    .new-hero-title .accent-text {
+        display: inline-block;
+        white-space: nowrap;
+        border-right: 2px solid var(--accent-color);
+        padding-right: 5px;
+        animation: blink-cursor 0.75s step-end infinite;
+        min-width: 280px;
+        text-align: left;
+    }
+    @media (max-width: 768px) {
+        .new-hero-title .accent-text {
+            min-width: 180px;
+        }
+    }
+    @keyframes blink-cursor {
+        from, to { border-color: transparent }
+        50% { border-color: var(--accent-color); }
+    }
+    </style>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // We include "Your Space" so it loops back gracefully
+        const texts = ["Your Space", "Your Home", "Your Office", "Your Business", "Your Lifestyle"];
+        let currentIndex = 0;
+        const accentEl = document.querySelector('.new-hero-title .accent-text');
+        
+        if(accentEl) {
+            const typeSpeed = 100;
+            const eraseSpeed = 50;
+            const delayBetweenTexts = 2000;
+
+            let charIndex = accentEl.innerText.length;
+            let isDeleting = true; // start by deleting the initial text
+
+            function typeWriter() {
+                const currentText = texts[currentIndex];
+
+                if (isDeleting) {
+                    accentEl.innerText = currentText.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    accentEl.innerText = currentText.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+
+                let typeDelay = isDeleting ? eraseSpeed : typeSpeed;
+
+                if (!isDeleting && charIndex === currentText.length) {
+                    typeDelay = delayBetweenTexts;
+                    isDeleting = true;
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    currentIndex = (currentIndex + 1) % texts.length;
+                    typeDelay = 400; 
+                }
+
+                setTimeout(typeWriter, typeDelay);
+            }
+
+            setTimeout(() => {
+                charIndex = accentEl.innerText.length;
+                typeWriter();
+            }, delayBetweenTexts);
+        }
+    });
+    </script>
