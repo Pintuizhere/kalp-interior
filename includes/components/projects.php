@@ -1,3 +1,12 @@
+<?php
+// Fetch Categories
+$comp_cat_query = "SELECT * FROM categories ORDER BY order_index ASC, name ASC";
+$comp_categories = $conn->query($comp_cat_query);
+
+// Fetch Projects (Limit 6 for home page)
+$comp_proj_query = "SELECT * FROM projects WHERE status != 'Archived' ORDER BY created_at DESC LIMIT 6";
+$comp_projects = $conn->query($comp_proj_query);
+?>
 <!-- Projects Section -->
 <style>
     /* Projects Section Mobile Styles */
@@ -48,141 +57,63 @@
         
         <div class="filter-tags" style="justify-content: flex-start; gap: 15px; margin-bottom: 50px;">
             <span class="filter-tag active" style="background-color: #fcebdc; color: var(--text-dark); border: none; padding: 12px 25px;"><i class="fa-solid fa-border-all" style="margin-right: 8px;"></i> All</span>
-            <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px;"><i class="fa-solid fa-chair" style="margin-right: 8px;"></i> Interior</span>
-            <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px;"><i class="fa-solid fa-house" style="margin-right: 8px;"></i> Exterior</span>
-            <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px;"><i class="fa-regular fa-building" style="margin-right: 8px;"></i> Residence</span>
-            <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px;"><i class="fa-solid fa-briefcase" style="margin-right: 8px;"></i> Offices</span>
-            <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px;"><i class="fa-solid fa-kitchen-set" style="margin-right: 8px;"></i> Kitchen</span>
-            <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px;"><i class="fa-solid fa-couch" style="margin-right: 8px;"></i> Living Room</span>
-            <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px;"><i class="fa-solid fa-bed" style="margin-right: 8px;"></i> Bed Room</span>
+            <?php if(isset($comp_categories) && $comp_categories->num_rows > 0): ?>
+                <?php 
+                $comp_categories->data_seek(0);
+                while($cat = $comp_categories->fetch_assoc()): 
+                ?>
+                    <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px;">
+                        <?php if(!empty($cat['icon'])): ?><i class="<?php echo htmlspecialchars($cat['icon']); ?>" style="margin-right: 8px;"></i><?php endif; ?>
+                        <?php echo htmlspecialchars($cat['name']); ?>
+                    </span>
+                <?php endwhile; ?>
+            <?php endif; ?>
         </div>
         
         <div class="projects-grid" style="grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 50px;">
-            <!-- Project 1 -->
-            <div class="project-card new-design" style="position: relative;">
-                <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Modern 4 BHK Apartment">
-                <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
-                    <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-house" style="color: #24352a;"></i> Residential Design</span>
-                </div>
-                <div class="project-bottom-content">
-                    <div class="project-bottom-main">
-                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                        <div class="project-bottom-info">
-                            <h3>Modern 4 BHK Apartment</h3>
-                            <p><i class="fa-solid fa-location-dot"></i> Mumbai, India</p>
+            <?php if(isset($comp_projects) && $comp_projects->num_rows > 0): ?>
+                <?php while($proj = $comp_projects->fetch_assoc()): ?>
+                <div class="project-card new-design" style="position: relative;">
+                    <a href="project-details.php?id=<?php echo $proj['id']; ?>" style="display: block; overflow: hidden; height: 100%;">
+                        <img src="<?php echo !empty($proj['cover_image']) ? htmlspecialchars($proj['cover_image']) : 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80'; ?>" alt="<?php echo htmlspecialchars($proj['title']); ?>" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;">
+                    </a>
+                    <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
+                        <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                            <?php
+                            $cat_icon = 'fa-solid fa-house'; 
+                            if(isset($comp_categories) && $comp_categories->num_rows > 0) {
+                                $comp_categories->data_seek(0);
+                                while($c = $comp_categories->fetch_assoc()) {
+                                    if(strtolower($c['name']) == strtolower($proj['category'])) {
+                                        $cat_icon = $c['icon'];
+                                        break;
+                                    }
+                                }
+                            }
+                            ?>
+                            <i class="<?php echo htmlspecialchars($cat_icon); ?>" style="color: #24352a;"></i> <?php echo htmlspecialchars($proj['category'] ?: 'Project'); ?>
+                        </span>
+                    </div>
+                    <div class="project-bottom-content">
+                        <div class="project-bottom-main">
+                            <a href="project-details.php?id=<?php echo $proj['id']; ?>" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                            <div class="project-bottom-info">
+                                <h3><a href="project-details.php?id=<?php echo $proj['id']; ?>" style="color: inherit; text-decoration: none;"><?php echo htmlspecialchars($proj['title'] ?: 'Untitled Project'); ?></a></h3>
+                                <p><i class="fa-solid fa-location-dot"></i> <?php echo htmlspecialchars($proj['location'] ?: 'N/A'); ?></p>
+                            </div>
+                        </div>
+                        <div class="project-bottom-tags">
+                            <span class="p-tag"><?php echo htmlspecialchars($proj['property_type'] ?: 'N/A'); ?></span>
+                            <span class="p-tag"><?php echo htmlspecialchars($proj['category'] ?: 'N/A'); ?></span>
                         </div>
                     </div>
-                    <div class="project-bottom-tags">
-                        <span class="p-tag">Apartment</span>
-                        <span class="p-tag">Residential Design</span>
-                    </div>
                 </div>
-            </div>
-
-            <!-- Project 2 -->
-            <div class="project-card new-design" style="position: relative;">
-                <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Luxury 6 BHK Bungalow">
-                <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
-                    <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-house" style="color: #24352a;"></i> Residential Design</span>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <div style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                    <p style="color: var(--text-muted); font-size: 18px;">No projects found.</p>
                 </div>
-                <div class="project-bottom-content">
-                    <div class="project-bottom-main">
-                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                        <div class="project-bottom-info">
-                            <h3>Luxury 6 BHK Bungalow</h3>
-                            <p><i class="fa-solid fa-location-dot"></i> Pune, India</p>
-                        </div>
-                    </div>
-                    <div class="project-bottom-tags">
-                        <span class="p-tag">Bungalow</span>
-                        <span class="p-tag">Residential Design</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Project 3 -->
-            <div class="project-card new-design" style="position: relative;">
-                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Corporate Office Space">
-                <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
-                    <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-building" style="color: #24352a;"></i> Commercial Design</span>
-                </div>
-                <div class="project-bottom-content">
-                    <div class="project-bottom-main">
-                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                        <div class="project-bottom-info">
-                            <h3>Corporate Office Space</h3>
-                            <p><i class="fa-solid fa-location-dot"></i> Bengaluru, India</p>
-                        </div>
-                    </div>
-                    <div class="project-bottom-tags">
-                        <span class="p-tag">Offices</span>
-                        <span class="p-tag">Commercial Design</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Project 4 -->
-            <div class="project-card new-design" style="position: relative;">
-                <img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Minimalist Kitchen Design">
-                <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
-                    <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-kitchen-set" style="color: #24352a;"></i> Interior Design</span>
-                </div>
-                <div class="project-bottom-content">
-                    <div class="project-bottom-main">
-                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                        <div class="project-bottom-info">
-                            <h3>Minimalist Kitchen Design</h3>
-                            <p><i class="fa-solid fa-location-dot"></i> Delhi, India</p>
-                        </div>
-                    </div>
-                    <div class="project-bottom-tags">
-                        <span class="p-tag">Kitchen</span>
-                        <span class="p-tag">Interior</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Project 5 -->
-            <div class="project-card new-design" style="position: relative;">
-                <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Contemporary Living Room">
-                <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
-                    <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-couch" style="color: #24352a;"></i> Interior Design</span>
-                </div>
-                <div class="project-bottom-content">
-                    <div class="project-bottom-main">
-                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                        <div class="project-bottom-info">
-                            <h3>Contemporary Living Room</h3>
-                            <p><i class="fa-solid fa-location-dot"></i> Hyderabad, India</p>
-                        </div>
-                    </div>
-                    <div class="project-bottom-tags">
-                        <span class="p-tag">Living Room</span>
-                        <span class="p-tag">Interior</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Project 6 -->
-            <div class="project-card new-design" style="position: relative;">
-                <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Elegant Master Bedroom">
-                <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
-                    <span class="project-badge left" style="background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-bed" style="color: #24352a;"></i> Interior Design</span>
-                </div>
-                <div class="project-bottom-content">
-                    <div class="project-bottom-main">
-                        <a href="project-details.php" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                        <div class="project-bottom-info">
-                            <h3>Elegant Master Bedroom</h3>
-                            <p><i class="fa-solid fa-location-dot"></i> Chennai, India</p>
-                        </div>
-                    </div>
-                    <div class="project-bottom-tags">
-                        <span class="p-tag">Bed Room</span>
-                        <span class="p-tag">Interior</span>
-                    </div>
-                </div>
-            </div>
+            <?php endif; ?>
         </div>
 
         <!-- Mobile View All Button -->

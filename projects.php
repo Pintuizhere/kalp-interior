@@ -6,8 +6,20 @@ $currentPage = 'projects';
 $cat_query = "SELECT * FROM categories ORDER BY order_index ASC, name ASC";
 $categories = $conn->query($cat_query);
 
-// Fetch Projects
-$proj_query = "SELECT * FROM projects WHERE status != 'Archived' ORDER BY created_at DESC";
+// Pagination Setup
+$limit = 9;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page < 1) $page = 1;
+$offset = ($page - 1) * $limit;
+
+// Fetch Total Projects Count
+$total_query = "SELECT COUNT(*) as count FROM projects WHERE status != 'Archived'";
+$total_result = $conn->query($total_query);
+$total_projects = $total_result->fetch_assoc()['count'];
+$total_pages = ceil($total_projects / $limit);
+
+// Fetch Projects with Limit
+$proj_query = "SELECT * FROM projects WHERE status != 'Archived' ORDER BY created_at DESC LIMIT $limit OFFSET $offset";
 $projects = $conn->query($proj_query);
 
 include 'includes/header.php'; 
@@ -95,17 +107,25 @@ include 'includes/header.php';
 
             </div>
             
+            <?php if ($total_pages > 1): ?>
             <div class="projects-pagination" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 50px;">
-                <a href="#" class="page-link prev-page"><i class="fa-solid fa-angle-left"></i></a>
+                <?php if ($page > 1): ?>
+                    <a href="?page=<?php echo $page - 1; ?>" class="page-link prev-page"><i class="fa-solid fa-angle-left"></i></a>
+                <?php endif; ?>
                 
-                <a href="#" class="page-link active" style="background-color: var(--accent-color); color: var(--text-dark); border-color: var(--accent-color);">1</a>
-                <a href="#" class="page-link">2</a>
-                <a href="#" class="page-link">3</a>
-                <span class="page-dots">...</span>
-                <a href="#" class="page-link">8</a>
+                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                    <?php if ($i == $page): ?>
+                        <a href="?page=<?php echo $i; ?>" class="page-link active" style="background-color: var(--accent-color); color: var(--text-dark); border-color: var(--accent-color);"><?php echo $i; ?></a>
+                    <?php else: ?>
+                        <a href="?page=<?php echo $i; ?>" class="page-link"><?php echo $i; ?></a>
+                    <?php endif; ?>
+                <?php endfor; ?>
                 
-                <a href="#" class="page-link next-page"><i class="fa-solid fa-angle-right"></i></a>
+                <?php if ($page < $total_pages): ?>
+                    <a href="?page=<?php echo $page + 1; ?>" class="page-link next-page"><i class="fa-solid fa-angle-right"></i></a>
+                <?php endif; ?>
             </div>
+            <?php endif; ?>
             
             <!-- Features block -->
             <div class="portfolio-features new-features-bar" style="display: flex; justify-content: space-between; align-items: center; margin-top: 80px; padding: 30px 40px; background-color: white; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.03);">

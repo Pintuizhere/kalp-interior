@@ -744,12 +744,17 @@ function saveLiveProject() {
     // Populate hidden inputs
     document.getElementById('hdn_title').value = getText('.project-title').replace(/\n/g, ' ');
     document.getElementById('hdn_location').value = getText('.location-pin').replace('Location', '').trim();
-    document.getElementById('hdn_category').value = getText('.meta-value:nth-of-type(1)');
-    document.getElementById('hdn_property_type').value = getText('.meta-value:nth-of-type(2)');
-    document.getElementById('hdn_area').value = getText('.meta-value:nth-of-type(3)');
-    document.getElementById('hdn_year').value = getText('.meta-value:nth-of-type(4)');
-    document.getElementById('hdn_style').value = getText('.meta-value:nth-of-type(5)');
-    document.getElementById('hdn_scope').value = getText('.meta-value:nth-of-type(6)');
+    const getMetaValue = (index) => {
+        const els = doc.querySelectorAll('.meta-value');
+        return els.length > index ? els[index].innerText.trim() : '';
+    };
+
+    document.getElementById('hdn_category').value = getMetaValue(0);
+    document.getElementById('hdn_property_type').value = getMetaValue(1);
+    document.getElementById('hdn_area').value = getMetaValue(2);
+    document.getElementById('hdn_year').value = getMetaValue(3);
+    document.getElementById('hdn_style').value = getMetaValue(4);
+    document.getElementById('hdn_scope').value = getMetaValue(5);
     
     document.getElementById('hdn_short_desc').value = getText('.short-desc');
     document.getElementById('hdn_about_title').value = getText('.section-title').split('\n')[0];
