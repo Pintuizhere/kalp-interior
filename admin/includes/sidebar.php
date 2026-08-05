@@ -58,6 +58,11 @@
                     <i class="fa-regular fa-image"></i> Media Library
                 </a>
             </li>
+            <li>
+                <a href="calculator_settings.php" class="<?php echo ($currentPage == 'calculator') ? 'active' : ''; ?>">
+                    <i class="fa-solid fa-calculator"></i> Calculator Settings
+                </a>
+            </li>
             <li class="menu-label" style="margin-top: 15px; font-size: 11px; color: var(--text-muted); padding: 0 15px; font-weight: 600; letter-spacing: 1px;">FRONTEND PAGES</li>
             <li>
                 <a href="editor-home.php" class="<?php echo ($currentPage == 'page_home') ? 'active' : ''; ?>">

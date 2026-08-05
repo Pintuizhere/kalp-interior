@@ -1,3 +1,29 @@
+<?php
+require_once 'admin/config/db.php';
+$calc_cats = $conn->query("SELECT * FROM calc_categories ORDER BY id ASC");
+$calc_cats_data = [];
+while($row = $calc_cats->fetch_assoc()){ $calc_cats_data[] = $row; }
+
+$calc_types = $conn->query("SELECT * FROM calc_types ORDER BY category_slug ASC, id ASC");
+$calc_types_data = [];
+while($row = $calc_types->fetch_assoc()){ $calc_types_data[$row['category_slug']][] = $row; }
+
+$calc_styles = $conn->query("SELECT * FROM calc_styles ORDER BY percent_value ASC");
+$calc_styles_data = [];
+while($row = $calc_styles->fetch_assoc()){ $calc_styles_data[] = $row; }
+
+$calc_packages = $conn->query("SELECT * FROM calc_packages ORDER BY category_slug ASC, price_per_sqft ASC");
+$calc_packages_data = [];
+while($row = $calc_packages->fetch_assoc()){ $calc_packages_data[$row['category_slug']][] = $row; }
+
+$calc_addons = $conn->query("SELECT * FROM calc_addons ORDER BY id ASC");
+$calc_addons_data = [];
+while($row = $calc_addons->fetch_assoc()){ $calc_addons_data[] = $row; }
+
+$calc_settings = [];
+$res = $conn->query("SELECT setting_key, setting_value FROM calculator_settings");
+if($res){ while($row = $res->fetch_assoc()){ $calc_settings[$row['setting_key']] = $row['setting_value']; } }
+?>
 <style>
     @media (max-width: 768px) {
         .calculator-section { padding: 60px 15px !important; }
@@ -93,22 +119,14 @@
                                 <span class="step-num">1</span>
                                 <label>Select Property Category</label>
                             </div>
-                            <div class="calc-options-grid main-category-options" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 20px;">
-                                <label class="calc-option-card active" data-target="residential-options">
-                                    <input type="radio" name="property_category" value="residential" checked>
-                                    <i class="fa-solid fa-house" style="color: #F4B41A;"></i>
-                                    <span>Residential</span>
+                            <div class="calc-options-grid main-category-options" style="grid-template-columns: repeat(<?php echo count($calc_cats_data); ?>, 1fr); margin-bottom: 20px;">
+                                <?php $is_first = true; foreach($calc_cats_data as $cat): ?>
+                                <label class="calc-option-card <?php echo $is_first ? 'active' : ''; ?>" data-target="<?php echo $cat['slug']; ?>-options" <?php echo $cat['slug']=='kitchen' ? 'id="cat-kitchen"' : ''; ?>>
+                                    <input type="radio" name="property_category" value="<?php echo $cat['slug']; ?>" <?php echo $is_first ? 'checked' : ''; ?>>
+                                    <i class="<?php echo htmlspecialchars($cat['icon']); ?>" style="color: <?php echo $cat['slug']=='residential' ? '#F4B41A' : ($cat['slug']=='commercial' ? '#4B95C4' : '#E74C3C'); ?>;"></i>
+                                    <span><?php echo htmlspecialchars($cat['name']); ?></span>
                                 </label>
-                                <label class="calc-option-card" data-target="commercial-options">
-                                    <input type="radio" name="property_category" value="commercial">
-                                    <i class="fa-solid fa-building" style="color: #4B95C4;"></i>
-                                    <span>Commercial</span>
-                                </label>
-                                <label class="calc-option-card" data-target="kitchen-options" id="cat-kitchen">
-                                    <input type="radio" name="property_category" value="kitchen">
-                                    <i class="fa-solid fa-kitchen-set" style="color: #E74C3C;"></i>
-                                    <span>Modular Kitchen</span>
-                                </label>
+                                <?php $is_first = false; endforeach; ?>
                             </div>
 
                             <div class="calc-step-label" id="specific-type-label">
@@ -116,49 +134,26 @@
                                 <label>Select Specific Type</label>
                             </div>
                             
-                            <div id="residential-options" class="calc-options-grid type-options sub-options-group">
-                                <label class="calc-option-card active">
-                                    <input type="radio" name="property_type" value="700" checked>
-                                    <i class="fa-solid fa-house-chimney" style="color: #E67E22;"></i>
-                                    <span>1 BHK</span>
-                                    <span style="font-size: 11px; opacity: 0.7;">700 sq ft</span>
-                                </label>
-                                <label class="calc-option-card">
-                                    <input type="radio" name="property_type" value="1200">
-                                    <i class="fa-solid fa-building" style="color: #D35400;"></i>
-                                    <span>2 BHK</span>
-                                    <span style="font-size: 11px; opacity: 0.7;">1200 sq ft</span>
-                                </label>
-                                <label class="calc-option-card">
-                                    <input type="radio" name="property_type" value="1350">
-                                    <i class="fa-solid fa-building-user" style="color: #C0392B;"></i>
-                                    <span>3 BHK</span>
-                                    <span style="font-size: 11px; opacity: 0.7;">1350 sq ft</span>
-                                </label>
+                            <?php foreach($calc_cats_data as $cat): 
+                                $slug = $cat['slug'];
+                                if($slug == 'kitchen') continue; // Kitchen doesn't have specific types
+                                $is_residential = ($slug == 'residential');
+                            ?>
+                            <div id="<?php echo $slug; ?>-options" class="calc-options-grid type-options sub-options-group" <?php echo !$is_residential ? 'style="display: none;"' : ''; ?>>
+                                <?php if(isset($calc_types_data[$slug])): ?>
+                                    <?php $is_first_type = true; foreach($calc_types_data[$slug] as $type): ?>
+                                    <label class="calc-option-card <?php echo ($is_residential && $is_first_type) ? 'active' : ''; ?>">
+                                        <input type="radio" name="property_type" value="<?php echo $type['sqft']; ?>" <?php echo ($is_residential && $is_first_type) ? 'checked' : ''; ?>>
+                                        <i class="<?php echo htmlspecialchars($type['icon']); ?>" style="color: <?php echo $is_residential ? '#E67E22' : '#27AE60'; ?>;"></i>
+                                        <span><?php echo htmlspecialchars($type['name']); ?></span>
+                                        <?php if($type['sqft'] > 0): ?>
+                                        <span style="font-size: 11px; opacity: 0.7;"><?php echo $type['sqft']; ?> sq ft</span>
+                                        <?php endif; ?>
+                                    </label>
+                                    <?php $is_first_type = false; endforeach; ?>
+                                <?php endif; ?>
                             </div>
-
-                            <div id="commercial-options" class="calc-options-grid type-options sub-options-group" style="display: none;">
-                                <label class="calc-option-card">
-                                    <input type="radio" name="property_type" value="1000">
-                                    <i class="fa-solid fa-briefcase" style="color: #27AE60;"></i>
-                                    <span>Office</span>
-                                </label>
-                                <label class="calc-option-card">
-                                    <input type="radio" name="property_type" value="1500">
-                                    <i class="fa-solid fa-store" style="color: #F39C12;"></i>
-                                    <span>Retail Shop</span>
-                                </label>
-                                <label class="calc-option-card">
-                                    <input type="radio" name="property_type" value="2000">
-                                    <i class="fa-solid fa-utensils" style="color: #D35400;"></i>
-                                    <span>Restaurant</span>
-                                </label>
-                                <label class="calc-option-card">
-                                    <input type="radio" name="property_type" value="800">
-                                    <i class="fa-solid fa-stethoscope" style="color: #E74C3C;"></i>
-                                    <span>Clinic</span>
-                                </label>
-                            </div>
+                            <?php endforeach; ?>
                         </div>
 
                     </div>
@@ -187,41 +182,16 @@
                             <label>Select Design Style</label>
                         </div>
                         <div class="calc-options-grid style-options">
-                            <label class="calc-option-card active">
-                                <input type="radio" name="design_style" value="-8" checked>
-                                <i class="fa-solid fa-leaf" style="color: #2ECC71;"></i>
-                                <span>Minimalist</span>
+                            <?php $is_first_style = true; foreach($calc_styles_data as $style): ?>
+                            <label class="calc-option-card <?php echo $is_first_style ? 'active' : ''; ?>">
+                                <input type="radio" name="design_style" value="<?php echo $style['percent_value']; ?>" <?php echo $is_first_style ? 'checked' : ''; ?>>
+                                <i class="<?php echo htmlspecialchars($style['icon']); ?>" style="color: <?php 
+                                    $colors = ['#2ECC71', '#A9CCE3', '#F1C40F', '#3498DB', '#9B59B6', '#E67E22', '#1ABC9C'];
+                                    echo $colors[array_rand($colors)]; // Give it a random brand color, or if I want it deterministic, I can use modulo
+                                ?>;"></i>
+                                <span><?php echo htmlspecialchars($style['name']); ?></span>
                             </label>
-                            <label class="calc-option-card">
-                                <input type="radio" name="design_style" value="-5">
-                                <i class="fa-solid fa-snowflake" style="color: #A9CCE3;"></i>
-                                <span>Scandinavian</span>
-                            </label>
-                            <label class="calc-option-card">
-                                <input type="radio" name="design_style" value="0">
-                                <i class="fa-solid fa-chair" style="color: #F1C40F;"></i>
-                                <span>Contemporary</span>
-                            </label>
-                            <label class="calc-option-card">
-                                <input type="radio" name="design_style" value="8">
-                                <i class="fa-solid fa-couch" style="color: #3498DB;"></i>
-                                <span>Modern</span>
-                            </label>
-                            <label class="calc-option-card">
-                                <input type="radio" name="design_style" value="10">
-                                <i class="fa-solid fa-chess-rook" style="color: #9B59B6;"></i>
-                                <span>Traditional</span>
-                            </label>
-                            <label class="calc-option-card">
-                                <input type="radio" name="design_style" value="15">
-                                <i class="fa-solid fa-campground" style="color: #E67E22;"></i>
-                                <span>Boho</span>
-                            </label>
-                            <label class="calc-option-card">
-                                <input type="radio" name="design_style" value="20">
-                                <i class="fa-brands fa-pagelines" style="color: #1ABC9C;"></i>
-                                <span>Japandi</span>
-                            </label>
+                            <?php $is_first_style = false; endforeach; ?>
                         </div>
                     </div>
 
@@ -233,72 +203,18 @@
                                 <label>Select Package</label>
                             </div>
                             <div class="calc-options-grid finish-options">
-                                <label class="calc-option-card active" style="flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px;">
-                                    <input type="radio" name="finish_level" value="1200" checked>
-                                    <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 0; margin-right: 15px; flex-shrink: 0;">
-                                        <path d="M 15 20 L 50 10 L 85 20 L 85 50 C 85 75 50 90 50 90 C 50 90 15 75 15 50 Z" fill="#E67E22" stroke="#0F3D64" stroke-width="4" stroke-linejoin="round"/>
-                                        <path d="M 50 10 L 85 20 L 85 50 C 85 75 50 90 50 90 Z" fill="#D35400"/>
-                                        <path d="M 15 20 L 50 10 L 85 20 L 85 50 C 85 75 50 90 50 90 C 50 90 15 75 15 50 Z" fill="none" stroke="#0F3D64" stroke-width="4" stroke-linejoin="round"/>
-                                        <path d="M 35 50 L 45 60 L 65 40" fill="none" stroke="#FFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
+                                <?php if(isset($calc_packages_data['standard'])): 
+                                    $is_first_pkg = true; 
+                                    foreach($calc_packages_data['standard'] as $pkg): ?>
+                                <label class="calc-option-card <?php echo $is_first_pkg ? 'active' : ''; ?>" style="flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px;">
+                                    <input type="radio" name="finish_level" value="<?php echo $pkg['price_per_sqft']; ?>" <?php echo $is_first_pkg ? 'checked' : ''; ?>>
+                                    <?php echo $pkg['icon_svg']; ?>
                                     <div>
-                                        <span style="display: block; font-weight: 600;">Essential</span>
-                                        <span style="font-size: 11px; opacity: 0.7; display: none;">₹1200/sqft</span>
+                                        <span style="display: block; font-weight: 600;"><?php echo htmlspecialchars($pkg['name']); ?></span>
+                                        <span style="font-size: 11px; opacity: 0.7; display: none;">₹<?php echo $pkg['price_per_sqft']; ?>/sqft</span>
                                     </div>
                                 </label>
-                                <label class="calc-option-card" style="flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px;">
-                                    <input type="radio" name="finish_level" value="1450">
-                                    <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 0; margin-right: 15px; flex-shrink: 0;">
-                                        <!-- Diamond from old Luxury -->
-                                        <polygon points="20,25 35,40 5,40" fill="#E8DAEF"/>
-                                        <polygon points="20,25 50,25 35,40" fill="#C39BD3"/>
-                                        <polygon points="35,40 50,25 65,40" fill="#E8DAEF"/>
-                                        <polygon points="50,25 80,25 65,40" fill="#9B59B6"/>
-                                        <polygon points="80,25 95,40 65,40" fill="#6C3483"/>
-                                        <polygon points="5,40 35,40 50,80" fill="#C39BD3"/>
-                                        <polygon points="35,40 65,40 50,80" fill="#9B59B6"/>
-                                        <polygon points="65,40 95,40 50,80" fill="#6C3483"/>
-                                        <g stroke="#0F3D64" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-                                            <polygon points="20,25 80,25 95,40 50,80 5,40" fill="none"/>
-                                            <line x1="5" y1="40" x2="95" y2="40"/>
-                                            <polyline points="20,25 35,40 50,25 65,40 80,25" fill="none"/>
-                                            <line x1="35" y1="40" x2="50" y2="80"/>
-                                            <line x1="65" y1="40" x2="50" y2="80"/>
-                                        </g>
-                                    </svg>
-                                    <div>
-                                        <span style="display: block; font-weight: 600;">Premium</span>
-                                        <span style="font-size: 11px; opacity: 0.7; display: none;">₹1450/sqft</span>
-                                    </div>
-                                </label>
-                                <label class="calc-option-card" style="flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px;">
-                                    <input type="radio" name="finish_level" value="1650">
-                                    <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 0; margin-right: 15px; flex-shrink: 0;">
-                                        <!-- Crown from old Luxury Plus -->
-                                        <path d="M 32 38 L 22 12 L 38 24 L 50 6 L 62 24 L 78 12 L 68 38 Z" fill="#F4B41A" stroke="#7A5214" stroke-width="4" stroke-linejoin="round"/>
-                                        <!-- Diamond Fills -->
-                                        <polygon points="20,40 35,55 5,55" fill="#C5E1F5"/>
-                                        <polygon points="20,40 50,40 35,55" fill="#8ECAE6"/>
-                                        <polygon points="35,55 50,40 65,55" fill="#C5E1F5"/>
-                                        <polygon points="50,40 80,40 65,55" fill="#4B95C4"/>
-                                        <polygon points="80,40 95,55 65,55" fill="#28699E"/>
-                                        <polygon points="5,55 35,55 50,95" fill="#8ECAE6"/>
-                                        <polygon points="35,55 65,55 50,95" fill="#4B95C4"/>
-                                        <polygon points="65,55 95,55 50,95" fill="#28699E"/>
-                                        <!-- Diamond Strokes -->
-                                        <g stroke="#0F3D64" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-                                            <polygon points="20,40 80,40 95,55 50,95 5,55" fill="none"/>
-                                            <line x1="5" y1="55" x2="95" y2="55"/>
-                                            <polyline points="20,40 35,55 50,40 65,55 80,40" fill="none"/>
-                                            <line x1="35" y1="55" x2="50" y2="95"/>
-                                            <line x1="65" y1="55" x2="50" y2="95"/>
-                                        </g>
-                                    </svg>
-                                    <div>
-                                        <span style="display: block; font-weight: 600;">Luxury</span>
-                                        <span style="font-size: 11px; opacity: 0.7; display: none;">₹1650/sqft</span>
-                                    </div>
-                                </label>
+                                <?php $is_first_pkg = false; endforeach; endif; ?>
                             </div>
                         </div>
 
@@ -309,18 +225,12 @@
                                 <label>Add-ons (Optional)</label>
                             </div>
                             <div class="calc-checkbox-grid addons">
+                                <?php foreach($calc_addons_data as $addon): ?>
                                 <label class="calc-checkbox">
-                                    <input type="checkbox" name="addons" value="8">
-                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> Civil work
+                                    <input type="checkbox" name="addons" value="<?php echo $addon['percent_value']; ?>">
+                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> <?php echo htmlspecialchars($addon['name']); ?>
                                 </label>
-                                <label class="calc-checkbox">
-                                    <input type="checkbox" name="addons" value="10">
-                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> Flooring
-                                </label>
-                                <label class="calc-checkbox">
-                                    <input type="checkbox" name="addons" value="4">
-                                    <span class="chk-box"><i class="fa-solid fa-check"></i></span> Curtain/Soft Furnishing
-                                </label>
+                                <?php endforeach; ?>
                             </div>
                         </div>
                     </div>
@@ -496,56 +406,19 @@
                         <h3 style="text-align: center; color: white; margin-bottom: 25px;">Pick your package</h3>
                         
                         <div class="calc-options-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px;">
-                            <label class="calc-option-card active k-package-card" style="padding: 20px; text-align: left; display: block;">
-                                <input type="radio" name="k_package" value="9500" checked>
+                            <?php if(isset($calc_packages_data['kitchen'])): 
+                                $is_first_kpkg = true;
+                                foreach($calc_packages_data['kitchen'] as $kpkg): ?>
+                            <label class="calc-option-card <?php echo $is_first_kpkg ? 'active' : ''; ?> k-package-card" style="padding: 20px; text-align: left; display: block;">
+                                <input type="radio" name="k_package" value="<?php echo $kpkg['price_per_sqft']; ?>" <?php echo $is_first_kpkg ? 'checked' : ''; ?>>
                                 <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
-                                    <div class="k-pkg-radio" style="width:16px; height:16px; border-radius:50%; border:2px solid white; display:inline-block; margin-right:10px;"></div>
-                                    Essential Kitchen
+                                    <div class="k-pkg-radio" style="width:16px; height:16px; border-radius:50%; border:2px solid <?php echo $is_first_kpkg ? 'white' : 'rgba(255,255,255,0.3)'; ?>; display:inline-block; margin-right:10px;"></div>
+                                    <?php echo htmlspecialchars($kpkg['name']); ?>
                                 </div>
-                                <p style="font-size: 14px; margin-bottom: 15px; text-align: center; color: #F4B41A; font-weight: bold;">₹9,500/RFT</p>
-                                <ul style="font-size: 11px; padding-left: 15px; opacity: 0.9; margin-bottom: 0;">
-                                    <li style="margin-bottom: 5px;"><strong>Plywood:</strong> BWR Grade (Euro/Grain Touch/Wood Touch)</li>
-                                    <li style="margin-bottom: 5px;"><strong>Shutters:</strong> 0.8 mm laminate</li>
-                                    <li style="margin-bottom: 5px;"><strong>Edge Band:</strong> PVC edge band</li>
-                                    <li style="margin-bottom: 5px;"><strong>Back Panel:</strong> 6 mm BWR plywood</li>
-                                    <li style="margin-bottom: 5px;"><strong>Hardware:</strong> Standard soft-close hinges & channels</li>
-                                    <li style="margin-bottom: 5px;"><strong>Handles:</strong> SS profile/C-handle</li>
-                                </ul>
+                                <p style="font-size: 14px; margin-bottom: 15px; text-align: center; color: #F4B41A; font-weight: bold;">₹<?php echo number_format($kpkg['price_per_sqft']); ?>/RFT</p>
+                                <?php echo $kpkg['pdf_specs']; ?>
                             </label>
-                            
-                            <label class="calc-option-card k-package-card" style="padding: 20px; text-align: left; display: block;">
-                                <input type="radio" name="k_package" value="13000">
-                                <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
-                                    <div class="k-pkg-radio" style="width:16px; height:16px; border-radius:50%; border:2px solid rgba(255,255,255,0.3); display:inline-block; margin-right:10px;"></div>
-                                    Premium Kitchen
-                                </div>
-                                <p style="font-size: 14px; margin-bottom: 15px; text-align: center; color: #F4B41A; font-weight: bold;">₹13,000/RFT</p>
-                                <ul style="font-size: 11px; padding-left: 15px; opacity: 0.9; margin-bottom: 0;">
-                                    <li style="margin-bottom: 5px;"><strong>Plywood:</strong> BWP Grade</li>
-                                    <li style="margin-bottom: 5px;"><strong>Shutters:</strong> Premium laminate or acrylic (selected areas)</li>
-                                    <li style="margin-bottom: 5px;"><strong>Edge Band:</strong> 1 mm PVC edge band</li>
-                                    <li style="margin-bottom: 5px;"><strong>Back Panel:</strong> 6 mm BWP plywood</li>
-                                    <li style="margin-bottom: 5px;"><strong>Hardware:</strong> Soft-close premium hardware (Ebco/Hettich eq.)</li>
-                                    <li style="margin-bottom: 5px;"><strong>Handles:</strong> G-profile/J-profile or premium handles</li>
-                                </ul>
-                            </label>
-
-                            <label class="calc-option-card k-package-card" style="padding: 20px; text-align: left; display: block;">
-                                <input type="radio" name="k_package" value="18000">
-                                <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
-                                    <div class="k-pkg-radio" style="width:16px; height:16px; border-radius:50%; border:2px solid rgba(255,255,255,0.3); display:inline-block; margin-right:10px;"></div>
-                                    Luxury Kitchen
-                                </div>
-                                <p style="font-size: 14px; margin-bottom: 15px; text-align: center; color: #F4B41A; font-weight: bold;">₹18,000/RFT</p>
-                                <ul style="font-size: 11px; padding-left: 15px; opacity: 0.9; margin-bottom: 0;">
-                                    <li style="margin-bottom: 5px;"><strong>Plywood:</strong> 710 Grade BWP plywood</li>
-                                    <li style="margin-bottom: 5px;"><strong>Shutters:</strong> Acrylic / PU finish</li>
-                                    <li style="margin-bottom: 5px;"><strong>Edge Band:</strong> Premium laser/PVC edge band</li>
-                                    <li style="margin-bottom: 5px;"><strong>Back Panel:</strong> BWP plywood</li>
-                                    <li style="margin-bottom: 5px;"><strong>Hardware:</strong> Premium hardware (Blum / Hettich)</li>
-                                    <li style="margin-bottom: 5px;"><strong>Handles:</strong> Handleless Gola profile or premium profile</li>
-                                </ul>
-                            </label>
+                            <?php $is_first_kpkg = false; endforeach; endif; ?>
                         </div>
 
                         <div style="display: flex; justify-content: space-between; margin-top: 30px;">
@@ -747,125 +620,17 @@
 
     </div>
 <!-- Hidden PDF Export Template -->
+<?php
+if(!empty($calc_settings['pdf_template_html'])) {
+    echo $calc_settings['pdf_template_html'];
+} else {
+?>
+<!-- Hidden PDF Export Template Fallback -->
 <div id="pdf-export-template" style="display: none; width: 794px; height: auto; font-family: 'Inter', sans-serif; background: #ffffff; color: #333333; overflow: hidden; box-sizing: border-box;">
-    <div style="display: flex; width: 100%; height: 100%;">
-        <!-- Left Sidebar -->
-        <div style="width: 35%; flex-shrink: 0; display: flex; flex-direction: column; background: #ffffff;">
-            <!-- Brown Top Section -->
-            <div style="background-color: #a49375; color: #ffffff; padding: 40px 30px; box-sizing: border-box; flex-grow: 0; min-height: 60%;">
-                <!-- Logo -->
-                <div style="margin-bottom: 60px;">
-                    <img src="assets/images/logo.png" style="max-width: 180px; height: auto; filter: brightness(0) invert(1);" alt="KALP Logo">
-                </div>
-
-                <div style="margin-bottom: 30px;">
-                    <div style="font-size: 11px; margin-bottom: 5px;">Online Quotation.</div>
-                    <div style="font-size: 11px;">info@kalpinteriors.com</div>
-                </div>
-
-                <div style="margin-bottom: 40px; font-size: 11px; line-height: 1.6;">
-                    KALP INTERIOR DESIGN STUDIO.<br>
-                    ISM CHOWK ROAD, OPP<br>
-                    SR.DAV SCHOOL , PUNDAG,<br>
-                    RANCHI - 834004
-                </div>
-
-                <div style="margin-bottom: auto;">
-                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 15px; border-top: 2px solid white; padding-top: 15px; width: 50px;">CONTACT:</div>
-                    <div style="font-size: 11px; margin-bottom: 15px;">
-                        <strong>Office :</strong><br>
-                        +91 9472745288
-                    </div>
-                    <div style="font-size: 11px;">
-                        <strong>Studio Head :</strong><br>
-                        +91 9234772288
-                    </div>
-                </div>
-
-                <div style="margin-top: 40px;">
-                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 15px;">BUDGET DISCLAIMER</div>
-                    <div style="font-size: 9px; line-height: 1.5; opacity: 0.9;">
-                        The cost mentioned in this quotation is an estimated budget based on the current project scope and preliminary requirements. It is not the final project cost. The actual project budget will be finalized only after the design is approved, detailed measurements are completed, material selections are confirmed, and the final BOQ (Bill of Quantities) is prepared. Any changes in design, specifications, materials, finishes, or scope of work may result in a revision of the final project cost.
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Our Clients White Section -->
-            <div style="padding: 10px 10px; background-color: #ffffff; box-sizing: border-box; flex-grow: 1; text-align: center;">
-                <img src="assets/images/our_clients_collage.png" style="width: 100%; height: auto; object-fit: contain;">
-            </div>
-        </div>
-
-        <!-- Right Content Area -->
-        <div style="width: 65%; padding: 40px 50px; box-sizing: border-box; display: flex; flex-direction: column; position: relative;">
-            
-            <div style="position: absolute; top: 40px; right: 50px; text-align: left; font-size: 11px; color: #a49375; font-family: sans-serif; letter-spacing: 1px;">
-                <div style="margin-bottom: 8px;">DATE : <span id="pdf-export-date" style="color: #666; font-weight: 300;"></span></div>
-                <div>TIME : <span id="pdf-export-time" style="color: #666; font-weight: 300;"></span></div>
-            </div>
-
-            <h1 style="color: #a49375; font-size: 32px; font-weight: 500; letter-spacing: 2px; line-height: 1.2; margin: 0 0 40px 0;">ONLINE<br>QUOTATION</h1>
-
-        <!-- User Selections -->
-        <div style="margin-bottom: 30px; border-bottom: 1px solid #eeeeee; padding-bottom: 20px;">
-            <h2 style="font-size: 13px; color: #a49375; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Project Details</h2>
-            <table style="width: 100%; font-size: 11px; line-height: 1.8; border-collapse: collapse;">
-                <tr><td style="font-weight: 600; width: 40%;">Property Category</td><td id="pdf-category">...</td></tr>
-                <tr><td style="font-weight: 600;">Specific Type</td><td id="pdf-type">...</td></tr>
-                <tr><td style="font-weight: 600;">Design Style</td><td id="pdf-style">...</td></tr>
-                <tr><td style="font-weight: 600;">Selected Package</td><td id="pdf-package">...</td></tr>
-            </table>
-        </div>
-
-        <!-- Quotation Breakdown -->
-        <div style="margin-bottom: 30px; background: #f9f9f9; padding: 20px; border-radius: 8px;">
-            <h2 style="font-size: 13px; color: #a49375; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Cost Breakdown</h2>
-            <table style="width: 100%; font-size: 10px; line-height: 1.6; border-collapse: collapse;">
-                <tr><td style="padding-bottom: 4px;">TV Unit, Crockery, Vanity & Other Furniture</td><td id="pdf-bd-furniture" style="text-align: right;">...</td></tr>
-                <tr><td style="padding-bottom: 4px;">Wardrobes & Storage</td><td id="pdf-bd-wardrobes" style="text-align: right;">...</td></tr>
-                <tr><td style="padding-bottom: 4px;">Modular Kitchen</td><td id="pdf-bd-kitchen" style="text-align: right;">...</td></tr>
-                <tr><td style="padding-bottom: 4px;">False Ceiling</td><td id="pdf-bd-false-ceiling" style="text-align: right;">...</td></tr>
-                <tr><td style="padding-bottom: 4px;">Electrical & Lighting</td><td id="pdf-bd-electrical" style="text-align: right;">...</td></tr>
-                <tr><td style="padding-bottom: 4px;">Paint & Wall Finishes</td><td id="pdf-bd-paint" style="text-align: right;">...</td></tr>
-                <tr><td style="padding-bottom: 4px;">Decorative Lights & Accessories</td><td id="pdf-bd-decorative" style="text-align: right;">...</td></tr>
-                <tr><td style="padding-bottom: 4px;">Design, Project Management & Site Supervision</td><td id="pdf-bd-design" style="text-align: right;">...</td></tr>
-                
-                <tr id="pdf-row-addon-8" style="display: none;"><td style="padding-bottom: 4px; color:#e8591c;">+ Civil work</td><td id="pdf-bd-addon-8" style="text-align: right; color:#e8591c;">...</td></tr>
-                <tr id="pdf-row-addon-10" style="display: none;"><td style="padding-bottom: 4px; color:#e8591c;">+ Flooring</td><td id="pdf-bd-addon-10" style="text-align: right; color:#e8591c;">...</td></tr>
-                <tr id="pdf-row-addon-4" style="display: none;"><td style="padding-bottom: 4px; color:#e8591c;">+ Curtain/Soft Furnishing</td><td id="pdf-bd-addon-4" style="text-align: right; color:#e8591c;">...</td></tr>
-                
-                <tbody id="pdf-kitchen-accessories-list"></tbody>
-
-                <tr>
-                    <td style="padding-top: 10px; border-top: 1px solid #ddd; font-weight: 700; font-size: 11px; color: #0F3D64;">Total Estimated Cost</td>
-                    <td id="pdf-cost-total" style="padding-top: 10px; border-top: 1px solid #ddd; font-weight: 700; font-size: 13px; color: #4CAF50; text-align: right;">...</td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- Removed Spacer for single page PDF -->
-
-        <!-- Material Specification -->
-        <div style="flex-grow: 1;">
-            <h2 id="pdf-material-specs-title" style="font-size: 13px; color: #a49375; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Material Specifications</h2>
-            <div id="pdf-material-specs" style="font-size: 9px; line-height: 1.6;">
-                <!-- Filled dynamically -->
-            </div>
-        </div>
-
-        <!-- User Details Section -->
-        <div style="margin-top: 20px; border-top: 1px solid #eeeeee; padding-top: 15px;">
-            <p style="font-size: 11px; margin-bottom: 5px; color: #333;"><strong>Name:</strong> <span id="pdf-lead-name">________</span></p>
-            <p style="font-size: 11px; margin-bottom: 5px; color: #333;"><strong>Contact Number:</strong> <span id="pdf-lead-contact">________</span></p>
-            <p style="font-size: 11px; margin-bottom: 15px; color: #333;"><strong>Location:</strong> <span id="pdf-lead-location">________</span></p>
-            <p style="font-size: 10px; line-height: 1.5; color: #666; font-style: italic;">
-                This quotation has been prepared based on your requirements. Kindly review the scope of work, specifications, and pricing. We look forward to bringing your vision to life.<br><br>
-                <strong>Kalp Interior Design Studio</strong>
-            </p>
-        </div>
-    </div>
-    </div>
+    <!-- Default template will be here if DB fails, but we assume DB has it now -->
+    <div style="padding: 40px; text-align: center;">PDF Template Missing from Database</div>
 </div>
+<?php } ?>
 
 <!-- Hidden Material Specs Data -->
 <div id="specs-1200" style="display:none;">
@@ -1121,5 +886,31 @@
 </div>
 
 <!-- Include Javascript for logic -->
+<script>
+window.CALC_CONFIG = {
+    settings: <?php echo json_encode($calc_settings); ?>,
+    packages: <?php echo json_encode($calc_packages_data); ?>,
+    breakdown: {
+        // Residential
+        res_furniture: <?php echo $calc_settings['bd_residential_furniture'] ?? 28.5; ?>,
+        res_wardrobes: <?php echo $calc_settings['bd_residential_wardrobes'] ?? 20.4; ?>,
+        res_kitchen: <?php echo $calc_settings['bd_residential_kitchen'] ?? 15.5; ?>,
+        res_false_ceiling: <?php echo $calc_settings['bd_residential_false_ceiling'] ?? 9.7; ?>,
+        res_electrical: <?php echo $calc_settings['bd_residential_electrical'] ?? 8.9; ?>,
+        res_design: <?php echo $calc_settings['bd_residential_design'] ?? 7.0; ?>,
+        res_paint: <?php echo $calc_settings['bd_residential_paint'] ?? 7.5; ?>,
+        // Commercial
+        com_furniture: <?php echo $calc_settings['bd_commercial_furniture'] ?? 28.5; ?>,
+        com_wardrobes: <?php echo $calc_settings['bd_commercial_wardrobes'] ?? 20.4; ?>,
+        com_kitchen: <?php echo $calc_settings['bd_commercial_kitchen'] ?? 15.5; ?>,
+        com_false_ceiling: <?php echo $calc_settings['bd_commercial_false_ceiling'] ?? 9.7; ?>,
+        com_electrical: <?php echo $calc_settings['bd_commercial_electrical'] ?? 8.9; ?>,
+        com_design: <?php echo $calc_settings['bd_commercial_design'] ?? 7.0; ?>,
+        com_paint: <?php echo $calc_settings['bd_commercial_paint'] ?? 7.5; ?>
+    },
+    appended_pdf_path: "<?php echo addslashes($calc_settings['appended_pdf_path'] ?? ''); ?>"
+};
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="assets/js/calculator.js?v=1.5"></script>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="assets/js/calculator.js"></script>

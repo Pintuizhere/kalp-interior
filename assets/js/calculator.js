@@ -564,14 +564,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('calc-total-range').innerText = `${formatNum(totalCost)}`;
                 document.getElementById('bd-total').innerText = `${formatNum(totalCost)}`;
                 
+                // Extract percentages from config or fallback to defaults
+                const cfg = window.CALC_CONFIG ? window.CALC_CONFIG.settings : {};
+                
+                // Get the current selected category to pick the right breakdown percentages
+                const selectedCat = document.querySelector('input[name="property_category"]:checked');
+                const catSlug = selectedCat ? selectedCat.value : 'residential';
+                
+                const p_fur = parseFloat(cfg[`bd_${catSlug}_furniture`] || cfg['bd_furniture']) || 0.285;
+                const p_war = parseFloat(cfg[`bd_${catSlug}_wardrobes`] || cfg['bd_wardrobes']) || 0.204;
+                const p_kit = parseFloat(cfg[`bd_${catSlug}_kitchen`] || cfg['bd_kitchen']) || 0.155;
+                const p_fc = parseFloat(cfg[`bd_${catSlug}_false_ceiling`] || cfg['bd_false_ceiling']) || 0.097;
+                const p_elec = parseFloat(cfg[`bd_${catSlug}_electrical`] || cfg['bd_electrical']) || 0.089;
+                const p_des = parseFloat(cfg[`bd_${catSlug}_design`] || cfg['bd_design']) || 0.07;
+                const p_paint = parseFloat(cfg[`bd_${catSlug}_paint`] || cfg['bd_paint']) || 0.075;
+
                 // Update breakdown with new percentages based on subtotal
-                const furnitureCost = Math.round(subtotal * 0.285);
-                const wardrobesCost = Math.round(subtotal * 0.204);
-                const kitchenCost = Math.round(subtotal * 0.155);
-                const falseCeilingCost = Math.round(subtotal * 0.097);
-                const electricalCost = Math.round(subtotal * 0.089);
-                const designCost = Math.round(subtotal * 0.07);
-                const paintCost = Math.round(subtotal * 0.075);
+                const furnitureCost = Math.round(subtotal * p_fur);
+                const wardrobesCost = Math.round(subtotal * p_war);
+                const kitchenCost = Math.round(subtotal * p_kit);
+                const falseCeilingCost = Math.round(subtotal * p_fc);
+                const electricalCost = Math.round(subtotal * p_elec);
+                const designCost = Math.round(subtotal * p_des);
+                const paintCost = Math.round(subtotal * p_paint);
                 // Make sure decorative sums to exactly the remainder to avoid rounding issues
                 const decorativeCost = subtotal - (furnitureCost + wardrobesCost + kitchenCost + falseCeilingCost + electricalCost + designCost + paintCost);
                 
@@ -877,18 +892,79 @@ document.addEventListener('DOMContentLoaded', function() {
                                     jsPDF:        { unit: 'px', format: [794, pdfHeight], orientation: 'portrait', hotfixes: ["px_scaling"] }
                                 };
 
-                                html2pdf().set(opt).from(pdfTemplate).save().then(() => {
-                                    pdfTemplate.style.display = 'none';
-                                    originalParent.appendChild(pdfTemplate);
-                                    window.scrollTo(originalScrollX, originalScrollY);
-                                    resolve();
-                                }).catch(err => {
-                                    console.error('PDF Generation Error:', err);
-                                    pdfTemplate.style.display = 'none';
-                                    originalParent.appendChild(pdfTemplate);
-                                    window.scrollTo(originalScrollX, originalScrollY);
-                                    reject(err);
-                                });
+                                const appendedPdfUrl = (window.CALC_CONFIG && window.CALC_CONFIG.appended_pdf_path) ? window.CALC_CONFIG.appended_pdf_path : null;
+
+                                if (appendedPdfUrl && window.PDFLib) {
+                                    // Generate the estimate PDF as an ArrayBuffer
+                                    html2pdf().set(opt).from(pdfTemplate).outputPdf('arraybuffer').then(async (generatedPdfBuffer) => {
+                                        try {
+                                            const { PDFDocument } = window.PDFLib;
+                                            
+                                            // Load generated estimate PDF
+                                            const generatedDoc = await PDFDocument.load(generatedPdfBuffer);
+                                            
+                                            // Fetch and load appended PDF
+                                            const appendedPdfBytes = await fetch(appendedPdfUrl).then(res => {
+                                                if(!res.ok) throw new Error("Failed to fetch static pdf");
+                                                return res.arrayBuffer();
+                                            });
+                                            const staticDoc = await PDFDocument.load(appendedPdfBytes);
+                                            
+                                            // Copy and add pages
+                                            const copiedPages = await generatedDoc.copyPages(staticDoc, staticDoc.getPageIndices());
+                                            copiedPages.forEach((page) => {
+                                                generatedDoc.addPage(page);
+                                            });
+                                            
+                                            // Save the merged document
+                                            const mergedPdfBytes = await generatedDoc.save();
+                                            
+                                            // Trigger download
+                                            const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+                                            const link = document.createElement('a');
+                                            link.href = URL.createObjectURL(blob);
+                                            link.download = filename;
+                                            document.body.appendChild(link);
+                                            link.click();
+                                            document.body.removeChild(link);
+
+                                            // Cleanup DOM
+                                            pdfTemplate.style.display = 'none';
+                                            originalParent.appendChild(pdfTemplate);
+                                            window.scrollTo(originalScrollX, originalScrollY);
+                                            resolve();
+                                        } catch (mergeError) {
+                                            console.error('PDF Merge Error:', mergeError);
+                                            // Fallback to normal save if merge fails
+                                            html2pdf().set(opt).from(pdfTemplate).save().then(() => {
+                                                pdfTemplate.style.display = 'none';
+                                                originalParent.appendChild(pdfTemplate);
+                                                window.scrollTo(originalScrollX, originalScrollY);
+                                                resolve();
+                                            });
+                                        }
+                                    }).catch(err => {
+                                        console.error('PDF Generation Error:', err);
+                                        pdfTemplate.style.display = 'none';
+                                        originalParent.appendChild(pdfTemplate);
+                                        window.scrollTo(originalScrollX, originalScrollY);
+                                        reject(err);
+                                    });
+                                } else {
+                                    // Normal save
+                                    html2pdf().set(opt).from(pdfTemplate).save().then(() => {
+                                        pdfTemplate.style.display = 'none';
+                                        originalParent.appendChild(pdfTemplate);
+                                        window.scrollTo(originalScrollX, originalScrollY);
+                                        resolve();
+                                    }).catch(err => {
+                                        console.error('PDF Generation Error:', err);
+                                        pdfTemplate.style.display = 'none';
+                                        originalParent.appendChild(pdfTemplate);
+                                        window.scrollTo(originalScrollX, originalScrollY);
+                                        reject(err);
+                                    });
+                                }
                             }, 50);
                         } catch (error) {
                             reject(error);
