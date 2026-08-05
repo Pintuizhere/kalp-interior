@@ -1,10 +1,76 @@
 <?php
+require_once 'config/db.php';
 $pageTitle = 'Dashboard';
 $currentPage = 'dashboard';
+
+// Fetch statistics
+$total_projects = $conn->query("SELECT COUNT(*) FROM projects")->fetch_row()[0];
+// We might not have a generic leads table if it's empty, but let's check or just count estimate_requests
+$total_estimates = $conn->query("SELECT COUNT(*) FROM estimate_requests")->fetch_row()[0];
+// If leads table exists, get it, else use 0
+$total_leads = 0;
+$leads_res = $conn->query("SELECT COUNT(*) FROM leads");
+if($leads_res) { $total_leads = $leads_res->fetch_row()[0]; }
+$total_blogs = 0;
+$blogs_res = $conn->query("SELECT COUNT(*) FROM blogs");
+if($blogs_res) { $total_blogs = $blogs_res->fetch_row()[0]; }
+$total_users = 0;
+$users_res = $conn->query("SELECT COUNT(*) FROM admin_users");
+if($users_res) { $total_users = $users_res->fetch_row()[0]; }
+
+// Fetch project categories for chart
+$category_counts = [];
+$cat_res = $conn->query("SELECT category, COUNT(*) as count FROM projects GROUP BY category");
+if($cat_res) {
+    while($row = $cat_res->fetch_assoc()) {
+        $cat = $row['category'] ?: 'Uncategorized';
+        $category_counts[$cat] = $row['count'];
+    }
+}
+$total_proj_for_chart = array_sum($category_counts);
+if($total_proj_for_chart == 0) $total_proj_for_chart = 1;
+
+// Define a palette of beautiful colors for the dynamic categories
+$chart_colors = ['#334C40', '#EAB136', '#f97316', '#cbd5e1', '#3b82f6', '#8b5cf6', '#ec4899', '#14b8a6'];
+$chart_data = [];
+$color_index = 0;
+foreach($category_counts as $cat_name => $count) {
+    $chart_data[] = [
+        'name' => $cat_name,
+        'count' => $count,
+        'pct' => round(($count / $total_proj_for_chart) * 100, 1),
+        'color' => $chart_colors[$color_index % count($chart_colors)]
+    ];
+    $color_index++;
+
+}
+
+// Fetch Overview Chart Data (Projects vs Leads over last 7 days)
+$overview_labels = [];
+$overview_projects_data = [];
+$overview_leads_data = [];
+
+for($i = 6; $i >= 0; $i--) {
+    $date = date('Y-m-d', strtotime("-$i days"));
+    $label = date('d M', strtotime("-$i days"));
+    $overview_labels[] = $label;
+    
+    // Count projects for this day
+    $p_count = 0;
+    $p_res = $conn->query("SELECT COUNT(*) FROM projects WHERE DATE(created_at) = '$date'");
+    if($p_res) $p_count = $p_res->fetch_row()[0];
+    $overview_projects_data[] = $p_count;
+    
+    // Count leads for this day
+    $l_count = 0;
+    $l_res = $conn->query("SELECT COUNT(*) FROM leads WHERE DATE(created_at) = '$date'");
+    if($l_res) $l_count = $l_res->fetch_row()[0];
+    $overview_leads_data[] = $l_count;
+}
+
 include 'includes/header.php';
 include 'includes/sidebar.php';
 ?>
-
 <div class="main-wrapper">
     <?php include 'includes/topbar.php'; ?>
     
@@ -13,7 +79,7 @@ include 'includes/sidebar.php';
         <div class="date-picker">
             <button class="date-picker-btn">
                 <i class="fa-regular fa-calendar"></i>
-                May 20, 2025 - June 18, 2025
+                <?php echo date('M d, Y', strtotime('-6 days')) . ' - ' . date('M d, Y'); ?>
                 <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i>
             </button>
         </div>
@@ -26,7 +92,7 @@ include 'includes/sidebar.php';
                     <div class="stat-title">Total Projects</div>
                 </div>
                 <div class="stat-info-right">
-                    <div class="stat-value">32</div>
+                    <div class="stat-value"><?php echo $total_projects; ?></div>
                     <div class="stat-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> 12.5% <span style="color:var(--text-muted); font-weight:400;">from last month</span></div>
                 </div>
             </div>
@@ -37,7 +103,7 @@ include 'includes/sidebar.php';
                     <div class="stat-title">Total Leads</div>
                 </div>
                 <div class="stat-info-right">
-                    <div class="stat-value">128</div>
+                    <div class="stat-value"><?php echo $total_leads; ?></div>
                     <div class="stat-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> 18.7% <span style="color:var(--text-muted); font-weight:400;">from last month</span></div>
                 </div>
             </div>
@@ -48,7 +114,7 @@ include 'includes/sidebar.php';
                     <div class="stat-title">Estimate Requests</div>
                 </div>
                 <div class="stat-info-right">
-                    <div class="stat-value">45</div>
+                    <div class="stat-value"><?php echo $total_estimates; ?></div>
                     <div class="stat-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> 8.3% <span style="color:var(--text-muted); font-weight:400;">from last month</span></div>
                 </div>
             </div>
@@ -59,7 +125,7 @@ include 'includes/sidebar.php';
                     <div class="stat-title">Blog Posts</div>
                 </div>
                 <div class="stat-info-right">
-                    <div class="stat-value">24</div>
+                    <div class="stat-value"><?php echo $total_blogs; ?></div>
                     <div class="stat-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> 5.2% <span style="color:var(--text-muted); font-weight:400;">from last month</span></div>
                 </div>
             </div>
@@ -70,7 +136,7 @@ include 'includes/sidebar.php';
                     <div class="stat-title">Total Users</div>
                 </div>
                 <div class="stat-info-right">
-                    <div class="stat-value">6</div>
+                    <div class="stat-value"><?php echo $total_users; ?></div>
                     <div class="stat-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> 3.1% <span style="color:var(--text-muted); font-weight:400;">from last month</span></div>
                 </div>
             </div>
@@ -103,79 +169,33 @@ include 'includes/sidebar.php';
             <!-- Recent Leads -->
             <div class="card-panel">
                 <div class="card-header">
-                    <h3 class="card-title">Recent Leads</h3>
-                    <a href="#" class="card-action">View All</a>
+                    <h3 class="card-title">Recent Estimate Requests</h3>
+                    <a href="estimate_requests.php" class="card-action">View All</a>
                 </div>
                 <div class="list-container">
+                    <?php
+                    $recent_requests = $conn->query("SELECT * FROM estimate_requests ORDER BY created_at DESC LIMIT 5");
+                    if ($recent_requests && $recent_requests->num_rows > 0):
+                        while($req = $recent_requests->fetch_assoc()):
+                    ?>
                     <div class="list-item">
                         <div class="user-info">
-                            <img src="https://i.pravatar.cc/150?img=12" class="user-avatar" alt="User">
                             <div class="user-details">
-                                <h4>Rahul Sharma</h4>
-                                <p>rahul.sharma@email.com</p>
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 2px; color: var(--text-main);"><?php echo htmlspecialchars($req['name']); ?></h4>
+                                <p style="font-size: 12px; color: var(--text-muted);"><?php echo htmlspecialchars($req['property_category']); ?> • <?php echo htmlspecialchars($req['estimated_cost']); ?></p>
                             </div>
                         </div>
                         <div class="item-meta">
                             <span class="pill new">New</span>
-                            <span class="time-ago">2 mins ago</span>
+                            <span class="time-ago" style="font-size: 11px;"><?php echo date('M d, g:i a', strtotime($req['created_at'])); ?></span>
                         </div>
                     </div>
-                    
-                    <div class="list-item">
-                        <div class="user-info">
-                            <img src="https://i.pravatar.cc/150?img=5" class="user-avatar" alt="User">
-                            <div class="user-details">
-                                <h4>Priya Mehta</h4>
-                                <p>priya.mehta@email.com</p>
-                            </div>
-                        </div>
-                        <div class="item-meta">
-                            <span class="pill contacted">Contacted</span>
-                            <span class="time-ago">1 hour ago</span>
-                        </div>
-                    </div>
-
-                    <div class="list-item">
-                        <div class="user-info">
-                            <img src="https://i.pravatar.cc/150?img=13" class="user-avatar" alt="User">
-                            <div class="user-details">
-                                <h4>Amit Verma</h4>
-                                <p>amit.verma@email.com</p>
-                            </div>
-                        </div>
-                        <div class="item-meta">
-                            <span class="pill progress">In Progress</span>
-                            <span class="time-ago">3 hours ago</span>
-                        </div>
-                    </div>
-
-                    <div class="list-item">
-                        <div class="user-info">
-                            <img src="https://i.pravatar.cc/150?img=9" class="user-avatar" alt="User">
-                            <div class="user-details">
-                                <h4>Neha Kapoor</h4>
-                                <p>neha.kapoor@email.com</p>
-                            </div>
-                        </div>
-                        <div class="item-meta">
-                            <span class="pill qualified">Qualified</span>
-                            <span class="time-ago">5 hours ago</span>
-                        </div>
-                    </div>
-
-                    <div class="list-item">
-                        <div class="user-info">
-                            <img src="https://i.pravatar.cc/150?img=14" class="user-avatar" alt="User">
-                            <div class="user-details">
-                                <h4>Vikram Singh</h4>
-                                <p>vikram.singh@email.com</p>
-                            </div>
-                        </div>
-                        <div class="item-meta">
-                            <span class="pill closed">Closed</span>
-                            <span class="time-ago">1 day ago</span>
-                        </div>
-                    </div>
+                    <?php 
+                        endwhile;
+                    else: 
+                    ?>
+                        <div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">No recent requests found.</div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -183,36 +203,34 @@ include 'includes/sidebar.php';
         <!-- Bottom Grid -->
         <div class="dashboard-bottom-grid">
             
-            <!-- Project Status -->
+            <!-- Project Categories -->
             <div class="card-panel">
                 <div class="card-header">
-                    <h3 class="card-title">Project Status</h3>
+                    <h3 class="card-title">Project Categories</h3>
                 </div>
                 <div class="donut-container" style="display: flex; align-items: center; justify-content: center; gap: 20px;">
                     <div style="position: relative; width: 140px; height: 140px;">
                         <canvas id="statusChart"></canvas>
                         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-                            <div style="font-size: 20px; font-weight: 700; color: var(--text-main); font-family: var(--font-primary);">32</div>
+                            <div style="font-size: 20px; font-weight: 700; color: var(--text-main); font-family: var(--font-primary);"><?php echo $total_projects; ?></div>
                             <div style="font-size: 11px; color: var(--text-muted);">Total</div>
                         </div>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 12px; font-size: 11px;">
+                        <?php foreach($chart_data as $cat_data): ?>
                         <div style="display: flex; align-items: center; justify-content: space-between; width: 120px;">
-                            <div style="display: flex; align-items: center; gap: 6px;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #334C40;"></div> Completed</div>
-                            <span style="color: var(--text-muted);">10 (31.3%)</span>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <div style="width: 8px; height: 8px; border-radius: 50%; background: <?php echo $cat_data['color']; ?>;"></div> 
+                                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60px;" title="<?php echo htmlspecialchars($cat_data['name']); ?>">
+                                    <?php echo htmlspecialchars($cat_data['name']); ?>
+                                </span>
+                            </div>
+                            <span style="color: var(--text-muted);"><?php echo $cat_data['count']; ?> (<?php echo $cat_data['pct']; ?>%)</span>
                         </div>
-                        <div style="display: flex; align-items: center; justify-content: space-between; width: 120px;">
-                            <div style="display: flex; align-items: center; gap: 6px;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #EAB136;"></div> In Progress</div>
-                            <span style="color: var(--text-muted);">14 (43.8%)</span>
-                        </div>
-                        <div style="display: flex; align-items: center; justify-content: space-between; width: 120px;">
-                            <div style="display: flex; align-items: center; gap: 6px;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #f97316;"></div> On Hold</div>
-                            <span style="color: var(--text-muted);">4 (12.5%)</span>
-                        </div>
-                        <div style="display: flex; align-items: center; justify-content: space-between; width: 120px;">
-                            <div style="display: flex; align-items: center; gap: 6px;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1;"></div> Upcoming</div>
-                            <span style="color: var(--text-muted);">4 (12.5%)</span>
-                        </div>
+                        <?php endforeach; ?>
+                        <?php if(empty($chart_data)): ?>
+                            <div style="color: var(--text-muted);">No categories</div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -224,61 +242,41 @@ include 'includes/sidebar.php';
                     <a href="#" class="card-action">View All</a>
                 </div>
                 <div class="list-container">
+                    <?php
+                    $latest_projects = $conn->query("SELECT * FROM projects ORDER BY created_at DESC LIMIT 4");
+                    if ($latest_projects && $latest_projects->num_rows > 0):
+                        while($proj = $latest_projects->fetch_assoc()):
+                            $cat = $proj['category'] ?: 'Uncategorized';
+                            // Assign color based on category position in chart colors
+                            $color_code = '#3b82f6'; // default blue
+                            foreach($chart_data as $cd) {
+                                if($cd['name'] == $cat) { $color_code = $cd['color']; break; }
+                            }
+                    ?>
                     <div class="list-item">
                         <div class="project-item">
-                            <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=100&h=80&fit=crop" class="project-thumb" alt="Project">
+                            <?php if(!empty($proj['cover_image'])): ?>
+                                <img src="../<?php echo htmlspecialchars($proj['cover_image']); ?>" class="project-thumb" alt="Project">
+                            <?php else: ?>
+                                <div class="project-thumb" style="background:#e2e8f0; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-image" style="color:#94a3b8;"></i></div>
+                            <?php endif; ?>
                             <div class="user-details">
-                                <h4>Modern Luxury Villa</h4>
-                                <p>Bangalore, Karnataka</p>
+                                <h4><?php echo htmlspecialchars($proj['title']); ?></h4>
+                                <p><?php echo htmlspecialchars($proj['location'] ?? 'Location N/A'); ?></p>
                             </div>
                         </div>
                         <div class="progress-meta">
-                            <span class="pill new">In Progress</span>
-                            <span>60%</span>
+                            <span style="background: <?php echo $color_code; ?>15; color: <?php echo $color_code; ?>; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap;">
+                                <?php echo htmlspecialchars($cat); ?>
+                            </span>
                         </div>
                     </div>
-
-                    <div class="list-item">
-                        <div class="project-item">
-                            <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=100&h=80&fit=crop" class="project-thumb" alt="Project">
-                            <div class="user-details">
-                                <h4>Minimalist Apartment</h4>
-                                <p>Mumbai, Maharashtra</p>
-                            </div>
-                        </div>
-                        <div class="progress-meta">
-                            <span class="pill contacted">In Progress</span>
-                            <span>40%</span>
-                        </div>
-                    </div>
-                    
-                    <div class="list-item">
-                        <div class="project-item">
-                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=100&h=80&fit=crop" class="project-thumb" alt="Project">
-                            <div class="user-details">
-                                <h4>Contemporary Office</h4>
-                                <p>Pune, Maharashtra</p>
-                            </div>
-                        </div>
-                        <div class="progress-meta">
-                            <span class="pill planning">Planning</span>
-                            <span>20%</span>
-                        </div>
-                    </div>
-
-                    <div class="list-item" style="padding-bottom: 0;">
-                        <div class="project-item">
-                            <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=100&h=80&fit=crop" class="project-thumb" alt="Project">
-                            <div class="user-details">
-                                <h4>Classic Home Interior</h4>
-                                <p>Delhi, India</p>
-                            </div>
-                        </div>
-                        <div class="progress-meta">
-                            <span class="pill upcoming">Upcoming</span>
-                            <span>0%</span>
-                        </div>
-                    </div>
+                    <?php 
+                        endwhile;
+                    else: 
+                    ?>
+                        <div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">No projects found.</div>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -288,27 +286,27 @@ include 'includes/sidebar.php';
                     <h3 class="card-title">Quick Actions</h3>
                 </div>
                 <div class="quick-actions-grid">
-                    <a href="#" class="action-box">
+                    <a href="editor-project.php" class="action-box">
                         <i class="fa-solid fa-square-plus"></i>
                         <span>Add New Project</span>
                     </a>
-                    <a href="#" class="action-box">
+                    <a href="editor-blog.php" class="action-box">
                         <i class="fa-solid fa-pen-to-square" style="color: #EAB136;"></i>
                         <span>Add Blog Post</span>
                     </a>
-                    <a href="#" class="action-box">
+                    <a href="leads.php" class="action-box">
                         <i class="fa-solid fa-user-plus"></i>
                         <span>Add New Lead</span>
                     </a>
-                    <a href="#" class="action-box">
+                    <a href="estimate_requests.php" class="action-box">
                         <i class="fa-solid fa-file-invoice-dollar" style="color: #EAB136;"></i>
-                        <span>Estimate Request</span>
+                        <span>Estimate Requests</span>
                     </a>
-                    <a href="#" class="action-box">
+                    <a href="media.php" class="action-box">
                         <i class="fa-solid fa-image"></i>
                         <span>Media Library</span>
                     </a>
-                    <a href="#" class="action-box">
+                    <a href="leads.php" class="action-box">
                         <i class="fa-solid fa-comment-dots"></i>
                         <span>View Messages</span>
                     </a>
@@ -336,11 +334,11 @@ document.addEventListener("DOMContentLoaded", function() {
         new Chart(ctxOverview, {
             type: 'line',
             data: {
-                labels: ['20 May', '25 May', '30 May', '04 Jun', '09 Jun', '14 Jun', '18 Jun'],
+                labels: <?php echo json_encode($overview_labels); ?>,
                 datasets: [
                     {
                         label: 'Projects',
-                        data: [10, 32, 40, 32, 45, 35, 50],
+                        data: <?php echo json_encode($overview_projects_data); ?>,
                         borderColor: '#334C40',
                         backgroundColor: 'rgba(51, 76, 64, 0.05)',
                         borderWidth: 2,
@@ -352,7 +350,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     },
                     {
                         label: 'Leads',
-                        data: [30, 50, 65, 55, 68, 60, 85],
+                        data: <?php echo json_encode($overview_leads_data); ?>,
                         borderColor: '#EAB136',
                         backgroundColor: 'rgba(234, 177, 54, 0.1)',
                         borderWidth: 2,
@@ -373,9 +371,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        max: 100,
                         grid: { borderDash: [4, 4], color: '#f1f5f9' },
-                        border: { display: false }
+                        border: { display: false },
+                        ticks: { stepSize: 1 }
                     },
                     x: {
                         grid: { display: false },
@@ -386,16 +384,16 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Project Status Donut Chart
+    // Project Categories Donut Chart
     const ctxStatus = document.getElementById('statusChart');
     if(ctxStatus) {
         new Chart(ctxStatus, {
             type: 'doughnut',
             data: {
-                labels: ['Completed', 'In Progress', 'On Hold', 'Upcoming'],
+                labels: <?php echo json_encode(array_column($chart_data, 'name')); ?>,
                 datasets: [{
-                    data: [31.3, 43.8, 12.5, 12.5],
-                    backgroundColor: ['#334C40', '#EAB136', '#f97316', '#cbd5e1'],
+                    data: <?php echo json_encode(array_column($chart_data, 'pct')); ?>,
+                    backgroundColor: <?php echo json_encode(array_column($chart_data, 'color')); ?>,
                     borderWidth: 0,
                     hoverOffset: 4
                 }]

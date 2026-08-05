@@ -11,13 +11,17 @@ document.addEventListener('DOMContentLoaded', function() {
         leadForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
+            const nameVal = document.getElementById('lead-name').value;
+            const contactVal = document.getElementById('lead-contact').value;
+            const locationVal = document.getElementById('lead-location').value;
+            
             const pdfName = document.getElementById('pdf-lead-name');
             const pdfContact = document.getElementById('pdf-lead-contact');
             const pdfLocation = document.getElementById('pdf-lead-location');
             
-            if (pdfName) pdfName.textContent = document.getElementById('lead-name').value;
-            if (pdfContact) pdfContact.textContent = document.getElementById('lead-contact').value;
-            if (pdfLocation) pdfLocation.textContent = document.getElementById('lead-location').value;
+            if (pdfName) pdfName.textContent = nameVal;
+            if (pdfContact) pdfContact.textContent = contactVal;
+            if (pdfLocation) pdfLocation.textContent = locationVal;
             
             window.isLeadCaptured = true;
             if (leadModal) leadModal.style.display = 'none';
@@ -25,6 +29,66 @@ document.addEventListener('DOMContentLoaded', function() {
             if (window.currentCalcBtn) {
                 window.currentCalcBtn.click();
             }
+
+            // Wait for the 800ms calculation animation to finish, then gather data and save lead
+            setTimeout(() => {
+                const categoryEl = document.querySelector('input[name="property_category"]:checked');
+                const finishEl = document.querySelector('input[name="finish_level"]:checked');
+                const styleEl = document.querySelector('input[name="design_style"]:checked');
+                const typeEl = document.querySelector('input[name="property_type"]:checked');
+                const sqftInput = document.getElementById('sqft-input');
+                const isKitchen = categoryEl && categoryEl.value === 'kitchen';
+
+                const categoryText = categoryEl ? categoryEl.nextElementSibling.nextElementSibling.textContent.trim() : 'N/A';
+                let typeText = 'N/A';
+                let styleText = 'N/A';
+                let packageText = 'N/A';
+
+                if (isKitchen) {
+                    const layoutEl = document.querySelector('input[name="k_layout"]:checked');
+                    if(layoutEl) typeText = layoutEl.nextElementSibling.nextElementSibling.textContent.trim();
+                    styleText = 'Modular Kitchen Custom Design';
+                    const packageEl = document.querySelector('input[name="k_package"]:checked');
+                    if (packageEl) {
+                        if (packageEl.value == 1500) packageText = 'Essentials';
+                        else if (packageEl.value == 2000) packageText = 'Premium';
+                        else packageText = 'Luxury';
+                    }
+                } else {
+                    if (typeEl) {
+                        typeText = typeEl.nextElementSibling.nextElementSibling.textContent.trim();
+                        if (sqftInput && sqftInput.value) {
+                            typeText += ` (${sqftInput.value} sqft)`;
+                        }
+                    }
+                    styleText = styleEl ? styleEl.nextElementSibling.nextElementSibling.textContent.trim() : 'N/A';
+                    if (finishEl) {
+                        const labelDiv = finishEl.nextElementSibling.nextElementSibling;
+                        if(labelDiv) {
+                            packageText = labelDiv.querySelector('span:first-child').textContent.trim();
+                        }
+                    }
+                }
+
+                const totalEl = document.getElementById('bd-total');
+                const estimatedCost = totalEl ? totalEl.textContent : '₹0';
+
+                const formData = new FormData();
+                formData.append('name', nameVal);
+                formData.append('phone', contactVal);
+                formData.append('location', locationVal);
+                formData.append('property_category', categoryText);
+                formData.append('property_type', typeText);
+                formData.append('design_style', styleText);
+                formData.append('package', packageText);
+                formData.append('estimated_cost', estimatedCost);
+
+                fetch('admin/ajax/save_estimate_request.php', {
+                    method: 'POST',
+                    body: formData
+                }).catch(e => console.error("Error saving lead", e));
+                
+            }, 1000);
         });
     }
     
