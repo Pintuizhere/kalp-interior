@@ -129,10 +129,10 @@ include 'includes/sidebar.php';
         </div>
         <p class="text-muted" style="margin-bottom: 30px;">Add and manage the image pairs displayed in the Before & After section.</p>
         
-        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+        <div class="form-grid-1x2">
             
             <!-- Upload Form -->
-            <div class="card" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div class="card" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); min-width: 0;">
                 <h3 style="margin-bottom: 20px; font-size: 1.2rem;">Add New Pair</h3>
                 <form action="" method="POST" enctype="multipart/form-data">
                     <div style="margin-bottom: 20px;">
@@ -156,7 +156,7 @@ include 'includes/sidebar.php';
             </div>
             
             <!-- Pairs Table -->
-            <div class="card" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div class="card" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); min-width: 0;">
                 <h3 style="margin-bottom: 20px; font-size: 1.2rem;">Existing Pairs</h3>
                 <div style="overflow-x: auto;">
                     <table style="width: 100%; border-collapse: collapse;">
@@ -183,7 +183,7 @@ include 'includes/sidebar.php';
                                     <img src="../<?php echo $pair['after_image']; ?>" alt="After" style="width: 80px; height: 60px; object-fit: cover; border-radius: 5px;">
                                 </td>
                                 <td style="padding: 12px;">
-                                    <a href="?delete_id=<?php echo $pair['id']; ?>" class="btn-secondary" style="background: #dc3545; color: white; padding: 5px 10px; font-size: 0.85rem;" onclick="return confirm('Delete this pair?');"><i class="fa-solid fa-trash"></i> Delete</a>
+                                    <a href="?delete_id=<?php echo $pair['id']; ?>" class="btn-secondary" style="background: #dc3545; color: white; padding: 6px 12px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; border-radius: 5px; text-decoration: none;" onclick="return confirm('Delete this pair?');"><i class="fa-solid fa-trash"></i> Delete</a>
                                 </td>
                             </tr>
                             <?php 

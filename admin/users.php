@@ -96,7 +96,7 @@ include 'includes/sidebar.php';
             </div>
         <?php endif; ?>
 
-        <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
             <div>
                 <h1 style="margin:0; display: flex; align-items: center; gap: 10px; font-family: 'League Spartan', sans-serif;">
                     <i class="fa-solid fa-user-shield" style="color: var(--primary-color);"></i> SUPER ADMIN
@@ -235,7 +235,7 @@ include 'includes/sidebar.php';
             }
         </style>
 
-        <div class="table-wrapper" style="padding: 0; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); overflow: hidden; background: #fff;">
+        <div class="table-wrapper" style="padding: 0; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); overflow-x: auto; background: #fff;">
             <table class="super-admin-table">
                 <thead>
                     <tr>

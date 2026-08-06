@@ -137,6 +137,7 @@ $stmt->close();
         gap: 30px;
         border-bottom: 1px solid #e2e8f0;
         margin-bottom: 30px;
+        flex-wrap: wrap;
     }
     .settings-tab {
         padding: 10px 0;
@@ -166,6 +167,7 @@ $stmt->close();
         border-radius: 12px;
         padding: 30px;
         margin-bottom: 25px;
+        min-width: 0;
     }
     .settings-card h3 {
         margin: 0 0 25px 0;
@@ -177,6 +179,7 @@ $stmt->close();
         display: flex;
         align-items: center;
         gap: 25px;
+        flex-wrap: wrap;
     }
     .profile-avatar {
         width: 90px;
@@ -318,7 +321,7 @@ $stmt->close();
                         <h3 style="margin: 0; font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700;">Profile Picture</h3>
                         <p>PNG, JPG or WEBP under 5MB. You are logged in as a <?php echo htmlspecialchars($user_role); ?>.</p>
                         
-                        <div style="display: flex; gap: 10px; align-items: center;">
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                             <form action="profile.php" method="POST" enctype="multipart/form-data" id="uploadForm">
                                 <input type="hidden" name="update_picture" value="1">
                                 <input type="file" name="profile_image" id="profile_image" style="display: none;" accept="image/png, image/jpeg, image/webp" onchange="document.getElementById('uploadForm').submit();">

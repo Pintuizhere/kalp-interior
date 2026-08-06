@@ -62,14 +62,16 @@ function val($key, $data) {
         <?php endif; ?>
 
         <div class="page-header" style="margin-bottom: 30px;">
-            <h1 style="margin:0;">Global Settings</h1>
-            <p style="color:var(--text-muted); margin-top:5px;">Manage website contact information and global variables.</p>
+            <div>
+                <h1 style="margin:0;">Global Settings</h1>
+                <p style="color:var(--text-muted); margin-top:5px;">Manage website contact information and global variables.</p>
+            </div>
         </div>
 
         <style>
             .settings-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr));
                 gap: 25px;
                 margin-bottom: 30px;
                 max-width: 1200px;
@@ -134,6 +136,8 @@ function val($key, $data) {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                flex-wrap: wrap;
+                gap: 15px;
                 max-width: 1200px;
                 border: 1px solid #f1f5f9;
             }

@@ -153,17 +153,17 @@ include 'includes/sidebar.php';
             </div>
         <?php endif; ?>
 
-        <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="page-header">
             <div>
                 <h1>Manage Awards & Press</h1>
-                <p class="text-muted" style="margin-bottom: 0;">Add, edit, and manage the awards displayed on the frontend accordion.</p>
+                <p class="text-muted" style="margin-top: 5px; margin-bottom: 0;">Add, edit, and manage the awards displayed on the frontend accordion.</p>
             </div>
         </div>
         
-        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px; margin-top: 30px;">
+        <div class="form-grid-1x2" style="margin-top: 30px;">
             
             <!-- Upload/Edit Form -->
-            <div class="card" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div class="card" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); min-width: 0;">
                 <h3 style="margin-bottom: 20px; font-size: 1.2rem;"><?php echo $edit_data ? 'Edit Award' : 'Add New Award'; ?></h3>
                 
                 <?php if ($edit_data): ?>
@@ -198,7 +198,7 @@ include 'includes/sidebar.php';
                             <div id="selected-icon-preview" style="width: 42px; height: 42px; border: 1px solid #ddd; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 20px; background: #f8f9fa;">
                                 <i class="<?php echo $current_icon; ?>"></i>
                             </div>
-                            <input type="text" name="icon" id="icon-input" value="<?php echo $current_icon; ?>" readonly style="flex-grow: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer;" onclick="document.getElementById('icon-picker-dropdown').style.display='block';">
+                            <input type="text" name="icon" id="icon-input" value="<?php echo $current_icon; ?>" readonly style="flex-grow: 1; min-width: 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer;" onclick="document.getElementById('icon-picker-dropdown').style.display='block';">
                             <button type="button" class="btn-secondary" style="padding: 10px 15px;" onclick="document.getElementById('icon-picker-dropdown').style.display='block';">Select</button>
                         </div>
                         
@@ -270,7 +270,7 @@ include 'includes/sidebar.php';
                         <input type="text" name="title" placeholder="e.g. Featured: Ranchi Express" required value="<?php echo $edit_data ? htmlspecialchars($edit_data['title']) : ''; ?>" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
                     </div>
 
-                    <div style="margin-bottom: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="form-grid" style="margin-bottom: 15px; gap: 10px;">
                         <div>
                             <label style="display: block; font-weight: 600; margin-bottom: 8px;">Day</label>
                             <input type="text" name="day_text" placeholder="e.g. Sunday" required value="<?php echo $edit_data ? htmlspecialchars($edit_data['day_text']) : ''; ?>" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
@@ -293,7 +293,7 @@ include 'includes/sidebar.php';
             </div>
             
             <!-- Items Table -->
-            <div class="card" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div class="card" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); min-width: 0;">
                 <h3 style="margin-bottom: 20px; font-size: 1.2rem;">Existing Awards</h3>
                 <div style="overflow-x: auto;">
                     <table style="width: 100%; border-collapse: collapse;">
@@ -326,8 +326,8 @@ include 'includes/sidebar.php';
                                 </td>
                                 <td style="padding: 12px;"><?php echo $item['display_order']; ?></td>
                                 <td style="padding: 12px; white-space: nowrap;">
-                                    <a href="?edit_id=<?php echo $item['id']; ?>" class="btn-primary" style="background: #3b82f6; color: white; padding: 5px 10px; font-size: 0.85rem; text-decoration:none; border-radius:3px; margin-right: 5px;"><i class="fa-solid fa-pen-to-square"></i></a>
-                                    <a href="?delete_id=<?php echo $item['id']; ?>" class="btn-secondary" style="background: #dc3545; color: white; padding: 5px 10px; font-size: 0.85rem; text-decoration:none; border-radius:3px;" onclick="return confirm('Delete this award?');"><i class="fa-solid fa-trash"></i></a>
+                                    <a href="?edit_id=<?php echo $item['id']; ?>" class="btn-primary" style="background: #3b82f6; color: white; padding: 6px 12px; font-size: 0.85rem; text-decoration:none; border-radius:3px; margin-right: 5px; display: inline-flex; align-items: center; justify-content: center;"><i class="fa-solid fa-pen-to-square"></i></a>
+                                    <a href="?delete_id=<?php echo $item['id']; ?>" class="btn-secondary" style="background: #dc3545; color: white; padding: 6px 12px; font-size: 0.85rem; text-decoration:none; border-radius:3px; display: inline-flex; align-items: center; justify-content: center;" onclick="return confirm('Delete this award?');"><i class="fa-solid fa-trash"></i></a>
                                 </td>
                             </tr>
                             <?php 
