@@ -297,19 +297,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             cursor: pointer;
             border-radius: 4px;
         }
-        
-        .forgot-password {
-            color: var(--primary-yellow);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
-        
-        .forgot-password:hover {
-            color: var(--primary-yellow-hover);
-            text-decoration: underline;
-        }
-        
+
         .btn-login {
             width: 100%;
             padding: 14px;
@@ -428,7 +416,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <input type="checkbox" name="remember" checked>
                         <span>Remember me</span>
                     </label>
-                    <a href="#" class="forgot-password">Forgot Password?</a>
                 </div>
                 
                 <button type="submit" class="btn-login">
