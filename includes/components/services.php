@@ -28,7 +28,7 @@
                 <h2 class="section-title" style="font-size: 3.5rem; color: var(--text-dark);">Explore <span class="accent-text">Our Services</span><br>Your Path to Success</h2>
                 <p style="color: var(--text-muted); max-width: 500px; font-size: 1.1rem; line-height: 1.6; margin-top: 15px;">Innovative design solutions crafted to bring your vision to life and create lasting impact.</p>
             </div>
-            <a href="#" class="btn hero-btn desktop-svc-view-all" style="background: var(--text-dark); padding: 8px 30px 8px 8px; border-radius: 40px; align-self: center;">
+            <a href="services.php" class="btn hero-btn desktop-svc-view-all" style="background: var(--text-dark); padding: 8px 30px 8px 8px; border-radius: 40px; align-self: center;">
                 <span class="btn-icon" style="background: var(--accent-color); color: var(--text-dark); width: 40px; height: 40px;"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></span>
                 <span class="btn-text" style="background: transparent; color: white; padding: 0 10px; font-weight: 500;">View All Services</span>
             </a>
@@ -36,67 +36,43 @@
         
         <div class="new-services-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 50px;">
             
-            <!-- Service 1: Interior Design -->
+            <?php
+            require_once 'admin/config/db.php';
+            $services = $conn->query("SELECT * FROM services WHERE status = 'Active' ORDER BY display_order ASC, id ASC LIMIT 4");
+            if ($services && $services->num_rows > 0):
+                $count = 1;
+                while($srv = $services->fetch_assoc()):
+                    $srv_img = (strpos($srv['cover_image'], 'http') === 0) ? $srv['cover_image'] : $srv['cover_image'];
+                    $num = str_pad($count, 2, '0', STR_PAD_LEFT);
+            ?>
+            <!-- Service Card -->
             <div class="hp-service-card">
                 <div class="hp-sc-image">
-                    <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Interior Design">
-                    <div class="hp-sc-icon"><i class="fa-solid fa-couch"></i></div>
+                    <img src="<?php echo htmlspecialchars($srv_img); ?>" alt="<?php echo htmlspecialchars($srv['name']); ?>">
+                    <div class="hp-sc-icon"><i class="<?php echo htmlspecialchars($srv['icon']); ?>"></i></div>
                 </div>
                 <div class="hp-sc-content">
-                    <div class="hp-sc-number">01</div>
-                    <h3>INTERIOR DESIGN</h3>
-                    <p>Beautiful interiors that reflect your personality and enhance everyday living.</p>
-                    <a href="service-details.php" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
+                    <div class="hp-sc-number"><?php echo $num; ?></div>
+                    <h3><?php echo htmlspecialchars(strtoupper($srv['name'])); ?></h3>
+                    <p><?php echo htmlspecialchars($srv['short_desc']); ?></p>
+                    <a href="service-details.php?id=<?php echo $srv['id']; ?>" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
             </div>
-
-            <!-- Service 2: Residential Design -->
-            <div class="hp-service-card">
-                <div class="hp-sc-image">
-                    <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Residential Design">
-                    <div class="hp-sc-icon"><i class="fa-solid fa-house-chimney"></i></div>
-                </div>
-                <div class="hp-sc-content">
-                    <div class="hp-sc-number">02</div>
-                    <h3>RESIDENTIAL DESIGN</h3>
-                    <p>Thoughtful designs for homes that combine comfort, style, and functionality.</p>
-                    <a href="service-details.php" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
+            <?php 
+                $count++;
+                endwhile;
+            else:
+            ?>
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: #f9f9f9; border-radius: 10px;">
+                <p style="color: #666;">No services available at the moment.</p>
             </div>
-
-            <!-- Service 3: Commercial Design -->
-            <div class="hp-service-card">
-                <div class="hp-sc-image">
-                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Commercial Design">
-                    <div class="hp-sc-icon"><i class="fa-solid fa-building"></i></div>
-                </div>
-                <div class="hp-sc-content">
-                    <div class="hp-sc-number">03</div>
-                    <h3>COMMERCIAL DESIGN</h3>
-                    <p>Innovative spaces for businesses that inspire productivity and leave a lasting impression.</p>
-                    <a href="service-details.php" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <!-- Service 4: Furniture Design -->
-            <div class="hp-service-card">
-                <div class="hp-sc-image">
-                    <img src="https://images.unsplash.com/photo-1505693314120-0d443867891c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Furniture Design">
-                    <div class="hp-sc-icon"><i class="fa-solid fa-chair"></i></div>
-                </div>
-                <div class="hp-sc-content">
-                    <div class="hp-sc-number">04</div>
-                    <h3>FURNITURE DESIGN</h3>
-                    <p>Custom furniture designs that blend aesthetics, comfort, and durability.</p>
-                    <a href="service-details.php" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
+            <?php endif; ?>
 
         </div>
 
         <!-- Mobile View All Services Button -->
         <div class="mobile-svc-view-all">
-            <a href="#" class="btn hero-btn" style="background: var(--text-dark); padding: 8px 30px 8px 8px; border-radius: 40px;">
+            <a href="services.php" class="btn hero-btn" style="background: var(--text-dark); padding: 8px 30px 8px 8px; border-radius: 40px;">
                 <span class="btn-icon" style="background: var(--accent-color); color: var(--text-dark); width: 40px; height: 40px;"><i class="fa-solid fa-arrow-right" style="transform: rotate(-45deg);"></i></span>
                 <span class="btn-text" style="background: transparent; color: white; padding: 0 10px; font-weight: 500;">View All Services</span>
             </a>
