@@ -57,7 +57,37 @@ $currentPage = 'projects';
 $success_msg = '';
 $error_msg = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if (isset($_GET['delete_id'])) {
+    $delete_id = (int)$_GET['delete_id'];
+    
+    // Try to delete the associated cover image file
+    $res = $conn->query("SELECT cover_image FROM projects WHERE id = $delete_id");
+    if ($res && $res->num_rows > 0) {
+        $row = $res->fetch_assoc();
+        if (!empty($row['cover_image'])) {
+            $file = '../' . ltrim($row['cover_image'], '/');
+            if (file_exists($file)) @unlink($file);
+        }
+    }
+    
+    $stmt = $conn->prepare("DELETE FROM projects WHERE id = ?");
+    if ($stmt) {
+        $stmt->bind_param("i", $delete_id);
+        if ($stmt->execute()) {
+            header("Location: projects.php?success=delete");
+            exit;
+        } else {
+            $error_msg = "Error deleting project.";
+        }
+        $stmt->close();
+    }
+}
+
+if (isset($_GET['success']) && $_GET['success'] == 'delete') {
+    $success_msg = "Project deleted successfully!";
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['ajax_action'])) {
     $title = $conn->real_escape_string($_POST['title'] ?? '');
     $location = $conn->real_escape_string($_POST['location'] ?? '');
     $category = $conn->real_escape_string($_POST['project_category'] ?? '');
@@ -165,7 +195,7 @@ include 'includes/sidebar.php';
                                 <td>
                                     <div class="action-btns">
                                         <a href="#" class="btn-icon" onclick="editProject(); return false;"><i class="fa-solid fa-pen"></i></a>
-                                        <a href="#" class="btn-icon delete"><i class="fa-solid fa-trash"></i></a>
+                                        <a href="?delete_id=<?php echo $proj['id']; ?>" class="btn-icon delete" onclick="return confirm('Are you sure you want to delete this project?');"><i class="fa-solid fa-trash"></i></a>
                                     </div>
                                 </td>
                             </tr>
@@ -190,8 +220,8 @@ include 'includes/sidebar.php';
                     </h3>
                     <p style="margin: 5px 0 0; color: #666; font-size: 13px;">Click directly on any text or image below to edit it.</p>
                 </div>
-                <div>
-                    <button class="btn-primary" style="background:#f1f5f9; color:var(--text-main); margin-right: 10px;" onclick="switchTab('manage')">Cancel</button>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn-primary" style="background:#f1f5f9; color:var(--text-main);" onclick="switchTab('manage')">Cancel</button>
                     <button class="btn-primary" onclick="saveLiveProject()" id="btn-save-project">
                         <i class="fa-solid fa-floppy-disk"></i> Save Project
                     </button>
@@ -621,7 +651,7 @@ include 'includes/sidebar.php';
 
                     <h4 style="margin-top: 0; margin-bottom: 15px; color: var(--text-dark); font-size: 16px;">SEO Settings</h4>
                     
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 20px; margin-bottom: 15px;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px;">Meta Title</label>
                             <input type="text" name="meta_title" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;" placeholder="e.g. Modern Luxury Villa Interior Design">
