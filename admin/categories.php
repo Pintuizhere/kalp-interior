@@ -70,7 +70,7 @@ $cat_result = $conn->query($cat_query);
             <h1>Categories</h1>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+        <div class="form-grid-1x2">
             
             <!-- ADD CATEGORY FORM -->
             <div class="table-wrapper" style="align-self: start; padding: 25px; overflow: visible;">

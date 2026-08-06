@@ -187,7 +187,7 @@ $stmt->close();
         
         <div class="page-header">
             <h1>Manage Testimonials</h1>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <button class="btn-primary" style="background-color: var(--accent-color); color: var(--text-dark);" onclick="switchTab('manage-stats')">
                     <i class="fa-solid fa-chart-bar"></i> Manage Stats
                 </button>
@@ -281,7 +281,7 @@ $stmt->close();
 
         <!-- ADD TESTIMONIAL VIEW WITH LIVE PREVIEW -->
         <div class="tab-content <?php echo isset($_GET['edit']) ? 'active' : ''; ?>" id="view-add-testimonial">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+            <div class="form-grid" style="gap: 30px;">
                 
                 <!-- Left: Form -->
                 <div class="form-panel">
@@ -414,7 +414,7 @@ $stmt->close();
                     #view-manage-stats [contenteditable="true"]:focus { outline: 2px solid var(--accent-color); background: rgba(255,255,255,0.5); }
                 </style>
                 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                     <h3 style="margin: 0; color: var(--text-dark);">Live Edit Testimonial Stats</h3>
                     <button class="btn-primary" onclick="saveTestiStatsLive(this)">Save Stats</button>
                 </div>

@@ -88,7 +88,7 @@ if (!empty($base_qs)) $base_qs .= '&';
         <!-- ALL REQUESTS LIST -->
         <div class="tab-content active" id="view-manage">
             <div class="table-wrapper">
-                <form method="GET" class="table-toolbar" style="display: flex; gap: 10px; align-items: center; margin-bottom: 20px;">
+                <form method="GET" class="table-toolbar" style="display: flex; gap: 10px; align-items: center; margin-bottom: 20px; flex-wrap: wrap;">
                     <div class="search-box" style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 5px; padding: 0 10px; background: #fff; flex-grow: 1; max-width: 300px;">
                         <input type="text" name="search" placeholder="Search requests..." value="<?php echo htmlspecialchars($search); ?>" style="border: none; padding: 8px 10px 8px 30px; outline: none; width: 100%;" onchange="this.form.submit()">
                     </div>
@@ -161,7 +161,7 @@ if (!empty($base_qs)) $base_qs .= '&';
                 </table>
                 
                 <?php if ($total_pages > 1): ?>
-                <div class="pagination" style="margin-top: 25px; display: flex; justify-content: center; gap: 8px;">
+                <div class="pagination" style="margin-top: 25px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
                     <?php if ($page > 1): ?>
                         <a href="?<?php echo $base_qs; ?>page=<?php echo $page-1; ?>" class="btn-primary" style="padding: 8px 12px; text-decoration: none; font-size: 13px; background: #fff; color: var(--text-main); border: 1px solid var(--border-color);">&laquo; Prev</a>
                     <?php endif; ?>

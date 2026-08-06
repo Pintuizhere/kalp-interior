@@ -328,6 +328,18 @@ function val($key, $data) {
 .item-7-val { font-size: 3rem; font-weight: 900; margin: 0; }
 .item-7-label { font-weight: bold; font-size: 1.1rem; margin-bottom: 5px; }
 .item-7-desc { font-size: 0.85rem; opacity: 0.8; }
+
+@media (max-width: 768px) {
+    .bento-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+    .item-1, .item-2, .item-3, .item-4, .item-5, .item-6, .item-7 {
+        grid-column: 1 !important;
+        grid-row: auto !important;
+        min-height: 200px;
+    }
+}
 </style>
 
 <div class="bento-editor-wrapper">

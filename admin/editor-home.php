@@ -374,4 +374,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<?php include '../includes/footer.php'; ?>
+<?php include 'includes/footer.php'; ?>

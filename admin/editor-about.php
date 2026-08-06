@@ -95,10 +95,22 @@ include 'includes/sidebar.php';
         justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid var(--border-color);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    /* Protect admin topbar from frontend CSS overrides */
+    header.topbar { padding: 0 30px !important; }
+    
+    @media (max-width: 768px) {
+        header.topbar { padding: 0 15px !important; }
+        .editor-topbar {
+            padding: 15px;
+        }
+        .editor-container {
+            padding: 15px;
+        }
     }
     
     .editor-container {
@@ -180,8 +192,9 @@ include 'includes/sidebar.php';
 </style>
 
 <div class="main-wrapper">
+    <?php include 'includes/topbar.php'; ?>
     
-    <div class="main-content" style="margin-left: 260px;">
+    <div class="main-content">
         
         <div class="editor-topbar">
             <div>

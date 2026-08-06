@@ -183,7 +183,7 @@ include 'includes/sidebar.php';
         <!-- ADD PROJECT VIEW (INLINE EDITOR) -->
         <div class="tab-content" id="view-add-project">
             
-            <div class="live-editor-toolbar" style="display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px;">
+            <div class="live-editor-toolbar">
                 <div>
                     <h3 id="live-editor-title" style="margin: 0; display: flex; align-items: center; gap: 10px; color: var(--text-dark);">
                         <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-color);"></i> Live Add Project
@@ -201,7 +201,7 @@ include 'includes/sidebar.php';
             <form id="live-add-form" action="projects.php" method="POST" enctype="multipart/form-data">
                 
                 <!-- Category and SEO Section -->
-                <div class="project-meta-section" style="background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                <div class="project-meta-section">
                     <h4 style="margin-top: 0; margin-bottom: 15px; color: var(--text-dark); font-size: 16px;">Project Category</h4>
                     
                     <style>

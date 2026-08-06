@@ -276,7 +276,7 @@ include 'includes/sidebar.php';
                 <div class="card-header">
                     <h3 class="card-title">Project Categories</h3>
                 </div>
-                <div class="donut-container" style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+                <div class="donut-container">
                     <div style="position: relative; width: 140px; height: 140px;">
                         <canvas id="statusChart"></canvas>
                         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">

@@ -131,7 +131,7 @@ include 'includes/sidebar.php';
             </form>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+        <div class="form-grid" style="gap: 30px;">
             
             <!-- Trusted Partners Logos -->
             <div class="table-wrapper">

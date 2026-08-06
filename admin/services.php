@@ -155,7 +155,7 @@ include 'includes/sidebar.php';
             </div>
         <?php endif; ?>
 
-        <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="page-header">
             <div>
                 <h1>Manage Services</h1>
                 <p class="text-muted" style="margin-bottom: 0;">Add new services, edit basic info, or open the Live Editor for detailed pages.</p>
@@ -190,7 +190,7 @@ include 'includes/sidebar.php';
                         ?>
                         <tr>
                             <td>
-                                <div class="user-details" style="display: flex; align-items: center; gap: 15px;">
+                                <div class="user-details">
                                     <img src="<?php echo strpos($item['cover_image'], 'http') === 0 ? $item['cover_image'] : '../' . $item['cover_image']; ?>" alt="Cover" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
                                     <div>
                                         <h4 style="font-size: 14px; margin-bottom: 4px;"><?php echo htmlspecialchars($item['name']); ?></h4>
@@ -207,7 +207,7 @@ include 'includes/sidebar.php';
                             </td>
                             <td><?php echo $item['display_order']; ?></td>
                             <td>
-                                <div class="action-btns" style="display: flex; gap: 8px;">
+                                <div class="action-btns">
                                     <a href="editor-service.php?id=<?php echo $item['id']; ?>" class="btn-icon" style="background: #EAB136; color: white;" title="Live Editor (Details Page)"><i class="fa-solid fa-desktop"></i></a>
                                     <a href="?edit_id=<?php echo $item['id']; ?>" class="btn-icon" style="background: #3b82f6; color: white;" title="Edit Info"><i class="fa-solid fa-pen"></i></a>
                                     <a href="?delete_id=<?php echo $item['id']; ?>" class="btn-icon delete" style="background: #dc3545; color: white;" onclick="return confirm('Delete this service and all its content?');" title="Delete"><i class="fa-solid fa-trash"></i></a>
@@ -238,7 +238,7 @@ include 'includes/sidebar.php';
                         <input type="hidden" name="edit_id" value="<?php echo $edit_data['id']; ?>">
                     <?php endif; ?>
                     
-                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-grid">
                         
                         <div class="form-group" style="grid-column: 1 / -1;">
                             <label style="display: block; font-weight: 600; margin-bottom: 8px;">Service Name</label>

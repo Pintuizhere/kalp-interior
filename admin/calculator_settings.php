@@ -149,7 +149,7 @@ include 'includes/header.php';
 include 'includes/sidebar.php';
 ?>
 <style>
-.tabs-header { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); }
+.tabs-header { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); }
 .tab-btn { background: none; border: none; padding: 10px 20px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -2px; }
 .tab-btn.active { color: var(--primary-color); border-bottom-color: var(--accent-color); }
 .tab-content { display: none; }
@@ -159,13 +159,23 @@ include 'includes/sidebar.php';
 .form-label { display: block; margin-bottom: 5px; font-weight: 500; font-size: 13px; }
 .form-control { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; }
 .btn-primary { background: var(--accent-color); color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
-.admin-table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; }
+.admin-table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; min-width: 600px; }
+.table-wrapper { overflow-x: auto; }
 .admin-table th, .admin-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
 .admin-table th { background: #f8fafc; font-weight: 600; font-size: 12px; text-transform: uppercase; color: var(--text-muted); }
 .action-btns { display: flex; gap: 10px; }
 .btn-icon { color: var(--text-muted); transition: 0.3s; }
 .btn-icon:hover { color: var(--accent-color); }
 .btn-icon.delete:hover { color: #ef4444; }
+
+/* Responsive Grids */
+.calc-grid-1x2 { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+.calc-grid-1x1-sm { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 10px; }
+.calc-grid-1x1-lg { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+
+@media (max-width: 768px) {
+    .calc-grid-1x2, .calc-grid-1x1-sm, .calc-grid-1x1-lg { grid-template-columns: 1fr; }
+}
 </style>
 
 <div class="main-wrapper">
@@ -195,7 +205,7 @@ include 'includes/sidebar.php';
 
         <!-- CATEGORIES TAB -->
         <div id="tab-categories" class="tab-content active">
-            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+            <div class="calc-grid-1x2">
                 <div class="form-panel" style="align-self: start;">
                     <h3 style="margin-top:0; margin-bottom:20px; font-size:16px;">Add/Edit Category</h3>
                     <form method="POST">
@@ -244,7 +254,7 @@ include 'includes/sidebar.php';
         
         <!-- TYPES TAB -->
         <div id="tab-types" class="tab-content">
-            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+            <div class="calc-grid-1x2">
                 <div class="form-panel" style="align-self: start;">
                     <h3 style="margin-top:0; margin-bottom:20px; font-size:16px;">Add/Edit Specific Type</h3>
                     <form method="POST">
@@ -305,7 +315,7 @@ include 'includes/sidebar.php';
 
         <!-- STYLES TAB -->
         <div id="tab-styles" class="tab-content">
-            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+            <div class="calc-grid-1x2">
                 <div class="form-panel" style="align-self: start;">
                     <h3 style="margin-top:0; margin-bottom:20px; font-size:16px;">Add/Edit Design Style</h3>
                     <form method="POST">
@@ -360,7 +370,7 @@ include 'includes/sidebar.php';
 
         <!-- PACKAGES TAB -->
         <div id="tab-packages" class="tab-content">
-            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+            <div class="calc-grid-1x2">
                 <div class="form-panel" style="align-self: start;">
                     <h3 style="margin-top:0; margin-bottom:20px; font-size:16px;">Add/Edit Package</h3>
                     <form method="POST">
@@ -415,7 +425,7 @@ include 'includes/sidebar.php';
 
         <!-- ADDONS TAB -->
         <div id="tab-addons" class="tab-content">
-            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+            <div class="calc-grid-1x2">
                 <div class="form-panel" style="align-self: start;">
                     <h3 style="margin-top:0; margin-bottom:20px; font-size:16px;">Add/Edit Add-on</h3>
                     <form method="POST">
@@ -464,7 +474,7 @@ include 'includes/sidebar.php';
                     <input type="hidden" name="action" value="save_breakdowns">
                     
                     <h4 style="margin-bottom:15px; padding-bottom:5px; border-bottom:1px solid #eee;">Residential Breakdown</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom:10px;">
+                    <div class="calc-grid-1x1-sm">
                         <div class="form-group">
                             <label class="form-label">Furniture (%)</label>
                             <input type="number" step="0.01" name="settings[bd_residential_furniture]" value="<?php echo $settings['bd_residential_furniture'] ?? ($settings['bd_furniture'] ?? 28.5); ?>" class="form-control breakdown-input res-input">
@@ -499,7 +509,7 @@ include 'includes/sidebar.php';
                     </div>
 
                     <h4 style="margin-bottom:15px; padding-bottom:5px; border-bottom:1px solid #eee;">Commercial Breakdown</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom:10px;">
+                    <div class="calc-grid-1x1-sm">
                         <div class="form-group">
                             <label class="form-label">Furniture (%)</label>
                             <input type="number" step="0.01" name="settings[bd_commercial_furniture]" value="<?php echo $settings['bd_commercial_furniture'] ?? ($settings['bd_furniture'] ?? 28.5); ?>" class="form-control breakdown-input com-input">
@@ -547,7 +557,7 @@ include 'includes/sidebar.php';
                 <p style="font-size:12px; color:#666; margin-bottom: 20px;">Edit the raw HTML of the PDF Quotation here. Be careful, as invalid HTML can break the PDF generation! The IDs in the HTML are used by the system to inject values dynamically.</p>
                 <form method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="save_breakdowns">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <div class="calc-grid-1x1-lg">
                         <div>
                             <div class="form-group" style="margin-bottom: 20px;">
                                 <label class="form-label" style="margin-bottom:10px;">Append Static PDF (Optional brochure/T&C)</label>
