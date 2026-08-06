@@ -6,7 +6,7 @@
     <div class="sidebar-menu-wrapper">
         <ul class="menu-list">
             <li>
-                <a href="index" class="dashboard-link <?php echo ($currentPage == 'dashboard') ? 'active' : ''; ?>">
+                <a href="index.php" class="dashboard-link <?php echo ($currentPage == 'dashboard') ? 'active' : ''; ?>">
                     <i class="fa-solid fa-house"></i> Dashboard
                 </a>
             </li>
