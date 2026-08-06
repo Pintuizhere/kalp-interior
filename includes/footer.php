@@ -57,7 +57,7 @@ if (!function_exists('gval')) {
                 <div class="footer-col">
                     <h4>Quick Links</h4>
                     <div class="footer-links">
-                        <a href="index">Home</a>
+                        <a href="index.php">Home</a>
                         <a href="about.php">About Us</a>
                         <a href="services.php">Services</a>
                         <a href="projects.php">Projects</a>

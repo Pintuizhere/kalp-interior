@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalp Interior Studio</title>
+    <title>Kalp Interior Studio - Turning Your Dream Home into Reality</title>
     <meta name="description" content="Experience Modern Luxury in Architecture with Kalp Interior Studio.">
     
     <!-- Favicon -->
