@@ -23,24 +23,99 @@ require_once 'admin/config/db.php';
                 <h2 class="section-title">Our Latest <span class="accent-text" style="font-family: var(--font-accent); font-style: italic; font-weight: 400;">News & Blogs</span></h2>
             </div>
             
-            <div class="blog-filters-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; flex-wrap: wrap; gap: 20px;">
-                <div class="filter-tags" style="display: flex; justify-content: flex-start; gap: 10px; flex-wrap: wrap;">
-                    <span class="filter-tag active" style="background-color: var(--accent-color); color: var(--text-dark); border: none; padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; display: inline-flex; align-items: center; cursor: pointer; transition: all 0.3s ease;"><i class="fa-solid fa-border-all" style="margin-right: 8px;"></i> All Posts</span>
-                    <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">Design Tips</span>
-                    <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">Trends</span>
-                    <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">Ideas & Inspiration</span>
-                    <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">News</span>
-                    <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">Projects</span>
-                    <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">Lifestyle</span>
-                </div>
+            <style>
+                .blog-filter-wrapper { position: relative; width: 100%; }
+                .mobile-scroll-indicator-blog { display: none; }
+                .blog-filter-container {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-start;
+                    gap: 10px;
+                }
+                .blog-filter-container .filter-tag {
+                    white-space: nowrap;
+                    display: inline-flex;
+                    align-items: center;
+                }
                 
-                <div class="blog-search-form" style="position: relative; max-width: 250px; width: 100%;">
-                    <input type="text" placeholder="Search blogs..." style="width: 100%; padding: 10px 45px 10px 20px; border-radius: 30px; border: 1px solid rgba(0,0,0,0.1); outline: none; font-size: 13px; background: white; color: var(--text-dark); font-family: inherit;">
-                    <button type="submit" style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%); background-color: #23352A; color: white; width: 32px; height: 32px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease;">
-                        <i class="fa-solid fa-magnifying-glass" style="font-size: 12px;"></i>
-                    </button>
+                @media (max-width: 768px) {
+                    .blog-filter-container {
+                        flex-wrap: nowrap !important;
+                        overflow-x: auto;
+                        padding-bottom: 15px; 
+                        margin-bottom: 10px; 
+                        -webkit-overflow-scrolling: touch;
+                        scrollbar-width: none; 
+                    }
+                    .blog-filter-container::-webkit-scrollbar {
+                        display: none;
+                    }
+                    .mobile-scroll-indicator-blog {
+                        display: flex;
+                        position: absolute;
+                        right: 0;
+                        top: 0;
+                        height: 42px; /* Approx height of tag */
+                        width: 60px;
+                        background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 80%);
+                        align-items: center;
+                        justify-content: flex-end;
+                        padding-right: 5px;
+                        color: var(--text-muted);
+                        pointer-events: none;
+                        z-index: 5;
+                        transition: opacity 0.3s ease;
+                    }
+                }
+                @keyframes pulse-horizontal-blog {
+                    0% { transform: translateX(0); opacity: 0.5; }
+                    50% { transform: translateX(4px); opacity: 1; }
+                    100% { transform: translateX(0); opacity: 0.5; }
+                }
+            </style>
+            <div class="blog-filters-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; flex-wrap: wrap; gap: 20px;">
+                <div class="blog-filter-wrapper">
+                    <div class="filter-tags blog-filter-container" id="blog-category-filters">
+                        <span class="filter-tag active" style="background-color: var(--accent-color); color: var(--text-dark); border: none; padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; display: inline-flex; align-items: center; cursor: pointer; transition: all 0.3s ease;"><i class="fa-solid fa-border-all" style="margin-right: 8px;"></i> All Posts</span>
+                        <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">Design Tips</span>
+                        <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">Trends</span>
+                        <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">Ideas & Inspiration</span>
+                        <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">News</span>
+                        <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">Projects</span>
+                        <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 10px 20px; border-radius: 25px; font-weight: 500; font-size: 14px; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;">Lifestyle</span>
+                    </div>
+                    <div class="mobile-scroll-indicator-blog" id="blog-scroll-indicator">
+                        <i class="fa-solid fa-chevron-right" style="animation: pulse-horizontal-blog 1.5s infinite;"></i>
+                    </div>
                 </div>
             </div>
+            
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const blogFilterContainer = document.getElementById('blog-category-filters');
+                    const blogIndicator = document.getElementById('blog-scroll-indicator');
+                    
+                    if(blogFilterContainer && blogIndicator) {
+                        const updateBlogIndicator = () => {
+                            const isAtEnd = blogFilterContainer.scrollLeft + blogFilterContainer.clientWidth >= blogFilterContainer.scrollWidth - 5;
+                            const hasOverflow = blogFilterContainer.scrollWidth > blogFilterContainer.clientWidth;
+                            
+                            if(isAtEnd || !hasOverflow) {
+                                blogIndicator.style.opacity = '0';
+                                blogIndicator.style.pointerEvents = 'none';
+                            } else {
+                                blogIndicator.style.opacity = '1';
+                                blogIndicator.style.pointerEvents = 'auto';
+                            }
+                        };
+                        
+                        blogFilterContainer.addEventListener('scroll', updateBlogIndicator);
+                        window.addEventListener('resize', updateBlogIndicator);
+                        
+                        setTimeout(updateBlogIndicator, 100);
+                    }
+                });
+            </script>
             
             <div class="blog-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-bottom: 50px;">
                 <?php

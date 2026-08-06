@@ -4,19 +4,50 @@ $pageTitle = 'Dashboard';
 $currentPage = 'dashboard';
 
 // Fetch statistics
-$total_projects = $conn->query("SELECT COUNT(*) FROM projects")->fetch_row()[0];
-// We might not have a generic leads table if it's empty, but let's check or just count estimate_requests
-$total_estimates = $conn->query("SELECT COUNT(*) FROM estimate_requests")->fetch_row()[0];
-// If leads table exists, get it, else use 0
+$total_projects = 0;
+$proj_res = $conn->query("SELECT COUNT(*) FROM projects");
+if($proj_res) { $total_projects = $proj_res->fetch_row()[0]; }
+
+$total_estimates = 0;
+$est_res = $conn->query("SELECT COUNT(*) FROM estimate_requests");
+if($est_res) { $total_estimates = $est_res->fetch_row()[0]; }
+
 $total_leads = 0;
 $leads_res = $conn->query("SELECT COUNT(*) FROM leads");
 if($leads_res) { $total_leads = $leads_res->fetch_row()[0]; }
+
 $total_blogs = 0;
 $blogs_res = $conn->query("SELECT COUNT(*) FROM blogs");
 if($blogs_res) { $total_blogs = $blogs_res->fetch_row()[0]; }
+
 $total_users = 0;
 $users_res = $conn->query("SELECT COUNT(*) FROM admin_users");
 if($users_res) { $total_users = $users_res->fetch_row()[0]; }
+
+function get_growth_percentage($conn, $table) {
+    $curr_res = $conn->query("SELECT COUNT(*) FROM $table WHERE MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())");
+    $curr_count = $curr_res ? $curr_res->fetch_row()[0] : 0;
+    
+    $prev_res = $conn->query("SELECT COUNT(*) FROM $table WHERE MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)");
+    $prev_count = $prev_res ? $prev_res->fetch_row()[0] : 0;
+    
+    if ($prev_count == 0) {
+        $growth = $curr_count > 0 ? 100 : 0;
+    } else {
+        $growth = round((($curr_count - $prev_count) / $prev_count) * 100, 1);
+    }
+    
+    return [
+        'is_up' => $growth >= 0,
+        'formatted' => abs($growth) . '%'
+    ];
+}
+
+$proj_growth = get_growth_percentage($conn, 'projects');
+$leads_growth = get_growth_percentage($conn, 'leads');
+$est_growth = get_growth_percentage($conn, 'estimate_requests');
+$blogs_growth = get_growth_percentage($conn, 'blogs');
+$users_growth = get_growth_percentage($conn, 'admin_users');
 
 // Fetch project categories for chart
 $category_counts = [];
@@ -45,12 +76,21 @@ foreach($category_counts as $cat_name => $count) {
 
 }
 
-// Fetch Overview Chart Data (Projects vs Leads over last 7 days)
+// Fetch Overview Chart Data (Projects vs Leads)
+$range = $_GET['range'] ?? '7d';
+if ($range == '30d') {
+    $num_days = 29;
+} else if ($range == 'this_month') {
+    $num_days = date('j') - 1; // days since 1st of this month
+} else {
+    $num_days = 6;
+}
+
 $overview_labels = [];
 $overview_projects_data = [];
 $overview_leads_data = [];
 
-for($i = 6; $i >= 0; $i--) {
+for($i = $num_days; $i >= 0; $i--) {
     $date = date('Y-m-d', strtotime("-$i days"));
     $label = date('d M', strtotime("-$i days"));
     $overview_labels[] = $label;
@@ -76,12 +116,25 @@ include 'includes/sidebar.php';
     
     <div class="main-content">
         
-        <div class="date-picker">
-            <button class="date-picker-btn">
+        <div class="date-picker" style="position: relative;">
+            <button class="date-picker-btn" onclick="document.getElementById('date-dropdown').classList.toggle('show')">
                 <i class="fa-regular fa-calendar"></i>
-                <?php echo date('M d, Y', strtotime('-6 days')) . ' - ' . date('M d, Y'); ?>
+                <?php 
+                if ($range == '30d') {
+                    echo date('M d, Y', strtotime('-29 days')) . ' - ' . date('M d, Y');
+                } else if ($range == 'this_month') {
+                    echo date('M 01, Y') . ' - ' . date('M d, Y');
+                } else {
+                    echo date('M d, Y', strtotime('-6 days')) . ' - ' . date('M d, Y');
+                }
+                ?>
                 <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i>
             </button>
+            <div id="date-dropdown" class="notif-dropdown" style="display: none; position: absolute; left: 0; top: 110%; background: #fff; width: 100%; min-width: 200px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 1000; border: 1px solid #eee; text-align: left;">
+                <a href="?range=7d" style="display: block; padding: 10px 15px; text-decoration: none; color: #333; border-bottom: 1px solid #eee;">Last 7 Days</a>
+                <a href="?range=30d" style="display: block; padding: 10px 15px; text-decoration: none; color: #333; border-bottom: 1px solid #eee;">Last 30 Days</a>
+                <a href="?range=this_month" style="display: block; padding: 10px 15px; text-decoration: none; color: #333;">This Month</a>
+            </div>
         </div>
 
         <!-- Dashboard Statistics -->
@@ -93,7 +146,10 @@ include 'includes/sidebar.php';
                 </div>
                 <div class="stat-info-right">
                     <div class="stat-value"><?php echo $total_projects; ?></div>
-                    <div class="stat-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> 12.5% <span style="color:var(--text-muted); font-weight:400;">from last month</span></div>
+                    <div class="stat-trend <?php echo $proj_growth['is_up'] ? 'trend-up' : 'trend-down'; ?>">
+                        <i class="fa-solid fa-arrow-trend-<?php echo $proj_growth['is_up'] ? 'up' : 'down'; ?>"></i> 
+                        <?php echo $proj_growth['formatted']; ?> <span style="color:var(--text-muted); font-weight:400;">from last month</span>
+                    </div>
                 </div>
             </div>
             
@@ -104,7 +160,10 @@ include 'includes/sidebar.php';
                 </div>
                 <div class="stat-info-right">
                     <div class="stat-value"><?php echo $total_leads; ?></div>
-                    <div class="stat-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> 18.7% <span style="color:var(--text-muted); font-weight:400;">from last month</span></div>
+                    <div class="stat-trend <?php echo $leads_growth['is_up'] ? 'trend-up' : 'trend-down'; ?>">
+                        <i class="fa-solid fa-arrow-trend-<?php echo $leads_growth['is_up'] ? 'up' : 'down'; ?>"></i> 
+                        <?php echo $leads_growth['formatted']; ?> <span style="color:var(--text-muted); font-weight:400;">from last month</span>
+                    </div>
                 </div>
             </div>
             
@@ -115,7 +174,10 @@ include 'includes/sidebar.php';
                 </div>
                 <div class="stat-info-right">
                     <div class="stat-value"><?php echo $total_estimates; ?></div>
-                    <div class="stat-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> 8.3% <span style="color:var(--text-muted); font-weight:400;">from last month</span></div>
+                    <div class="stat-trend <?php echo $est_growth['is_up'] ? 'trend-up' : 'trend-down'; ?>">
+                        <i class="fa-solid fa-arrow-trend-<?php echo $est_growth['is_up'] ? 'up' : 'down'; ?>"></i> 
+                        <?php echo $est_growth['formatted']; ?> <span style="color:var(--text-muted); font-weight:400;">from last month</span>
+                    </div>
                 </div>
             </div>
             
@@ -126,7 +188,10 @@ include 'includes/sidebar.php';
                 </div>
                 <div class="stat-info-right">
                     <div class="stat-value"><?php echo $total_blogs; ?></div>
-                    <div class="stat-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> 5.2% <span style="color:var(--text-muted); font-weight:400;">from last month</span></div>
+                    <div class="stat-trend <?php echo $blogs_growth['is_up'] ? 'trend-up' : 'trend-down'; ?>">
+                        <i class="fa-solid fa-arrow-trend-<?php echo $blogs_growth['is_up'] ? 'up' : 'down'; ?>"></i> 
+                        <?php echo $blogs_growth['formatted']; ?> <span style="color:var(--text-muted); font-weight:400;">from last month</span>
+                    </div>
                 </div>
             </div>
 
@@ -137,7 +202,10 @@ include 'includes/sidebar.php';
                 </div>
                 <div class="stat-info-right">
                     <div class="stat-value"><?php echo $total_users; ?></div>
-                    <div class="stat-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> 3.1% <span style="color:var(--text-muted); font-weight:400;">from last month</span></div>
+                    <div class="stat-trend <?php echo $users_growth['is_up'] ? 'trend-up' : 'trend-down'; ?>">
+                        <i class="fa-solid fa-arrow-trend-<?php echo $users_growth['is_up'] ? 'up' : 'down'; ?>"></i> 
+                        <?php echo $users_growth['formatted']; ?> <span style="color:var(--text-muted); font-weight:400;">from last month</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -255,11 +323,14 @@ include 'includes/sidebar.php';
                     ?>
                     <div class="list-item">
                         <div class="project-item">
-                            <?php if(!empty($proj['cover_image'])): ?>
-                                <img src="../<?php echo htmlspecialchars($proj['cover_image']); ?>" class="project-thumb" alt="Project">
-                            <?php else: ?>
-                                <div class="project-thumb" style="background:#e2e8f0; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-image" style="color:#94a3b8;"></i></div>
-                            <?php endif; ?>
+                            <?php 
+                            if(!empty($proj['cover_image'])) {
+                                $img_src = strpos($proj['cover_image'], 'http') === 0 ? $proj['cover_image'] : '../' . $proj['cover_image'];
+                            } else {
+                                $img_src = 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=100&h=80&fit=crop';
+                            }
+                            ?>
+                            <img src="<?php echo htmlspecialchars($img_src); ?>" class="project-thumb" alt="Project" style="object-fit: cover;">
                             <div class="user-details">
                                 <h4><?php echo htmlspecialchars($proj['title']); ?></h4>
                                 <p><?php echo htmlspecialchars($proj['location'] ?? 'Location N/A'); ?></p>

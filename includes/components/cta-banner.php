@@ -5,7 +5,7 @@
     
     <div class="container" style="position: relative; z-index: 2; max-width: 900px; margin: 0 auto;">
         <h2 style="font-family: var(--font-headline); font-size: 4.5rem; line-height: 1.1; font-weight: 800; text-transform: uppercase; margin-bottom: 25px; position: relative; z-index: 2;">
-            <span style="display: inline-block; font-family: var(--font-accent); color: var(--accent-color); text-transform: lowercase; font-weight: 700; font-size: 6rem; z-index: 3; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); transform: rotate(-5deg); margin-bottom: -25px;">beautiful spaces</span><br>
+            <span class="beautiful-spaces-text" style="display: inline-block; font-family: var(--font-accent); color: var(--accent-color); text-transform: lowercase; font-weight: 700; z-index: 3; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); transform: rotate(-5deg); margin-bottom: -25px;">beautiful spaces</span><br>
             <span style="position: relative; z-index: 1;">HAPPEN.<br>WE MAKE THEM YOURS.</span>
         </h2>
         
@@ -29,8 +29,16 @@
 </section>
 
 <style>
+    .beautiful-spaces-text {
+        font-size: 6rem;
+    }
+    
     /* Mobile Responsiveness for CTA Banner */
     @media (max-width: 768px) {
+        .beautiful-spaces-text {
+            font-size: 4rem !important;
+            margin-bottom: -15px !important;
+        }
         .cta-banner {
             padding: 100px 20px !important;
             background-attachment: scroll !important; /* Fix for iOS parallax bug */

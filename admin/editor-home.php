@@ -196,10 +196,10 @@ $avatar_4 = !empty($home_content['hero_avatar_4']) ? htmlspecialchars($home_cont
                             
                             <div class="new-hero-actions">
                                 <a href="#" class="btn" style="background-color: var(--accent-color); color: var(--text-dark); border: none; font-weight: 600; padding: 15px 30px;">
-                                    <span contenteditable="true" id="edit-btn1-text"><?php echo $btn1_text; ?></span> <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
+                                    <span contenteditable="true" id="edit-btn2-text"><?php echo $btn2_text; ?></span> <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
                                 </a>
                                 <a href="#" class="view-projects-link">
-                                    <span contenteditable="true" id="edit-btn2-text"><?php echo $btn2_text; ?></span> <i class="fa-solid fa-arrow-right"></i>
+                                    <span contenteditable="true" id="edit-btn1-text"><?php echo $btn1_text; ?></span> <i class="fa-solid fa-arrow-right"></i>
                                 </a>
                             </div>
 

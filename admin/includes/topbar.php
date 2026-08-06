@@ -31,11 +31,7 @@ $notif_count = count($notifs);
     </div>
     
     <div class="topbar-right">
-        <div class="search-box">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Search here...">
-            <i class="fa-solid fa-command search-icon-right"></i>
-        </div>
+
 
         <div class="notification-bell" style="position: relative; cursor: pointer;" onclick="document.getElementById('notif-dropdown').classList.toggle('show')">
             <i class="fa-regular fa-bell"></i>

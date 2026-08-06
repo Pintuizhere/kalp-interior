@@ -11,6 +11,8 @@ $comp_projects = $conn->query($comp_proj_query);
 <style>
     /* Projects Section Mobile Styles */
     .mobile-view-all { display: none; }
+    .projects-filter-wrapper { position: relative; }
+    .mobile-scroll-indicator { display: none; }
     @media (max-width: 992px) {
         .projects-grid { grid-template-columns: repeat(2, 1fr) !important; }
         .portfolio-features { flex-wrap: wrap; justify-content: center !important; gap: 30px; }
@@ -24,6 +26,7 @@ $comp_projects = $conn->query($comp_proj_query);
         .mobile-view-all { display: flex; justify-content: center; margin-top: 40px; }
         
         .filter-tags { 
+            display: flex;
             flex-wrap: nowrap !important; 
             overflow-x: auto; 
             padding-bottom: 15px; 
@@ -34,11 +37,33 @@ $comp_projects = $conn->query($comp_proj_query);
         .filter-tags::-webkit-scrollbar { display: none; /* Chrome/Safari */ }
         .filter-tag { white-space: nowrap; }
         
+        .mobile-scroll-indicator {
+            display: flex;
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 48px; /* Approx height of tag */
+            width: 60px;
+            background: linear-gradient(to right, rgba(246,246,246,0) 0%, rgba(246,246,246,1) 70%);
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 5px;
+            color: var(--text-muted);
+            pointer-events: none;
+            z-index: 5;
+            transition: opacity 0.3s ease;
+        }
+        
         .projects-grid { grid-template-columns: 1fr !important; gap: 20px !important; margin-top: 30px !important; }
         
         .portfolio-features { flex-direction: column !important; padding: 30px 20px !important; gap: 25px !important; align-items: flex-start !important; }
         .portfolio-features > div[style*="width: 1px"] { display: none !important; }
         .pf-item { width: 100%; justify-content: flex-start; }
+    }
+    @keyframes pulse-horizontal-home {
+        0% { transform: translateX(0); opacity: 0.5; }
+        50% { transform: translateX(4px); opacity: 1; }
+        100% { transform: translateX(0); opacity: 0.5; }
     }
 </style>
 <section class="projects-section" style="background-color: #F6F6F6; padding: 100px 0;">
@@ -55,20 +80,52 @@ $comp_projects = $conn->query($comp_proj_query);
             </a>
         </div>
         
-        <div class="filter-tags" style="justify-content: flex-start; gap: 15px; margin-bottom: 50px;">
-            <span class="filter-tag active" style="background-color: #fcebdc; color: var(--text-dark); border: none; padding: 12px 25px;"><i class="fa-solid fa-border-all" style="margin-right: 8px;"></i> All</span>
-            <?php if(isset($comp_categories) && $comp_categories->num_rows > 0): ?>
-                <?php 
-                $comp_categories->data_seek(0);
-                while($cat = $comp_categories->fetch_assoc()): 
-                ?>
-                    <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px;">
-                        <?php if(!empty($cat['icon'])): ?><i class="<?php echo htmlspecialchars($cat['icon']); ?>" style="margin-right: 8px;"></i><?php endif; ?>
-                        <?php echo htmlspecialchars($cat['name']); ?>
-                    </span>
-                <?php endwhile; ?>
-            <?php endif; ?>
+        <div class="projects-filter-wrapper">
+            <div class="filter-tags" id="home-category-filters" style="display: flex; justify-content: flex-start; gap: 15px; margin-bottom: 50px;">
+                <span class="filter-tag active" style="background-color: #fcebdc; color: var(--text-dark); border: none; padding: 12px 25px;"><i class="fa-solid fa-border-all" style="margin-right: 8px;"></i> All</span>
+                <?php if(isset($comp_categories) && $comp_categories->num_rows > 0): ?>
+                    <?php 
+                    $comp_categories->data_seek(0);
+                    while($cat = $comp_categories->fetch_assoc()): 
+                    ?>
+                        <span class="filter-tag" style="background-color: white; border: 1px solid rgba(0,0,0,0.05); padding: 12px 25px; border-radius: 25px;">
+                            <?php if(!empty($cat['icon'])): ?><i class="<?php echo htmlspecialchars($cat['icon']); ?>" style="margin-right: 8px;"></i><?php endif; ?>
+                            <?php echo htmlspecialchars($cat['name']); ?>
+                        </span>
+                    <?php endwhile; ?>
+                <?php endif; ?>
+            </div>
+            <div class="mobile-scroll-indicator" id="home-scroll-indicator">
+                <i class="fa-solid fa-chevron-right" style="animation: pulse-horizontal-home 1.5s infinite;"></i>
+            </div>
         </div>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const homeFilterContainer = document.getElementById('home-category-filters');
+                const homeIndicator = document.getElementById('home-scroll-indicator');
+                
+                if(homeFilterContainer && homeIndicator) {
+                    const updateHomeIndicator = () => {
+                        const isAtEnd = homeFilterContainer.scrollLeft + homeFilterContainer.clientWidth >= homeFilterContainer.scrollWidth - 5;
+                        const hasOverflow = homeFilterContainer.scrollWidth > homeFilterContainer.clientWidth;
+                        
+                        if(isAtEnd || !hasOverflow) {
+                            homeIndicator.style.opacity = '0';
+                            homeIndicator.style.pointerEvents = 'none';
+                        } else {
+                            homeIndicator.style.opacity = '1';
+                            homeIndicator.style.pointerEvents = 'auto';
+                        }
+                    };
+                    
+                    homeFilterContainer.addEventListener('scroll', updateHomeIndicator);
+                    window.addEventListener('resize', updateHomeIndicator);
+                    
+                    setTimeout(updateHomeIndicator, 100);
+                }
+            });
+        </script>
         
         <div class="projects-grid" style="grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 50px;">
             <?php if(isset($comp_projects) && $comp_projects->num_rows > 0): ?>

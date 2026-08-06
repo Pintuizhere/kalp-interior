@@ -50,11 +50,11 @@ $avatar_4 = !empty($home_content['hero_avatar_4']) ? htmlspecialchars($home_cont
                 <p class="new-hero-desc"><?php echo isset($home_content['hero_desc']) ? htmlspecialchars($home_content['hero_desc']) : 'Kalp Interiors specializes in modern, luxurious, and personalized interior experiences.'; ?></p>
                 
                 <div class="new-hero-actions">
-                    <a href="<?php echo $btn1_link; ?>" class="btn" style="background-color: var(--accent-color); color: var(--text-dark); border: none; font-weight: 600; padding: 15px 30px;">
-                        <?php echo $btn1_text; ?> <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
+                    <a href="<?php echo $btn2_link; ?>" class="btn hero-yellow-btn">
+                        <?php echo $btn2_text; ?> <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
                     </a>
-                    <a href="<?php echo $btn2_link; ?>" class="view-projects-link">
-                        <?php echo $btn2_text; ?> <i class="fa-solid fa-arrow-right"></i>
+                    <a href="<?php echo $btn1_link; ?>" class="view-projects-link">
+                        <?php echo $btn1_text; ?> <i class="fa-solid fa-arrow-right"></i>
                     </a>
                 </div>
 
@@ -85,6 +85,17 @@ $avatar_4 = !empty($home_content['hero_avatar_4']) ? htmlspecialchars($home_cont
     </section>
 
     <style>
+    .hero-yellow-btn {
+        background-color: var(--accent-color);
+        color: var(--text-dark);
+        border: none;
+        font-weight: 600;
+        padding: 15px 30px;
+        transition: color 0.3s ease;
+    }
+    .hero-yellow-btn:hover {
+        color: #ffffff !important;
+    }
     .hero-line-1 {
         display: flex;
         flex-wrap: wrap;

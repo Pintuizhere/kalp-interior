@@ -301,9 +301,9 @@ if ($categories_result && $categories_result->num_rows > 0) {
                         <div class="sidebar-promo" style="background-image: url('assets/images/sidebar_promo_bg.png');">
                             <div class="promo-overlay"></div>
                             <div class="promo-content">
-                                <h4>— Get A Quote</h4>
+                                <h4>— Get Estimate</h4>
                                 <h3>Celebrate <span class="accent-text" style="font-family: var(--font-accent); font-style: italic; font-weight: 400; color: var(--accent-color);">Your Dream<br>Project</span> with Our Expertise</h3>
-                                <a href="contact.php" class="btn-primary" style="padding: 10px 25px; font-size: 13px;">Get A Quote</a>
+                                <a href="contact.php" class="btn-primary" style="padding: 10px 25px; font-size: 13px;">Get Estimate</a>
                             </div>
                         </div>
 
@@ -326,51 +326,46 @@ if ($categories_result && $categories_result->num_rows > 0) {
             </div>
             
             <div class="blog-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
-                <!-- Reused Blog Cards -->
-                <div class="blog-card">
-                    <div class="blog-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Small Kitchen">
-                        <div class="blog-tags">
-                            <span>03 March 2024</span>
-                            <span>Kitchen</span>
-                        </div>
-                    </div>
-                    <div class="blog-content">
-                        <h3>Small Kitchen Design Tips: Making the Most of Lim...</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="#" class="read-more">Read More</a>
-                    </div>
-                </div>
+                <?php
+                $current_id = isset($post['id']) ? (int)$post['id'] : 0;
+                $related_query = "SELECT * FROM blogs WHERE status = 'Published' AND id != $current_id ORDER BY created_at DESC LIMIT 3";
+                $related_result = $conn->query($related_query);
 
+                if ($related_result && $related_result->num_rows > 0):
+                    while($rel_blog = $related_result->fetch_assoc()):
+                        $rel_date = date("d F Y", strtotime($rel_blog['created_at']));
+                        $rel_image = !empty($rel_blog['image']) ? 'uploads/blogs/' . htmlspecialchars($rel_blog['image']) : 'assets/images/placeholder.jpg';
+                        
+                        $rel_tags = !empty($rel_blog['tags']) ? explode(',', $rel_blog['tags']) : ['Blog'];
+                        $rel_primary_tag = trim($rel_tags[0]);
+                        
+                        $rel_desc = !empty($rel_blog['excerpt']) ? $rel_blog['excerpt'] : substr(strip_tags($rel_blog['content']), 0, 80) . '...';
+                        $rel_title = strlen($rel_blog['title']) > 50 ? substr($rel_blog['title'], 0, 47) . '...' : $rel_blog['title'];
+                ?>
                 <div class="blog-card">
                     <div class="blog-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Minimalist Bedroom">
+                        <a href="blog-details.php?id=<?php echo $rel_blog['id']; ?>" style="display: block; height: 100%;">
+                            <img src="<?php echo $rel_image; ?>" alt="<?php echo htmlspecialchars($rel_blog['title']); ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                        </a>
                         <div class="blog-tags">
-                            <span>02 March 2024</span>
-                            <span>Bedroom</span>
+                            <span><?php echo $rel_date; ?></span>
+                            <span><?php echo htmlspecialchars($rel_primary_tag); ?></span>
                         </div>
                     </div>
                     <div class="blog-content">
-                        <h3>Minimalist Bedroom Design: Streamlined Simplicity f...</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="#" class="read-more">Read More</a>
+                        <h3><a href="blog-details.php?id=<?php echo $rel_blog['id']; ?>" style="color: inherit; text-decoration: none;"><?php echo htmlspecialchars($rel_title); ?></a></h3>
+                        <p><?php echo htmlspecialchars($rel_desc); ?></p>
+                        <a href="blog-details.php?id=<?php echo $rel_blog['id']; ?>" class="read-more">Read More</a>
                     </div>
                 </div>
-
-                <div class="blog-card">
-                    <div class="blog-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Living Room Light">
-                        <div class="blog-tags">
-                            <span>01 March 2024</span>
-                            <span>Living Room</span>
-                        </div>
+                <?php 
+                    endwhile; 
+                else: 
+                ?>
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 30px;">
+                        <p style="color: var(--text-muted);">No related blogs found.</p>
                     </div>
-                    <div class="blog-content">
-                        <h3>Maximizing Natural Light: Brightening Your Living R...</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <a href="#" class="read-more">Read More</a>
-                    </div>
-                </div>
+                <?php endif; ?>
             </div>
         </div>
     </section>
