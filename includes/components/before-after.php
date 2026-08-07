@@ -1,5 +1,5 @@
     <!-- Before & After Section -->
-    <section class="before-after-section" style="background-color: var(--primary-color); padding: 100px 0; color: white;">
+    <section class="before-after-section">
         <div class="container">
             
             <!-- Header -->
@@ -37,7 +37,7 @@
                                     </div>
                                     
                                     <!-- Slider Input -->
-                                    <input type="range" min="0" max="100" value="50" class="ba-slider-input" id="ba-slider_<?php echo $pair['id']; ?>" style="touch-action: none;">
+                                    <input type="range" min="0" max="100" value="50" class="ba-slider-input" id="ba-slider_<?php echo $pair['id']; ?>" style="touch-action: pan-y;">
                                     
                                     <!-- Slider Handle -->
                                     <div class="ba-slider-handle" id="ba-slider-handle_<?php echo $pair['id']; ?>">
@@ -59,7 +59,7 @@
                                     <div class="ba-image ba-image-before" style="background-image: url('assets/images/after.webp');">
                                         <span class="ba-label">After</span>
                                     </div>
-                                    <input type="range" min="0" max="100" value="50" class="ba-slider-input" style="touch-action: none;">
+                                    <input type="range" min="0" max="100" value="50" class="ba-slider-input" style="touch-action: pan-y;">
                                     <div class="ba-slider-handle">
                                         <i class="fa-solid fa-angle-left"></i>
                                         <i class="fa-solid fa-angle-right"></i>

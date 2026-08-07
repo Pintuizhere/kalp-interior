@@ -68,6 +68,11 @@
                 </a>
             </li>
             <li>
+                <a href="manage_news_offers.php" class="<?php echo ($currentPage == 'news_offers') ? 'active' : ''; ?>">
+                    <i class="fa-solid fa-bullhorn"></i> News & Offers
+                </a>
+            </li>
+            <li>
                 <a href="categories.php" class="<?php echo ($currentPage == 'categories') ? 'active' : ''; ?>">
                     <i class="fa-regular fa-folder-open"></i> Categories
                 </a>

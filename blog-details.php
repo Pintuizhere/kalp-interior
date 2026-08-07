@@ -1,14 +1,14 @@
 <?php 
 require_once 'admin/config/db.php';
 
-if (!isset($_GET['id']) || empty($_GET['id'])) {
+if (!isset($_GET['slug']) || empty($_GET['slug'])) {
     header("Location: blog.php");
     exit;
 }
 
-$id = (int)$_GET['id'];
-$stmt = $conn->prepare("SELECT * FROM blogs WHERE id = ? AND status = 'Published'");
-$stmt->bind_param("i", $id);
+$slug = $_GET['slug'];
+$stmt = $conn->prepare("SELECT * FROM blogs WHERE slug = ? AND status = 'Published'");
+$stmt->bind_param("s", $slug);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -51,6 +51,9 @@ $post['content'] = preg_replace_callback(
     },
     $post['content']
 );
+
+// Fix relative image paths from the editor
+$post['content'] = str_replace('../uploads/', 'uploads/', $post['content']);
 
 // Fetch all categories for the sidebar
 $categories_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
@@ -344,7 +347,7 @@ if ($categories_result && $categories_result->num_rows > 0) {
                 ?>
                 <div class="blog-card">
                     <div class="blog-img-wrapper">
-                        <a href="blog-details.php?id=<?php echo $rel_blog['id']; ?>" style="display: block; height: 100%;">
+                        <a href="blog-details.php?slug=<?php echo urlencode($rel_blog['slug']); ?>" style="display: block; height: 100%;">
                             <img src="<?php echo $rel_image; ?>" alt="<?php echo htmlspecialchars($rel_blog['title']); ?>" style="width: 100%; height: 100%; object-fit: cover;">
                         </a>
                         <div class="blog-tags">
@@ -353,9 +356,9 @@ if ($categories_result && $categories_result->num_rows > 0) {
                         </div>
                     </div>
                     <div class="blog-content">
-                        <h3><a href="blog-details.php?id=<?php echo $rel_blog['id']; ?>" style="color: inherit; text-decoration: none;"><?php echo htmlspecialchars($rel_title); ?></a></h3>
+                        <h3><a href="blog-details.php?slug=<?php echo urlencode($rel_blog['slug']); ?>" style="color: inherit; text-decoration: none;"><?php echo htmlspecialchars($rel_title); ?></a></h3>
                         <p><?php echo htmlspecialchars($rel_desc); ?></p>
-                        <a href="blog-details.php?id=<?php echo $rel_blog['id']; ?>" class="read-more">Read More</a>
+                        <a href="blog-details.php?slug=<?php echo urlencode($rel_blog['slug']); ?>" class="read-more">Read More</a>
                     </div>
                 </div>
                 <?php 

@@ -6091,6 +6091,12 @@ textarea.form-control {
 /* =========================================
    Before & After Responsiveness
 ========================================= */
+.before-after-section {
+    background-color: var(--primary-color);
+    padding: var(--section-padding);
+    color: white;
+}
+
 .ba-top-header {
     display: flex;
     justify-content: space-between;
@@ -6169,6 +6175,20 @@ textarea.form-control {
     .ba-slider-container {
         border-radius: 15px;
         /* Slightly smaller radius on mobile */
+    }
+
+    .before-after-section {
+        padding: 50px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .ba-section-title {
+        font-size: clamp(18px, 6vw, 24px);
+    }
+    
+    .ba-section-title .accent-text {
+        font-size: 1.6em; /* Scale the cursive text relative to the new clamped size */
     }
 }
 

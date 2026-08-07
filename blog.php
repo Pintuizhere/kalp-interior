@@ -152,7 +152,7 @@ require_once 'admin/config/db.php';
                     <div class="blog-content">
                         <h3><?php echo htmlspecialchars(substr($row['title'], 0, 50)); ?><?php echo strlen($row['title']) > 50 ? '...' : ''; ?></h3>
                         <p><?php echo htmlspecialchars($excerpt); ?></p>
-                        <a href="blog-details.php?id=<?php echo $row['id']; ?>" class="read-more">Read More</a>
+                        <a href="blog-details.php?slug=<?php echo urlencode($row['slug']); ?>" class="read-more">Read More</a>
                     </div>
                 </div>
                 <?php 

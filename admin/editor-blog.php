@@ -51,6 +51,7 @@ $default_template = '
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_post'])) {
     $blog_id = isset($_POST['blog_id']) && !empty($_POST['blog_id']) ? (int)$_POST['blog_id'] : null;
     $title = $_POST['title'];
+    $slug = $_POST['slug'] ?? '';
     $content = $_POST['content'];
     $status = $_POST['status'];
     $category = $_POST['category'] ?? '';
@@ -64,9 +65,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_post'])) {
 
     if (empty($title)) {
         $error_msg = "Post title is required.";
+    } elseif (empty($slug)) {
+        $error_msg = "Slug is required.";
     } elseif (empty($category)) {
         $error_msg = "Please select a category.";
     } else {
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $slug)));
         // Handle Image Upload
         if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
             $upload_dir = '../uploads/blogs/';
@@ -88,11 +92,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_post'])) {
             if ($blog_id) {
                 // Update
                 if ($image_name !== '') {
-                    $stmt = $conn->prepare("UPDATE blogs SET title=?, category=?, image=?, content=?, status=?, meta_title=?, meta_description=?, meta_keywords=?, tags=? WHERE id=?");
-                    $stmt->bind_param("sssssssssi", $title, $category, $image_name, $content, $status, $meta_title, $meta_description, $meta_keywords, $tags, $blog_id);
+                    $stmt = $conn->prepare("UPDATE blogs SET title=?, slug=?, category=?, image=?, content=?, status=?, meta_title=?, meta_description=?, meta_keywords=?, tags=? WHERE id=?");
+                    $stmt->bind_param("ssssssssssi", $title, $slug, $category, $image_name, $content, $status, $meta_title, $meta_description, $meta_keywords, $tags, $blog_id);
                 } else {
-                    $stmt = $conn->prepare("UPDATE blogs SET title=?, category=?, content=?, status=?, meta_title=?, meta_description=?, meta_keywords=?, tags=? WHERE id=?");
-                    $stmt->bind_param("ssssssssi", $title, $category, $content, $status, $meta_title, $meta_description, $meta_keywords, $tags, $blog_id);
+                    $stmt = $conn->prepare("UPDATE blogs SET title=?, slug=?, category=?, content=?, status=?, meta_title=?, meta_description=?, meta_keywords=?, tags=? WHERE id=?");
+                    $stmt->bind_param("sssssssssi", $title, $slug, $category, $content, $status, $meta_title, $meta_description, $meta_keywords, $tags, $blog_id);
                 }
                 if ($stmt->execute()) {
                     header("Location: editor-blog.php?edit=" . $blog_id . "&success=update");
@@ -103,8 +107,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_post'])) {
                 $stmt->close();
             } else {
                 // Insert
-                $stmt = $conn->prepare("INSERT INTO blogs (title, author, category, image, content, status, meta_title, meta_description, meta_keywords, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param("ssssssssss", $title, $author, $category, $image_name, $content, $status, $meta_title, $meta_description, $meta_keywords, $tags);
+                $stmt = $conn->prepare("INSERT INTO blogs (title, slug, author, category, image, content, status, meta_title, meta_description, meta_keywords, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("sssssssssss", $title, $slug, $author, $category, $image_name, $content, $status, $meta_title, $meta_description, $meta_keywords, $tags);
                 if ($stmt->execute()) {
                     header("Location: blog.php?success=insert");
                     exit;
@@ -129,112 +133,73 @@ $categories_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
 
 ?>
 
-<!-- TinyMCE CDN (Version 5 - No API Key Required) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.10.7/tinymce.min.js" referrerpolicy="origin"></script>
+<!-- jQuery (required for Summernote) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Summernote Lite CDN -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
 <script>
-  tinymce.init({
-    selector: '#content',
-    height: 500,
-    menubar: false,
-    branding: false,
-    plugins: [
-      'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-      'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-      'insertdatetime', 'media', 'table', 'help', 'wordcount'
-    ],
-    toolbar: 'undo redo | formatselect styleselect | ' +
-    'bold italic backcolor link unlink | alignleft aligncenter ' +
-    'alignright alignjustify | bullist numlist outdent indent | ' +
-    'image | removeformat | help',
-    block_formats: 'Paragraph=p; Heading 1=h1; Heading 2=h2; Heading 3=h3;',
-    style_formats: [
-        { title: 'Drop Cap Paragraph', block: 'p', classes: 'drop-cap-paragraph' },
-        { title: 'Also Read / Quote Box', block: 'blockquote', classes: 'also-read-block', wrapper: true },
-        { title: 'Image Grid (2 Columns)', block: 'div', classes: 'image-grid-2col', wrapper: true },
-        { title: 'Custom Bullet List', selector: 'ul', classes: 'custom-bullet-list' }
-    ],
-    images_upload_url: 'upload_handler.php',
-    automatic_uploads: true,
-    file_picker_types: 'image',
-    content_style: `
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=League+Spartan:wght@400;500;600;700;800;900&display=swap');
-        body { 
-            font-family: 'Inter', sans-serif; 
-            font-size: 16px; 
-            line-height: 1.6;
-            color: #333;
-        }
-        h1, h2, h3 { font-family: 'League Spartan', sans-serif; font-weight: 700; margin-top: 1.5em; margin-bottom: 0.5em; }
-        h1 { font-size: 2.2em; text-transform: uppercase; }
-        h2 { font-size: 1.8em; text-transform: uppercase; }
-        h3 { font-size: 1.3em; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .drop-cap-paragraph::first-letter {
-            float: left;
-            width: 45px;
-            height: 45px;
-            background-color: #fca311;
-            color: #000;
-            border-radius: 50%;
-            font-size: 24px;
-            font-weight: 700;
-            margin-right: 15px;
-            margin-top: 5px;
-            line-height: 45px;
-            text-align: center;
-        }
-        
-        blockquote.also-read-block {
-            background: #395244;
-            padding: 30px;
-            border-radius: 10px;
-            margin: 35px 0;
-            color: #fff;
-            border-left: none;
-        }
-        blockquote.also-read-block::before {
-            content: "Also Read :\\A";
-            white-space: pre;
-            color: #fca311;
-            font-weight: 600;
-            display: block;
-            margin-bottom: 5px;
-        }
-        
-        .image-grid-2col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 35px 0;
-        }
-        .image-grid-2col img {
-            width: 100%;
-            height: auto;
-            border-radius: 40px 15px 40px 15px;
-        }
-        
-        ul.custom-bullet-list {
-            list-style-type: none;
-            padding-left: 0;
-        }
-        ul.custom-bullet-list li {
-            position: relative;
-            padding-left: 25px;
-            margin-bottom: 10px;
-        }
-        ul.custom-bullet-list li::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 8px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #fca311;
-        }
-    `
+  $(document).ready(function() {
+      $('#content').summernote({
+          placeholder: 'Write your post content here...',
+          tabsize: 2,
+          height: 500,
+          toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']]
+          ],
+          callbacks: {
+              onImageUpload: function(files) {
+                  uploadImage(files[0], this);
+              }
+          }
+      });
+
+      function uploadImage(file, editor) {
+          var data = new FormData();
+          data.append("file", file);
+          $.ajax({
+              url: 'upload_handler_summernote.php',
+              cache: false,
+              contentType: false,
+              processData: false,
+              data: data,
+              type: "post",
+              success: function(url) {
+                  $(editor).summernote('insertImage', url);
+              },
+              error: function(data) {
+                  console.log(data);
+              }
+          });
+      }
   });
 </script>
+
+<style>
+/* Fix Summernote Modal Close Button */
+.note-modal .close {
+    position: absolute !important;
+    right: 15px !important;
+    top: 15px !important;
+    font-size: 28px !important;
+    font-weight: bold !important;
+    color: #333 !important;
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer !important;
+    z-index: 1050 !important;
+}
+.note-modal .close:hover {
+    color: #ff0000 !important;
+}
+</style>
 
 <style>
     .wp-layout {
@@ -374,6 +339,7 @@ $categories_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
                 <!-- Left Column (Main Content & SEO) -->
                 <div>
                     <input type="text" name="title" class="wp-title-input" placeholder="Add title" value="<?php echo $edit_data ? htmlspecialchars($edit_data['title']) : ''; ?>" required>
+                    <input type="text" name="slug" class="wp-slug-input" placeholder="URL Slug (e.g., my-awesome-post)" value="<?php echo $edit_data ? htmlspecialchars($edit_data['slug']) : ''; ?>" required>
                     
                     <div style="margin-bottom: 20px;">
                         <textarea id="content" name="content"><?php echo $edit_data ? htmlspecialchars($edit_data['content']) : htmlspecialchars($default_template); ?></textarea>

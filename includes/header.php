@@ -11,7 +11,11 @@
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
     
     <!-- Base URL for relative links -->
-    <base href="/kalp_interior/">
+    <?php
+    // Define base URL dynamically to work on both local XAMPP and live Hostinger server
+    $baseUrl = (strpos($_SERVER['SCRIPT_NAME'], '/kalp_interior/') === 0) ? '/kalp_interior/' : '/';
+    ?>
+    <base href="<?php echo $baseUrl; ?>">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

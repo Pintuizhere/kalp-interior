@@ -16,6 +16,7 @@ include 'includes/header.php';
     include 'includes/components/hero.php';
     include 'includes/components/partners-stripe.php';
     include 'includes/components/about.php';
+    include 'includes/components/news-offers.php';
     include 'includes/components/projects-stripe.php';
     include 'includes/components/estimate.php';
     include 'includes/components/services.php';
