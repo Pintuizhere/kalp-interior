@@ -22,30 +22,7 @@ if (isset($_GET['edit'])) {
 }
 
 // Default HTML template for New Posts
-$default_template = '
-<p class="drop-cap-paragraph">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
-<p>ed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-<h3>INTRODUCTION TO REMOTE WORK DESIGN</h3>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
-<h3>IMPORTANCE OF ERGONOMIC FURNITURE</h3>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
-<div class="image-grid-2col">
-    <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Sample Image 1">
-    <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Sample Image 2">
-</div>
-<h3>IMPORTANCE OF LIGHTING IN A OFFICE</h3>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
-<blockquote class="also-read-block">"Productive Office Layouts: Designing Spaces for Efficiency"</blockquote>
-<h3>TIPS FOR ORGANIZING FURNITURE</h3>
-<ul class="custom-bullet-list">
-    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</li>
-    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</li>
-    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</li>
-    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</li>
-</ul>
-<h3>INTEGRATING TECHNOLOGY INTO HOME OFFICE SETUP</h3>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
-';
+$default_template = '';
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_post'])) {
@@ -199,6 +176,12 @@ $categories_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
 .note-modal .close:hover {
     color: #ff0000 !important;
 }
+
+/* Fix Fullscreen Mode */
+.note-editor.note-frame.fullscreen {
+    z-index: 100000 !important;
+    background: #fff;
+}
 </style>
 
 <style>
@@ -297,6 +280,12 @@ $categories_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
     }
     .wp-cat-item {
         margin-bottom: 8px;
+    }
+
+    @media (max-width: 992px) {
+        .wp-layout {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 

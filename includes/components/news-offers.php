@@ -2,7 +2,7 @@
     <div class="container">
         <div class="section-header text-center" style="margin-bottom: 50px; display: flex; flex-direction: column; align-items: center;">
             <div class="section-subtitle" style="justify-content: center; color: var(--accent-color);">
-                WHAT'S NEW AT KALP
+                WHAT'S NEW AT KALP INTERIOR DESIGN STUDIO
             </div>
             <h2 class="section-title" style="margin-bottom: 15px; text-transform: none;">
                 News, Offers & Notifications
@@ -30,7 +30,7 @@
                     NOTIFICATIONS
                 </button>
             </div>
-            <a href="news-details.php" class="view-all-link" style="color: var(--text-dark); font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 5px;">
+            <a href="news-offers.php" class="view-all-link" style="color: var(--text-dark); font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 5px; position: relative; z-index: 50; cursor: pointer;">
                 View All <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </a>
         </div>
@@ -43,7 +43,7 @@
             }
             
             // Fetch published items
-            $no_query = "SELECT * FROM news_offers WHERE status = 'Published' ORDER BY created_at DESC LIMIT 6";
+            $no_query = "SELECT * FROM news_offers WHERE status = 'Published' ORDER BY created_at DESC LIMIT 3";
             $no_result = $conn->query($no_query);
 
             if ($no_result && $no_result->num_rows > 0) {
@@ -61,7 +61,7 @@
                         $badgeColor = 'var(--text-dark)';
                         $linkText = 'Read More';
                     } else { // notifications
-                        $badgeBg = 'var(--primary-color)';
+                        $badgeBg = '#00a32a'; // Green color for notifications
                         $badgeColor = 'white';
                         $linkText = 'Know More';
                     }
@@ -76,11 +76,17 @@
                     </span>
                 </div>
                 <div class="card-content" style="padding: 30px; position: relative;">
+                    <?php if(!empty($item['offer_badge_text'])): ?>
+                    <div style="position: absolute; top: -35px; right: 20px; width: 75px; height: 75px; background-color: #faebd7; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 700; color: var(--text-dark); font-size: 0.9rem; line-height: 1.2; box-shadow: 0 5px 15px rgba(0,0,0,0.08); border: 3px solid #fff;">
+                        <?php echo str_replace(' ', '<br>', htmlspecialchars($item['offer_badge_text'])); ?>
+                    </div>
+                    <?php endif; ?>
+                    
                     <div class="date" style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px; display: flex; align-items: center; gap: 5px;">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                         <?php echo $date; ?>
                     </div>
-                    <h3 style="font-size: 1.25rem; margin-bottom: 15px; font-weight: 700; color: var(--text-dark);"><?php echo htmlspecialchars($item['title']); ?></h3>
+                    <h3 style="font-size: 1.25rem; margin-bottom: 15px; font-weight: 700; color: var(--text-dark); padding-right: <?php echo !empty($item['offer_badge_text']) ? '60px' : '0'; ?>;"><?php echo htmlspecialchars($item['title']); ?></h3>
                     <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; line-height: 1.6;"><?php echo htmlspecialchars($item['short_description']); ?></p>
                     <a href="news-details.php?slug=<?php echo urlencode($item['slug']); ?>" style="color: var(--accent-color); font-weight: 600; display: flex; align-items: center; gap: 5px; font-size: 0.95rem;">
                         <?php echo $linkText; ?> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>

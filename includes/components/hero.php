@@ -167,5 +167,60 @@ $avatar_4 = !empty($home_content['hero_avatar_4']) ? htmlspecialchars($home_cont
                 typeWriter();
             }, delayBetweenTexts);
         }
+
+        // Count up animation for stats
+        const statElements = document.querySelectorAll('.hero-stat-col h3, .stat-item h3');
+        
+        statElements.forEach(el => {
+            const text = el.innerText.trim();
+            const match = text.match(/^(\d+)(.*)$/);
+            if (match) {
+                el.dataset.target = match[1];
+                el.dataset.suffix = match[2] || '';
+                el.innerText = '0' + (match[2] || '');
+            } else {
+                el.dataset.target = 0;
+            }
+        });
+
+        const animateCountUp = (el) => {
+            const target = parseInt(el.dataset.target);
+            if (isNaN(target) || target === 0) return;
+            const suffix = el.dataset.suffix;
+            const duration = 2000; // 2 seconds
+            let startTimestamp = null;
+            
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                // Ease out function for smoother ending
+                const easeOutProgress = progress * (2 - progress);
+                const current = Math.floor(easeOutProgress * target);
+                
+                el.innerText = current + suffix;
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    el.innerText = target + suffix;
+                }
+            };
+            window.requestAnimationFrame(step);
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCountUp(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        statElements.forEach(el => {
+            if (el.dataset.target > 0) {
+                observer.observe(el);
+            }
+        });
     });
     </script>

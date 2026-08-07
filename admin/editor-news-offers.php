@@ -30,6 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_post'])) {
     $short_description = $_POST['short_description'];
     $content = $_POST['content'];
     $status = $_POST['status'];
+    $offer_badge_text = $_POST['offer_badge_text'] ?? null;
     
     $meta_title = $_POST['meta_title'] ?? '';
     $meta_description = $_POST['meta_description'] ?? '';
@@ -69,11 +70,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_post'])) {
             if ($item_id) {
                 // Update
                 if ($image_name !== '') {
-                    $stmt = $conn->prepare("UPDATE news_offers SET title=?, slug=?, category=?, short_description=?, image=?, content=?, status=?, meta_title=?, meta_description=?, meta_keywords=? WHERE id=?");
-                    $stmt->bind_param("ssssssssssi", $title, $slug, $category, $short_description, $image_name, $content, $status, $meta_title, $meta_description, $meta_keywords, $item_id);
+                    $stmt = $conn->prepare("UPDATE news_offers SET title=?, slug=?, category=?, short_description=?, image=?, content=?, status=?, meta_title=?, meta_description=?, meta_keywords=?, offer_badge_text=? WHERE id=?");
+                    $stmt->bind_param("sssssssssssi", $title, $slug, $category, $short_description, $image_name, $content, $status, $meta_title, $meta_description, $meta_keywords, $offer_badge_text, $item_id);
                 } else {
-                    $stmt = $conn->prepare("UPDATE news_offers SET title=?, slug=?, category=?, short_description=?, content=?, status=?, meta_title=?, meta_description=?, meta_keywords=? WHERE id=?");
-                    $stmt->bind_param("sssssssssi", $title, $slug, $category, $short_description, $content, $status, $meta_title, $meta_description, $meta_keywords, $item_id);
+                    $stmt = $conn->prepare("UPDATE news_offers SET title=?, slug=?, category=?, short_description=?, content=?, status=?, meta_title=?, meta_description=?, meta_keywords=?, offer_badge_text=? WHERE id=?");
+                    $stmt->bind_param("ssssssssssi", $title, $slug, $category, $short_description, $content, $status, $meta_title, $meta_description, $meta_keywords, $offer_badge_text, $item_id);
                 }
                 
                 if ($stmt->execute()) {
@@ -85,8 +86,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_post'])) {
                 $stmt->close();
             } else {
                 // Insert
-                $stmt = $conn->prepare("INSERT INTO news_offers (title, slug, category, short_description, image, content, status, meta_title, meta_description, meta_keywords) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param("ssssssssss", $title, $slug, $category, $short_description, $image_name, $content, $status, $meta_title, $meta_description, $meta_keywords);
+                $stmt = $conn->prepare("INSERT INTO news_offers (title, slug, category, short_description, image, content, status, meta_title, meta_description, meta_keywords, offer_badge_text) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("sssssssssss", $title, $slug, $category, $short_description, $image_name, $content, $status, $meta_title, $meta_description, $meta_keywords, $offer_badge_text);
                 if ($stmt->execute()) {
                     header("Location: manage_news_offers.php?success=insert");
                     exit;
@@ -177,6 +178,12 @@ include 'includes/sidebar.php';
 .note-modal .close:hover {
     color: #ff0000 !important;
 }
+
+/* Fix Fullscreen Mode */
+.note-editor.note-frame.fullscreen {
+    z-index: 100000 !important;
+    background: #fff;
+}
 </style>
 
 <style>
@@ -248,9 +255,14 @@ include 'includes/sidebar.php';
         border-radius: 3px;
         cursor: pointer;
         font-weight: 500;
-    }
     .wp-btn-primary:hover {
         background: #23342c;
+    }
+
+    @media (max-width: 992px) {
+        .wp-layout {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 
@@ -359,6 +371,12 @@ include 'includes/sidebar.php';
                                 <option value="News" <?php echo ($edit_data && $edit_data['category'] == 'News') ? 'selected' : ''; ?>>News</option>
                                 <option value="Notifications" <?php echo ($edit_data && $edit_data['category'] == 'Notifications') ? 'selected' : ''; ?>>Notifications</option>
                             </select>
+                            
+                            <div style="margin-top: 15px;">
+                                <label style="display:block; font-weight:600; margin-bottom:5px;">Offer Badge Text (Optional)</label>
+                                <input type="text" name="offer_badge_text" placeholder="e.g. 20% OFF" value="<?php echo $edit_data ? htmlspecialchars($edit_data['offer_badge_text']) : ''; ?>" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:3px;">
+                                <p style="font-size: 11px; color: #646970; margin-top:3px;">Displays a circle badge on the card if set.</p>
+                            </div>
                         </div>
                     </div>
 

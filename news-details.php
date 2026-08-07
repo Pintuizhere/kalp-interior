@@ -27,12 +27,16 @@ include 'includes/header.php';
 $cat = strtolower($news_item['category']);
 $badgeBg = 'var(--text-dark)';
 $badgeColor = 'white';
+$badgeIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>';
+
 if ($cat == 'news') {
     $badgeBg = 'var(--accent-color)';
     $badgeColor = 'var(--text-dark)';
+    $badgeIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>';
 } elseif ($cat == 'notifications') {
-    $badgeBg = 'var(--primary-color)';
+    $badgeBg = '#00a32a';
     $badgeColor = 'white';
+    $badgeIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>';
 }
 ?>
 <style>
@@ -410,42 +414,27 @@ if ($cat == 'news') {
 }
 </style>
 
-<main class="news-details-section">
-    <div class="container">
-        
-        <div class="news-topbar">
-            <a href="index.php" class="back-link">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                Back to News
-            </a>
-            <div class="breadcrumbs">
-                Home > News & Updates > <strong>News Details</strong>
+<main class="news-details-section" style="padding-top: 0;">
+    <?php $heroImg = !empty($news_item['image']) ? "uploads/news/" . htmlspecialchars($news_item['image']) : "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=1600"; ?>
+    <section class="news-details-hero" style="background: url('<?php echo $heroImg; ?>') center/cover no-repeat; position: relative; padding: 120px 0; display: flex; align-items: center; justify-content: center; text-align: center; color: white; margin-bottom: 50px;">
+        <div style="position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.65); z-index: 1;"></div>
+        <div class="container" style="position: relative; z-index: 2; padding: 0 20px;">
+            <span style="display: inline-flex; align-items: center; gap: 8px; background: <?php echo $badgeBg; ?>; color: <?php echo $badgeColor; ?>; padding: 8px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; letter-spacing: 1px; text-transform:uppercase; margin-bottom: 20px;">
+                <?php echo $badgeIcon; ?>
+                <?php echo htmlspecialchars($news_item['category']); ?>
+            </span>
+            <h1 style="font-family: var(--font-headline); font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.2; margin-bottom: 20px; max-width: 1000px; margin-left: auto; margin-right: auto; text-transform: none;"><?php echo htmlspecialchars($news_item['title']); ?></h1>
+            <div style="font-size: 0.95rem; font-weight: 500; letter-spacing: 1px; color: #eee; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <?php echo strtoupper(date('F d, Y', strtotime($news_item['created_at']))); ?>
             </div>
         </div>
+    </section>
 
+    <div class="container">
         <div class="news-details-grid">
             <!-- Left Column: Main Content -->
             <div class="main-content">
-                
-                <div class="meta-badges">
-                    <span class="meta-badge" style="background: <?php echo $badgeBg; ?>; color: <?php echo $badgeColor; ?>;">
-                        <?php echo htmlspecialchars($news_item['category']); ?>
-                    </span>
-                    <span class="meta-date">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                        <?php echo date('d M Y', strtotime($news_item['created_at'])); ?>
-                    </span>
-                </div>
-                
-                <h1 class="main-title"><?php echo htmlspecialchars($news_item['title']); ?></h1>
-                
-                <?php if(!empty($news_item['short_description'])): ?>
-                <p class="main-subtitle"><?php echo nl2br(htmlspecialchars($news_item['short_description'])); ?></p>
-                <?php endif; ?>
-                
-                <?php if(!empty($news_item['image'])): ?>
-                <img src="uploads/news/<?php echo htmlspecialchars($news_item['image']); ?>" alt="<?php echo htmlspecialchars($news_item['title']); ?>" class="featured-image">
-                <?php endif; ?>
                 
                 <div class="content-body">
                     <?php echo $news_item['content']; ?>
@@ -458,52 +447,36 @@ if ($cat == 'news') {
                 
                 <!-- Related News Widget -->
                 <div class="widget">
-                    <h4 class="widget-title">RELATED NEWS</h4>
+                    <h4 class="widget-title">RELATED <?php echo strtoupper(htmlspecialchars($news_item['category'])); ?></h4>
                     <div class="related-list">
-                        <a href="#" class="related-item">
-                            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=200" alt="Related" class="related-img">
+                        <?php
+                        $related_query = $conn->prepare("SELECT * FROM news_offers WHERE category = ? AND id != ? AND status = 'Published' ORDER BY created_at DESC LIMIT 4");
+                        $related_query->bind_param("si", $news_item['category'], $news_item['id']);
+                        $related_query->execute();
+                        $related_res = $related_query->get_result();
+                        
+                        if ($related_res->num_rows > 0) {
+                            while ($related = $related_res->fetch_assoc()) {
+                                $relImg = !empty($related['image']) ? "uploads/news/" . htmlspecialchars($related['image']) : "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=200";
+                        ?>
+                        <a href="news-details.php?slug=<?php echo urlencode($related['slug']); ?>" class="related-item">
+                            <img src="<?php echo $relImg; ?>" alt="<?php echo htmlspecialchars($related['title']); ?>" class="related-img">
                             <div class="related-content">
                                 <div class="related-date">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                                    03 MAY 2026
+                                    <?php echo strtoupper(date('d M Y', strtotime($related['created_at']))); ?>
                                 </div>
-                                <div class="related-title">Kalp Interior Design Studio Expands in Ranchi</div>
+                                <div class="related-title"><?php echo htmlspecialchars($related['title']); ?></div>
                                 <div class="related-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
                             </div>
                         </a>
-                        <a href="#" class="related-item">
-                            <img src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&q=80&w=200" alt="Related" class="related-img">
-                            <div class="related-content">
-                                <div class="related-date">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                                    30 APR 2026
-                                </div>
-                                <div class="related-title">Studio Will Remain Closed on 1st May 2026</div>
-                                <div class="related-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
-                            </div>
-                        </a>
-                        <a href="#" class="related-item">
-                            <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=200" alt="Related" class="related-img">
-                            <div class="related-content">
-                                <div class="related-date">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                                    15 APR 2026
-                                </div>
-                                <div class="related-title">We're Expanding Our Design Studio</div>
-                                <div class="related-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
-                            </div>
-                        </a>
-                        <a href="#" class="related-item">
-                            <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=200" alt="Related" class="related-img">
-                            <div class="related-content">
-                                <div class="related-date">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                                    05 APR 2026
-                                </div>
-                                <div class="related-title">Meet Our Creative Design Team</div>
-                                <div class="related-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
-                            </div>
-                        </a>
+                        <?php 
+                            }
+                        } else {
+                            echo "<p style='color: var(--text-muted); font-size: 0.9rem;'>No related items found.</p>";
+                        }
+                        $related_query->close();
+                        ?>
                     </div>
                 </div>
 
@@ -512,16 +485,16 @@ if ($cat == 'news') {
                     <h4 class="widget-title">CATEGORIES</h4>
                     <ul class="category-list">
                         <li>
-                            <a href="#" class="category-item active">
+                            <a href="news-offers.php?filter=all" class="category-item <?php echo $cat == '' ? 'active' : ''; ?>">
                                 <div class="category-left">
                                     <svg class="category-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                                     All
                                 </div>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="category-item">
+                            <a href="news-offers.php?filter=offers" class="category-item <?php echo $cat == 'offers' ? 'active' : ''; ?>">
                                 <div class="category-left">
                                     <svg class="category-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
                                     Offers
@@ -530,7 +503,7 @@ if ($cat == 'news') {
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="category-item">
+                            <a href="news-offers.php?filter=news" class="category-item <?php echo $cat == 'news' ? 'active' : ''; ?>">
                                 <div class="category-left">
                                     <svg class="category-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                                     News
@@ -539,7 +512,7 @@ if ($cat == 'news') {
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="category-item">
+                            <a href="news-offers.php?filter=notifications" class="category-item <?php echo $cat == 'notifications' ? 'active' : ''; ?>">
                                 <div class="category-left">
                                     <svg class="category-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
                                     Notifications
