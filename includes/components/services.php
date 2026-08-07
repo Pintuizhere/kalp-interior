@@ -55,7 +55,7 @@
                     <div class="hp-sc-number"><?php echo $num; ?></div>
                     <h3><?php echo htmlspecialchars(strtoupper($srv['name'])); ?></h3>
                     <p><?php echo htmlspecialchars($srv['short_desc']); ?></p>
-                    <a href="service-details.php?id=<?php echo $srv['id']; ?>" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
+                    <a href="service-details.php?slug=<?php echo !empty($srv['slug']) ? urlencode($srv['slug']) : $srv['id']; ?>" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
             </div>
             <?php 

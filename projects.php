@@ -155,7 +155,7 @@ include 'includes/header.php';
                 <?php if($projects && $projects->num_rows > 0): ?>
                     <?php while($proj = $projects->fetch_assoc()): ?>
                     <div class="project-card new-design" style="position: relative;">
-                        <a href="project-details.php?id=<?php echo $proj['id']; ?>" style="display: block; overflow: hidden;">
+                        <a href="project-details.php?slug=<?php echo !empty($proj['slug']) ? urlencode($proj['slug']) : $proj['id']; ?>" style="display: block; overflow: hidden;">
                             <img src="<?php echo !empty($proj['cover_image']) ? htmlspecialchars($proj['cover_image']) : 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80'; ?>" alt="<?php echo htmlspecialchars($proj['title']); ?>" style="transition: transform 0.5s ease; width: 100%; height: 100%; object-fit: cover;">
                         </a>
                         <div class="project-top-badges" style="position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2;">
@@ -177,9 +177,9 @@ include 'includes/header.php';
                         </div>
                         <div class="project-bottom-content">
                             <div class="project-bottom-main">
-                                <a href="project-details.php?id=<?php echo $proj['id']; ?>" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                                <a href="project-details.php?slug=<?php echo !empty($proj['slug']) ? urlencode($proj['slug']) : $proj['id']; ?>" class="project-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                                 <div class="project-bottom-info">
-                                    <h3><a href="project-details.php?id=<?php echo $proj['id']; ?>" style="color: inherit; text-decoration: none;"><?php echo htmlspecialchars($proj['title'] ?: 'Untitled Project'); ?></a></h3>
+                                    <h3><a href="project-details.php?slug=<?php echo !empty($proj['slug']) ? urlencode($proj['slug']) : $proj['id']; ?>" style="color: inherit; text-decoration: none;"><?php echo htmlspecialchars($proj['title'] ?: 'Untitled Project'); ?></a></h3>
                                     <p><i class="fa-solid fa-location-dot"></i> <?php echo htmlspecialchars($proj['location'] ?: 'N/A'); ?></p>
                                 </div>
                             </div>

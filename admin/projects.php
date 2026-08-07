@@ -89,6 +89,10 @@ if (isset($_GET['success']) && $_GET['success'] == 'delete') {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['ajax_action'])) {
     $title = $conn->real_escape_string($_POST['title'] ?? '');
+    $slug = $conn->real_escape_string($_POST['slug'] ?? '');
+    if(empty($slug) && !empty($title)) {
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title), '-'));
+    }
     $location = $conn->real_escape_string($_POST['location'] ?? '');
     $category = $conn->real_escape_string($_POST['project_category'] ?? '');
     $property_type = $conn->real_escape_string($_POST['property_type'] ?? '');
@@ -104,9 +108,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['ajax_action'])) {
     $meta_keywords = $conn->real_escape_string($_POST['meta_keywords'] ?? '');
     $meta_description = $conn->real_escape_string($_POST['meta_description'] ?? '');
 
-    $stmt = $conn->prepare("INSERT INTO projects (title, location, category, property_type, area, year, style, scope, short_desc, about_title, about_subtitle, long_desc, meta_title, meta_keywords, meta_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO projects (title, slug, location, category, property_type, area, year, style, scope, short_desc, about_title, about_subtitle, long_desc, meta_title, meta_keywords, meta_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     if ($stmt) {
-        $stmt->bind_param("sssssssssssssss", $title, $location, $category, $property_type, $area, $year, $style, $scope, $short_desc, $about_title, $about_subtitle, $long_desc, $meta_title, $meta_keywords, $meta_description);
+        $stmt->bind_param("ssssssssssssssss", $title, $slug, $location, $category, $property_type, $area, $year, $style, $scope, $short_desc, $about_title, $about_subtitle, $long_desc, $meta_title, $meta_keywords, $meta_description);
         if ($stmt->execute()) {
             $success_msg = "Project added successfully!";
         } else {
@@ -661,9 +665,17 @@ include 'includes/sidebar.php';
                             <input type="text" name="meta_keywords" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;" placeholder="e.g. interior design, villa, luxury">
                         </div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 0;">
+                    <div class="form-group" style="margin-bottom: 15px;">
                         <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px;">Meta Description</label>
                         <textarea name="meta_description" rows="2" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;" placeholder="Brief description for search engines..."></textarea>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <label style="margin-bottom: 0; font-weight: 700; font-size: 18px; color: var(--text-dark); flex-shrink: 0;">Permalink:</label>
+                        <div style="display: flex; align-items: center; gap: 5px; flex: 1; min-width: 250px; flex-wrap: wrap;">
+                            <span style="font-size: 16px; color: #666; word-break: break-all;">/project-details.php?slug=</span>
+                            <input type="text" name="slug" id="slug" style="flex: 1; min-width: 150px; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 16px; font-family: monospace;" placeholder="project-title-slug">
+                        </div>
                     </div>
                 </div>
 
@@ -799,6 +811,31 @@ function saveLiveProject() {
     // Submit the form
     document.getElementById('live-add-form').submit();
 }
+
+let slugEditedManually = false;
+document.getElementById('slug').addEventListener('input', function() {
+    slugEditedManually = true;
+});
+
+setInterval(() => {
+    if (slugEditedManually) return;
+    try {
+        const iframe = document.getElementById('editor-iframe');
+        if(!iframe) return;
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        const titleEl = doc.querySelector('.project-title');
+        if (titleEl) {
+            const titleText = titleEl.innerText.trim();
+            // Don't auto-generate if it's still the default text
+            if (titleText && !titleText.includes('MODERN 4 BHK')) {
+                const generatedSlug = titleText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+                if (generatedSlug) {
+                    document.getElementById('slug').value = generatedSlug;
+                }
+            }
+        }
+    } catch(e) {}
+}, 1000);
 </script>
 
 <?php include 'includes/footer.php'; ?>

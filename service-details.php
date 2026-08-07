@@ -2,20 +2,24 @@
 $currentPage = 'services';
 require_once 'admin/config/db.php';
 
-// Validate ID
-if (!isset($_GET['id'])) {
+// Validate input
+if (isset($_GET['slug'])) {
+    $slug = $conn->real_escape_string($_GET['slug']);
+    $res = $conn->query("SELECT * FROM services WHERE slug = '$slug' AND status = 'Active'");
+} else if (isset($_GET['id'])) {
+    $service_id = (int)$_GET['id'];
+    $res = $conn->query("SELECT * FROM services WHERE id = $service_id AND status = 'Active'");
+} else {
     header("Location: services.php");
     exit();
 }
-$service_id = (int)$_GET['id'];
 
-// Get service base info
-$res = $conn->query("SELECT * FROM services WHERE id = $service_id AND status = 'Active'");
 if (!$res || $res->num_rows === 0) {
     header("Location: services.php");
     exit();
 }
 $service = $res->fetch_assoc();
+$service_id = $service['id']; // Ensure $service_id is set for page_content query
 
 // Fetch dynamic content for this service
 $page_name = 'service_' . $service_id;
@@ -35,6 +39,8 @@ $sd_hero_title = !empty($service_content['sd_hero_title']) ? $service_content['s
 $sd_hero_signature = !empty($service_content['sd_hero_signature']) ? $service_content['sd_hero_signature'] : 'Designed Around You';
 $sd_hero_desc = !empty($service_content['sd_hero_desc']) ? $service_content['sd_hero_desc'] : 'We create beautiful, functional interiors that reflect your personality and lifestyle. From concept to completion, we handle every detail to deliver spaces that inspire.';
 $sd_hero_img = !empty($service_content['sd_hero_img']) ? $service_content['sd_hero_img'] : $cover_img_fallback;
+
+$sd_banner_img = !empty($service_content['sd_banner_img']) ? $service_content['sd_banner_img'] : 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80';
 
 $sd_f1_title = !empty($service_content['sd_f1_title']) ? $service_content['sd_f1_title'] : 'Personalized Approach';
 $sd_f1_desc = !empty($service_content['sd_f1_desc']) ? $service_content['sd_f1_desc'] : 'Tailored designs that reflect your style and needs.';
@@ -76,10 +82,11 @@ $sd_p5_desc = !empty($service_content['sd_p5_desc']) ? $service_content['sd_p5_d
 include 'includes/header.php'; 
 ?>
 
+<?php $b_url = (strpos($sd_banner_img, 'http') === 0) ? $sd_banner_img : $sd_banner_img; ?>
 <main class="sd-page" style="background-color: var(--bg-white);">
     
     <!-- Page Banner -->
-    <section class="page-banner">
+    <section class="page-banner" style="background-image: linear-gradient(rgba(26, 38, 30, 0.85), rgba(26, 38, 30, 0.85)), url('<?php echo $b_url; ?>'); background-size: cover; background-position: center; background-repeat: no-repeat;">
         <div class="container">
             <h1 class="banner-title">SERVICES</h1>
             <div class="breadcrumbs">
@@ -321,7 +328,7 @@ include 'includes/header.php';
                     </div>
                     <div class="mp-card-bottom">
                         <div class="mp-card-title-row" style="margin-bottom: 10px;">
-                            <a href="project-details.php?id=<?php echo $p_id; ?>" class="mp-link-btn" style="width: 35px; height: 35px;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i></a>
+                            <a href="project-details.php?slug=<?php echo !empty($proj['slug']) ? urlencode($proj['slug']) : $p_id; ?>" class="mp-link-btn" style="width: 35px; height: 35px;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i></a>
                             <div class="mp-title-col">
                                 <h3 style="font-size: 14px;"><?php echo strtoupper($p_title); ?></h3>
                                 <p style="font-size: 11px;"><i class="fa-solid fa-location-dot"></i> <?php echo $p_location; ?></p>

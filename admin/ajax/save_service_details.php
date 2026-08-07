@@ -18,6 +18,19 @@ if (empty($page_name)) {
 }
 
 if ($action === 'save_service') {
+    $service_id = str_replace('service_', '', $page_name);
+    
+    // Update SEO settings in services table
+    $meta_title = $_POST['meta_title'] ?? '';
+    $meta_keywords = $_POST['meta_keywords'] ?? '';
+    $meta_description = $_POST['meta_description'] ?? '';
+    $slug = $_POST['slug'] ?? '';
+    
+    $update_seo = $conn->prepare("UPDATE services SET meta_title=?, meta_keywords=?, meta_description=?, slug=? WHERE id=?");
+    $update_seo->bind_param("ssssi", $meta_title, $meta_keywords, $meta_description, $slug, $service_id);
+    $update_seo->execute();
+    $update_seo->close();
+
     // Delete existing keys for this service
     $stmt = $conn->prepare("DELETE FROM page_content WHERE page_name = ?");
     $stmt->bind_param("s", $page_name);
@@ -28,7 +41,7 @@ if ($action === 'save_service') {
     $insert_stmt = $conn->prepare("INSERT INTO page_content (page_name, section_key, content_value) VALUES (?, ?, ?)");
     
     $allowed_keys = [
-        'sd_hero_title', 'sd_hero_signature', 'sd_hero_desc', 'sd_hero_img',
+        'sd_banner_img', 'sd_hero_title', 'sd_hero_signature', 'sd_hero_desc', 'sd_hero_img',
         'sd_f1_title', 'sd_f1_desc', 'sd_f2_title', 'sd_f2_desc',
         'sd_f3_title', 'sd_f3_desc', 'sd_f4_title', 'sd_f4_desc',
         'sd_why_title', 'sd_why_signature', 'sd_why_desc', 'sd_why_img',

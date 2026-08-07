@@ -295,7 +295,7 @@ $more_projects_result = $conn->query($more_projects_query);
                         </div>
                         <div class="mp-card-bottom">
                             <div class="mp-card-title-row">
-                                <a href="project-details.php?id=<?php echo $proj['id']; ?>" class="mp-link-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                                <a href="project-details.php?slug=<?php echo !empty($proj['slug']) ? urlencode($proj['slug']) : $proj['id']; ?>" class="mp-link-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                                 <div class="mp-title-col">
                                     <h3><?php echo htmlspecialchars(strtoupper($proj['title'] ?: 'Untitled')); ?></h3>
                                     <p><i class="fa-solid fa-location-dot"></i> <?php echo htmlspecialchars($proj['location'] ?: 'N/A'); ?></p>

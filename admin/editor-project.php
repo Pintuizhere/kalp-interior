@@ -259,7 +259,7 @@ include '../includes/header.php';
                     </div>
                     
                     <!-- Add Image Card -->
-                    <div id="add-image-card" style="grid-column: span 3; border-radius: 12px; height: 260px; border: 2px dashed rgba(0,0,0,0.2); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; color: #888; background: #f8f9fa; transition: all 0.3s ease;">
+                    <div id="add-image-card" class="item-small" style="grid-column: span 3; border-radius: 12px; height: 260px; border: 2px dashed rgba(0,0,0,0.2); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; color: #888; background: #f8f9fa; transition: all 0.3s ease;">
                         <i class="fa-solid fa-plus" style="font-size: 32px; margin-bottom: 10px; color: var(--accent-color);"></i>
                         <span style="font-weight: 500;">Add Image</span>
                     </div>

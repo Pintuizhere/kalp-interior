@@ -42,6 +42,8 @@ $sd_hero_signature = !empty($service_content['sd_hero_signature']) ? $service_co
 $sd_hero_desc = !empty($service_content['sd_hero_desc']) ? $service_content['sd_hero_desc'] : 'We create beautiful, functional interiors that reflect your personality and lifestyle. From concept to completion, we handle every detail to deliver spaces that inspire.';
 $sd_hero_img = !empty($service_content['sd_hero_img']) ? $service_content['sd_hero_img'] : $cover_img_fallback;
 
+$sd_banner_img = !empty($service_content['sd_banner_img']) ? $service_content['sd_banner_img'] : 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80';
+
 $sd_f1_title = !empty($service_content['sd_f1_title']) ? $service_content['sd_f1_title'] : 'Personalized Approach';
 $sd_f1_desc = !empty($service_content['sd_f1_desc']) ? $service_content['sd_f1_desc'] : 'Tailored designs that reflect your style and needs.';
 $sd_f2_title = !empty($service_content['sd_f2_title']) ? $service_content['sd_f2_title'] : 'Smart Space Planning';
@@ -171,14 +173,18 @@ include 'includes/header.php';
             
             <!-- Editor Content (Service Details Layout) -->
             <main class="sd-page" style="background-color: var(--bg-white);">
-                <!-- Page Banner (Read-only representation) -->
-                <section class="page-banner">
+                <?php $b_url = (strpos($sd_banner_img, 'http') === 0 || strpos($sd_banner_img, 'data:image') === 0) ? $sd_banner_img : '../' . $sd_banner_img; ?>
+                <section class="page-banner" id="banner-section" style="position: relative; background-image: linear-gradient(rgba(26, 38, 30, 0.85), rgba(26, 38, 30, 0.85)), url('<?php echo $b_url; ?>'); background-size: cover; background-position: center; background-repeat: no-repeat;">
                     <div class="container">
                         <h1 class="banner-title">SERVICES</h1>
                         <div class="breadcrumbs">
                             <a href="#">Home</a> <span class="divider">/</span> <span class="current">Services</span> <span class="divider">/</span> <span class="current"><?php echo htmlspecialchars($service['name']); ?></span>
                         </div>
                     </div>
+                    
+                    <button class="editable-img-btn" onclick="document.getElementById('input-banner').click()" style="position:absolute; top: 20px; right: 20px; z-index: 10;">Click image to edit</button>
+                    <input type="file" id="input-banner" accept="image/*" style="display:none">
+                    <input type="hidden" id="v-sd_banner_img" value="<?php echo $sd_banner_img; ?>">
                 </section>
 
                 <!-- 1. Hero Section -->
@@ -198,8 +204,8 @@ include 'includes/header.php';
                                     <a href="#" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 10px; pointer-events: none;">Get Estimate</a>
                                 </div>
                             </div>
-                            <div class="sd-hero-img-box">
-                                <?php $h_url = (strpos($sd_hero_img, 'http') === 0) ? $sd_hero_img : '../' . $sd_hero_img; ?>
+                            <div class="sd-hero-img-box" style="position: relative;">
+                                <?php $h_url = (strpos($sd_hero_img, 'http') === 0 || strpos($sd_hero_img, 'data:image') === 0) ? $sd_hero_img : '../' . $sd_hero_img; ?>
                                 <img src="<?php echo $h_url; ?>" alt="Hero" class="editable-image" id="img-hero" onclick="document.getElementById('input-hero').click()">
                                 <input type="file" id="input-hero" accept="image/*" style="display:none">
                                 <input type="hidden" id="v-sd_hero_img" value="<?php echo $sd_hero_img; ?>">
@@ -251,7 +257,7 @@ include 'includes/header.php';
                                 <p class="sd-why-desc" contenteditable="true" id="v-sd_why_desc"><?php echo $sd_why_desc; ?></p>
                                 
                                 <div class="sd-why-img" style="position:relative;">
-                                    <?php $w_url = (strpos($sd_why_img, 'http') === 0) ? $sd_why_img : '../' . $sd_why_img; ?>
+                                    <?php $w_url = (strpos($sd_why_img, 'http') === 0 || strpos($sd_why_img, 'data:image') === 0) ? $sd_why_img : '../' . $sd_why_img; ?>
                                     <img src="<?php echo $w_url; ?>" alt="Why Choose" class="editable-image" id="img-why" onclick="document.getElementById('input-why').click()">
                                     <input type="file" id="input-why" accept="image/*" style="display:none">
                                     <input type="hidden" id="v-sd_why_img" value="<?php echo $sd_why_img; ?>">
@@ -341,6 +347,34 @@ include 'includes/header.php';
                     <i>Note: The "More Projects" and "Contact Form" sections are globally shared and cannot be edited per-service.</i>
                 </div>
 
+                <!-- SEO Settings -->
+                <section style="background: #f8f9fa; padding: 40px 20px; border-top: 1px solid #e2e8f0;">
+                    <div class="container" style="max-width: 800px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin: 0 auto;">
+                        <h3 style="margin-top: 0; margin-bottom: 20px; color: var(--text-dark); font-size: 18px;">SEO Settings</h3>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px;">Meta Title</label>
+                                <input type="text" id="v-meta_title" value="<?php echo htmlspecialchars($service['meta_title'] ?? ''); ?>" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;" placeholder="Meta Title">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px;">Meta Keywords</label>
+                                <input type="text" id="v-meta_keywords" value="<?php echo htmlspecialchars($service['meta_keywords'] ?? ''); ?>" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;" placeholder="Meta Keywords">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px;">Meta Description</label>
+                            <textarea id="v-meta_description" rows="2" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;" placeholder="Meta Description"><?php echo htmlspecialchars($service['meta_description'] ?? ''); ?></textarea>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 0; display: flex; align-items: center; gap: 10px;">
+                            <label style="margin-bottom: 0; font-weight: 700; font-size: 18px; color: var(--text-dark);">Permalink:</label>
+                            <span style="font-size: 18px; color: #666;">/service-details.php?slug=</span>
+                            <input type="text" id="v-slug" value="<?php echo htmlspecialchars($service['slug'] ?? ''); ?>" style="flex: 1; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 16px; font-family: monospace;" placeholder="service-slug">
+                        </div>
+                    </div>
+                </section>
+
             </main>
         </div>
         
@@ -375,8 +409,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    function bindBackgroundUpload(inputId, sectionId, hiddenId) {
+        document.getElementById(inputId).addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById(sectionId).style.backgroundImage = `linear-gradient(rgba(26, 38, 30, 0.85), rgba(26, 38, 30, 0.85)), url('${e.target.result}')`;
+                    document.getElementById(sectionId).style.backgroundSize = 'cover';
+                    document.getElementById(sectionId).style.backgroundPosition = 'center';
+                    document.getElementById(sectionId).style.backgroundRepeat = 'no-repeat';
+                    document.getElementById(hiddenId).value = e.target.result; 
+                }
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    }
+    
     bindImageUpload('input-hero', 'img-hero', 'v-sd_hero_img');
     bindImageUpload('input-why', 'img-why', 'v-sd_why_img');
+    bindBackgroundUpload('input-banner', 'banner-section', 'v-sd_banner_img');
 
     // Reset Logic
     document.getElementById('reset-service-btn').addEventListener('click', function() {
@@ -404,7 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
         
         const keys = [
-            'sd_hero_title', 'sd_hero_signature', 'sd_hero_desc', 'sd_hero_img',
+            'sd_banner_img', 'sd_hero_title', 'sd_hero_signature', 'sd_hero_desc', 'sd_hero_img',
             'sd_f1_title', 'sd_f1_desc', 'sd_f2_title', 'sd_f2_desc',
             'sd_f3_title', 'sd_f3_desc', 'sd_f4_title', 'sd_f4_desc',
             'sd_why_title', 'sd_why_signature', 'sd_why_desc', 'sd_why_img',
@@ -412,7 +463,8 @@ document.addEventListener('DOMContentLoaded', () => {
             'sd_why_l3_title', 'sd_why_l3_desc', 'sd_why_l4_title', 'sd_why_l4_desc',
             'sd_process_title', 'sd_process_signature',
             'sd_p1_title', 'sd_p1_desc', 'sd_p2_title', 'sd_p2_desc',
-            'sd_p3_title', 'sd_p3_desc', 'sd_p4_title', 'sd_p4_desc', 'sd_p5_title', 'sd_p5_desc'
+            'sd_p3_title', 'sd_p3_desc', 'sd_p4_title', 'sd_p4_desc', 'sd_p5_title', 'sd_p5_desc',
+            'meta_title', 'meta_keywords', 'meta_description', 'slug'
         ];
 
         const formData = new FormData();
@@ -445,6 +497,28 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Changes';
         });
     });
+
+    let slugEditedManually = false;
+    const slugInput = document.getElementById('v-slug');
+    if (slugInput) {
+        slugInput.addEventListener('input', function() {
+            slugEditedManually = true;
+        });
+
+        setInterval(() => {
+            if (slugEditedManually) return;
+            const titleEl = document.getElementById('v-sd_hero_title');
+            if (titleEl) {
+                const titleText = titleEl.innerText.trim();
+                if (titleText && !titleText.includes('MODERN')) {
+                    const generatedSlug = titleText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+                    if (generatedSlug && slugInput.value === '') {
+                        slugInput.value = generatedSlug;
+                    }
+                }
+            }
+        }, 1000);
+    }
 });
 </script>
 
