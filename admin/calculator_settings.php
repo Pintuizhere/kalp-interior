@@ -379,7 +379,8 @@ include 'includes/sidebar.php';
                         <div class="form-group">
                             <label class="form-label">Category Area</label>
                             <select name="category_slug" id="pkg_cat" class="form-control" required>
-                                <option value="standard">Standard (Residential/Commercial)</option>
+                                <option value="residential">Residential</option>
+                                <option value="commercial">Commercial</option>
                                 <option value="kitchen">Modular Kitchen</option>
                             </select>
                         </div>

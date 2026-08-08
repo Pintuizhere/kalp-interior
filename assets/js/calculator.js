@@ -251,6 +251,33 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (standardSteps) standardSteps.style.display = 'block';
                         if (specificTypeLabel) specificTypeLabel.style.display = 'flex';
                         if (kitchenOptions) kitchenOptions.style.display = 'none';
+                        
+                        // Filter packages based on selected category
+                        const selectedCatInput = this.querySelector('input[name="property_category"]');
+                        if (selectedCatInput) {
+                            const selectedCat = selectedCatInput.value;
+                            if (selectedCat === 'residential' || selectedCat === 'commercial') {
+                                const packageCards = document.querySelectorAll('.finish-options .calc-option-card');
+                                let firstVisibleFound = false;
+                                
+                                packageCards.forEach(pkgCard => {
+                                    pkgCard.classList.remove('active');
+                                    const pkgInput = pkgCard.querySelector('input[name="finish_level"]');
+                                    if (pkgInput) pkgInput.checked = false;
+                                    
+                                    if (pkgCard.getAttribute('data-pkg-category') === selectedCat) {
+                                        pkgCard.style.display = 'flex';
+                                        if (!firstVisibleFound) {
+                                            pkgCard.classList.add('active');
+                                            if (pkgInput) pkgInput.checked = true;
+                                            firstVisibleFound = true;
+                                        }
+                                    } else {
+                                        pkgCard.style.display = 'none';
+                                    }
+                                });
+                            }
+                        }
                     }
                 }
             });

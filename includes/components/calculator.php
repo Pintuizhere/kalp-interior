@@ -222,18 +222,29 @@ if($res){ while($row = $res->fetch_assoc()){ $calc_settings[$row['setting_key']]
                                 <label>Select Package</label>
                             </div>
                             <div class="calc-options-grid finish-options">
-                                <?php if(isset($calc_packages_data['standard'])): 
-                                    $is_first_pkg = true; 
-                                    foreach($calc_packages_data['standard'] as $pkg): ?>
-                                <label class="calc-option-card <?php echo $is_first_pkg ? 'active' : ''; ?>" style="flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px;">
-                                    <input type="radio" name="finish_level" value="<?php echo $pkg['price_per_sqft']; ?>" <?php echo $is_first_pkg ? 'checked' : ''; ?>>
+                                <?php 
+                                $is_first_pkg = true;
+                                $cats = ['residential', 'commercial'];
+                                foreach($cats as $pcat) {
+                                    if(isset($calc_packages_data[$pcat])) {
+                                        foreach($calc_packages_data[$pcat] as $pkg) {
+                                            $active = ($pcat == 'residential' && $is_first_pkg) ? 'active' : '';
+                                            $checked = ($pcat == 'residential' && $is_first_pkg) ? 'checked' : '';
+                                            $display = ($pcat == 'residential') ? 'flex' : 'none';
+                                ?>
+                                <label class="calc-option-card <?php echo $active; ?>" data-pkg-category="<?php echo $pcat; ?>" style="display: <?php echo $display; ?>; flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px;">
+                                    <input type="radio" name="finish_level" value="<?php echo $pkg['price_per_sqft']; ?>" <?php echo $checked; ?>>
                                     <?php echo $pkg['icon_svg']; ?>
                                     <div>
                                         <span style="display: block; font-weight: 600;"><?php echo htmlspecialchars($pkg['name']); ?></span>
                                         <span style="font-size: 11px; opacity: 0.7; display: none;">₹<?php echo $pkg['price_per_sqft']; ?>/sqft</span>
                                     </div>
                                 </label>
-                                <?php $is_first_pkg = false; endforeach; endif; ?>
+                                <?php       if($pcat == 'residential') $is_first_pkg = false;
+                                        }
+                                    }
+                                }
+                                ?>
                             </div>
                         </div>
 
