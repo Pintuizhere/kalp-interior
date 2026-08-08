@@ -1,6 +1,40 @@
 <?php 
 $currentPage = 'projects';
 include '../includes/header.php'; 
+
+// Fetch Gallery Categories for dynamic filter buttons
+$gallery_cat_query = "SELECT * FROM gallery_categories ORDER BY order_index ASC, name ASC";
+$gallery_categories = $conn->query($gallery_cat_query);
+
+$project = null;
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+    $stmt = $conn->prepare("SELECT * FROM projects WHERE id = ?");
+    if ($stmt) {
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        if ($res->num_rows > 0) {
+            $project = $res->fetch_assoc();
+        }
+        $stmt->close();
+    }
+}
+
+// Variables for display
+$title = $project['title'] ?? 'MODERN 4 BHK<br>APARTMENT';
+$location = $project['location'] ?? 'Mumbai, India';
+$short_desc = $project['short_desc'] ?? 'A perfect blend of modern aesthetics and functional luxury. This 4 BHK apartment is designed to reflect warmth, simplicity, and sophisticated living.';
+$category = $project['category'] ?? 'Residential';
+$property_type = $project['property_type'] ?? 'Apartment';
+$area = $project['area'] ?? '2,350 sq. ft.';
+$year = $project['year'] ?? '2024';
+$style = $project['style'] ?? 'Modern Minimal';
+$scope = $project['scope'] ?? 'Full Interior Design';
+$about_title = $project['about_title'] ?? 'Crafted for Comfort.';
+$about_subtitle = $project['about_subtitle'] ?? 'Designed for Living.';
+$long_desc = $project['long_desc'] ?? '<p style="color: #666; line-height: 1.8; margin-bottom: 20px;">This modern 4 BHK apartment is designed for a young family seeking a balance between style and functionality.</p><p style="color: #666; line-height: 1.8; margin-bottom: 20px;">The interiors feature a neutral palette, clean lines, and custom elements that create a calm and cohesive environment.</p><p style="color: #666; line-height: 1.8;">From the spacious living area to the cozy bedrooms, each space is crafted to enhance everyday living.</p>';
+$cover_image = !empty($project['cover_image']) ? '../' . $project['cover_image'] : 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80';
 ?>
 <style>
     /* Force include frontend CSS since relative path in header fails in admin folder */
@@ -46,54 +80,54 @@ include '../includes/header.php';
                 <!-- Left: Image Slider -->
                 <div class="hero-left-slider">
                     <div class="hero-main-img-wrapper">
-                        <span class="hero-tag"><i class="fa-solid fa-house" style="margin-right: 5px;"></i> Residential Design</span>
-                        <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80" alt="Main Room" class="hero-main-img">
+                        <span class="hero-tag"><i class="fa-solid fa-house" style="margin-right: 5px;"></i> <?php echo htmlspecialchars($category); ?></span>
+                        <img src="<?php echo htmlspecialchars($cover_image); ?>" alt="Main Room" class="hero-main-img">
                     </div>
                 </div>
 
                 <!-- Right: Details Box -->
                 <div class="hero-right-details">
                     <div class="hero-details-header">
-                        <h2 class="project-title">MODERN 4 BHK<br>APARTMENT</h2>
+                        <h2 class="project-title" contenteditable="true"><?php echo htmlspecialchars($title); ?></h2>
                         <div class="project-actions">
                             <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
                             <button class="icon-btn"><i class="fa-solid fa-share-nodes"></i></button>
                         </div>
                     </div>
-                    <p class="location-pin"><i class="fa-solid fa-location-dot" style="color: var(--accent-color); margin-right: 8px;"></i> Mumbai, India</p>
+                    <p class="location-pin" contenteditable="true"><i class="fa-solid fa-location-dot" style="color: var(--accent-color); margin-right: 8px;"></i> <?php echo htmlspecialchars($location); ?></p>
                     
-                    <p class="short-desc">A perfect blend of modern aesthetics and functional luxury. This 4 BHK apartment is designed to reflect warmth, simplicity, and sophisticated living.</p>
+                    <p class="short-desc" contenteditable="true"><?php echo htmlspecialchars($short_desc); ?></p>
                     
                     <div class="project-meta-list">
                         <div class="meta-row">
                             <span class="meta-icon"><i class="fa-solid fa-building-user"></i></span>
                             <span class="meta-key">Project Type</span>
-                            <span class="meta-value">Residential</span>
+                            <span class="meta-value" contenteditable="true"><?php echo htmlspecialchars($category); ?></span>
                         </div>
                         <div class="meta-row">
                             <span class="meta-icon"><i class="fa-solid fa-house-chimney"></i></span>
                             <span class="meta-key">Property Type</span>
-                            <span class="meta-value">Apartment</span>
+                            <span class="meta-value" contenteditable="true"><?php echo htmlspecialchars($property_type); ?></span>
                         </div>
                         <div class="meta-row">
                             <span class="meta-icon"><i class="fa-solid fa-expand"></i></span>
                             <span class="meta-key">Area</span>
-                            <span class="meta-value">2,350 sq. ft.</span>
+                            <span class="meta-value" contenteditable="true"><?php echo htmlspecialchars($area); ?></span>
                         </div>
                         <div class="meta-row">
                             <span class="meta-icon"><i class="fa-regular fa-calendar-check"></i></span>
                             <span class="meta-key">Year of Completion</span>
-                            <span class="meta-value">2024</span>
+                            <span class="meta-value" contenteditable="true"><?php echo htmlspecialchars($year); ?></span>
                         </div>
                         <div class="meta-row">
                             <span class="meta-icon"><i class="fa-solid fa-pen-ruler"></i></span>
                             <span class="meta-key">Design Style</span>
-                            <span class="meta-value">Modern Minimal</span>
+                            <span class="meta-value" contenteditable="true"><?php echo htmlspecialchars($style); ?></span>
                         </div>
                         <div class="meta-row">
                             <span class="meta-icon"><i class="fa-solid fa-list-check"></i></span>
                             <span class="meta-key">Scope of Work</span>
-                            <span class="meta-value">Full Interior Design</span>
+                            <span class="meta-value" contenteditable="true"><?php echo htmlspecialchars($scope); ?></span>
                         </div>
                     </div>
 
@@ -134,12 +168,10 @@ include '../includes/header.php';
                     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
                         <p class="section-subtitle" style="margin-bottom: 0;">ABOUT THE PROJECT</p>
                     </div>
-                    <h2 class="section-title">Crafted for Comfort.<br><span class="accent-text signature-text" style="color: var(--accent-color); font-weight: 400; text-transform: none;">Designed for Living.</span></h2>
+                    <h2 class="section-title" contenteditable="true"><?php echo htmlspecialchars($about_title); ?><br><span class="accent-text signature-text" style="color: var(--accent-color); font-weight: 400; text-transform: none;"><?php echo htmlspecialchars($about_subtitle); ?></span></h2>
                     
-                    <div class="long-desc-container">
-                        <p style="color: #666; line-height: 1.8; margin-bottom: 20px;">This modern 4 BHK apartment is designed for a young family seeking a balance between style and functionality.</p>
-                        <p style="color: #666; line-height: 1.8; margin-bottom: 20px;">The interiors feature a neutral palette, clean lines, and custom elements that create a calm and cohesive environment.</p>
-                        <p style="color: #666; line-height: 1.8;">From the spacious living area to the cozy bedrooms, each space is crafted to enhance everyday living.</p>
+                    <div class="long-desc-container" contenteditable="true">
+                        <?php echo $long_desc; ?>
                     </div>
                 </div>
                 <div class="about-right">
@@ -219,11 +251,18 @@ include '../includes/header.php';
                     
                     <div class="gallery-filters" style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="gallery-filter-btn active" style="background: var(--primary-color); color: white; border: 1px solid var(--primary-color); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-layer-group" style="margin-right: 5px;"></i> All</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-couch" style="margin-right: 5px;"></i> Living Room</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-bed" style="margin-right: 5px;"></i> Bedroom</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-utensils" style="margin-right: 5px;"></i> Dining</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-bath" style="margin-right: 5px;"></i> Bathroom</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-door-open" style="margin-right: 5px;"></i> Other Spaces</button>
+                        <?php 
+                        if ($gallery_categories && $gallery_categories->num_rows > 0): 
+                            while($cat = $gallery_categories->fetch_assoc()):
+                        ?>
+                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">
+                            <?php if(!empty($cat['icon'])): ?><i class="<?php echo htmlspecialchars($cat['icon']); ?>" style="margin-right: 5px;"></i><?php endif; ?> <?php echo htmlspecialchars($cat['name']); ?>
+                        </button>
+                        <?php 
+                            endwhile;
+                            $gallery_categories->data_seek(0);
+                        endif; 
+                        ?>
                     </div>
                 </div>
 

@@ -12,6 +12,10 @@ $more_projects_query = "
     LIMIT 3
 ";
 $more_projects_result = $conn->query($more_projects_query);
+
+// Fetch Gallery Categories for dynamic filter buttons
+$gallery_cat_query = "SELECT * FROM gallery_categories ORDER BY order_index ASC, name ASC";
+$gallery_categories = $conn->query($gallery_cat_query);
 ?>
 
 <main>
@@ -185,12 +189,18 @@ $more_projects_result = $conn->query($more_projects_query);
                     
                     <div class="gallery-filters" style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="gallery-filter-btn active" style="background: var(--primary-color); color: white; border: 1px solid var(--primary-color); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-layer-group" style="margin-right: 5px;"></i> All</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-couch" style="margin-right: 5px;"></i> Living Room</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-bed" style="margin-right: 5px;"></i> Bedroom</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-kitchen-set" style="margin-right: 5px;"></i> Kitchen</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-utensils" style="margin-right: 5px;"></i> Dining</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-bath" style="margin-right: 5px;"></i> Bathroom</button>
-                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-door-open" style="margin-right: 5px;"></i> Other Spaces</button>
+                        <?php 
+                        if ($gallery_categories && $gallery_categories->num_rows > 0): 
+                            while($cat = $gallery_categories->fetch_assoc()):
+                        ?>
+                        <button class="gallery-filter-btn" style="background: white; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">
+                            <?php if(!empty($cat['icon'])): ?><i class="<?php echo htmlspecialchars($cat['icon']); ?>" style="margin-right: 5px;"></i><?php endif; ?> <?php echo htmlspecialchars($cat['name']); ?>
+                        </button>
+                        <?php 
+                            endwhile;
+                            $gallery_categories->data_seek(0);
+                        endif; 
+                        ?>
                     </div>
                 </div>
 

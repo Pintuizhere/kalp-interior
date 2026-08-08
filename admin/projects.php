@@ -48,6 +48,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
                 echo json_encode(['success' => false, 'error' => $conn->error]);
             }
         }
+    } elseif ($_POST['ajax_action'] === 'add_gallery_category') {
+        $name = $conn->real_escape_string($_POST['name'] ?? '');
+        $icon = $conn->real_escape_string($_POST['icon'] ?? '');
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name), '-'));
+        if (!empty($name)) {
+            $stmt = $conn->prepare("INSERT INTO gallery_categories (name, slug, icon) VALUES (?, ?, ?)");
+            if ($stmt) {
+                $stmt->bind_param("sss", $name, $slug, $icon);
+                if ($stmt->execute()) {
+                    echo json_encode(['success' => true, 'id' => $conn->insert_id, 'name' => $name, 'icon' => $icon]);
+                } else {
+                    echo json_encode(['success' => false, 'error' => $stmt->error]);
+                }
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Name cannot be empty']);
+        }
+    } elseif ($_POST['ajax_action'] === 'delete_gallery_category') {
+        $name = $conn->real_escape_string($_POST['name'] ?? '');
+        if (!empty($name)) {
+            $stmt = $conn->prepare("DELETE FROM gallery_categories WHERE name = ?");
+            if ($stmt) {
+                $stmt->bind_param("s", $name);
+                if ($stmt->execute()) {
+                    echo json_encode(['success' => true]);
+                } else {
+                    echo json_encode(['success' => false, 'error' => $stmt->error]);
+                }
+            }
+        }
+    } elseif ($_POST['ajax_action'] === 'update_gallery_category_order') {
+        $order_data = json_decode($_POST['order_data'], true);
+        if (is_array($order_data)) {
+            $stmt = $conn->prepare("UPDATE gallery_categories SET order_index = ? WHERE name = ?");
+            if ($stmt) {
+                foreach ($order_data as $index => $name) {
+                    $stmt->bind_param("is", $index, $name);
+                    $stmt->execute();
+                }
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'error' => $conn->error]);
+            }
+        }
     }
     exit;
 }
@@ -93,6 +137,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['ajax_action'])) {
     if(empty($slug) && !empty($title)) {
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title), '-'));
     }
+
+    $project_id = $_POST['project_id'] ?? '';
+    
+    // Ensure unique slug
+    $original_slug = $slug;
+    $slug_count = 1;
+    while(true) {
+        if (!empty($project_id)) {
+            $check_stmt = $conn->prepare("SELECT id FROM projects WHERE slug = ? AND id != ?");
+            if($check_stmt) $check_stmt->bind_param("si", $slug, $project_id);
+        } else {
+            $check_stmt = $conn->prepare("SELECT id FROM projects WHERE slug = ?");
+            if($check_stmt) $check_stmt->bind_param("s", $slug);
+        }
+        
+        if($check_stmt) {
+            $check_stmt->execute();
+            $check_res = $check_stmt->get_result();
+            if($check_res->num_rows > 0) {
+                $slug = $original_slug . '-' . $slug_count;
+                $slug_count++;
+            } else {
+                $check_stmt->close();
+                break;
+            }
+            $check_stmt->close();
+        } else {
+            break;
+        }
+    }
     $location = $conn->real_escape_string($_POST['location'] ?? '');
     $category = $conn->real_escape_string($_POST['project_category'] ?? '');
     $property_type = $conn->real_escape_string($_POST['property_type'] ?? '');
@@ -108,17 +182,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['ajax_action'])) {
     $meta_keywords = $conn->real_escape_string($_POST['meta_keywords'] ?? '');
     $meta_description = $conn->real_escape_string($_POST['meta_description'] ?? '');
 
-    $stmt = $conn->prepare("INSERT INTO projects (title, slug, location, category, property_type, area, year, style, scope, short_desc, about_title, about_subtitle, long_desc, meta_title, meta_keywords, meta_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    if ($stmt) {
-        $stmt->bind_param("ssssssssssssssss", $title, $slug, $location, $category, $property_type, $area, $year, $style, $scope, $short_desc, $about_title, $about_subtitle, $long_desc, $meta_title, $meta_keywords, $meta_description);
-        if ($stmt->execute()) {
-            $success_msg = "Project added successfully!";
+    if (!empty($project_id)) {
+        // UPDATE existing project
+        $stmt = $conn->prepare("UPDATE projects SET title=?, slug=?, location=?, category=?, property_type=?, area=?, year=?, style=?, scope=?, short_desc=?, about_title=?, about_subtitle=?, long_desc=?, meta_title=?, meta_keywords=?, meta_description=? WHERE id=?");
+        if ($stmt) {
+            $stmt->bind_param("ssssssssssssssssi", $title, $slug, $location, $category, $property_type, $area, $year, $style, $scope, $short_desc, $about_title, $about_subtitle, $long_desc, $meta_title, $meta_keywords, $meta_description, $project_id);
+            if ($stmt->execute()) {
+                $success_msg = "Project updated successfully!";
+            } else {
+                $error_msg = "Database error: " . $stmt->error;
+            }
+            $stmt->close();
         } else {
-            $error_msg = "Database error: " . $stmt->error;
+            $error_msg = "Database error: " . $conn->error;
         }
-        $stmt->close();
     } else {
-        $error_msg = "Database error: " . $conn->error;
+        // INSERT new project
+        $stmt = $conn->prepare("INSERT INTO projects (title, slug, location, category, property_type, area, year, style, scope, short_desc, about_title, about_subtitle, long_desc, meta_title, meta_keywords, meta_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        if ($stmt) {
+            $stmt->bind_param("ssssssssssssssss", $title, $slug, $location, $category, $property_type, $area, $year, $style, $scope, $short_desc, $about_title, $about_subtitle, $long_desc, $meta_title, $meta_keywords, $meta_description);
+            if ($stmt->execute()) {
+                $success_msg = "Project added successfully!";
+            } else {
+                $error_msg = "Database error: " . $stmt->error;
+            }
+            $stmt->close();
+        } else {
+            $error_msg = "Database error: " . $conn->error;
+        }
     }
 }
 
@@ -126,6 +217,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['ajax_action'])) {
 $cat_query = "SELECT * FROM categories ORDER BY order_index ASC, name ASC";
 $categories = $conn->query($cat_query);
 
+// Fetch Gallery Categories for the form
+$gallery_cat_query = "SELECT * FROM gallery_categories ORDER BY order_index ASC, name ASC";
+$gallery_categories = $conn->query($gallery_cat_query);
 // Fetch Projects for the table
 $proj_query = "SELECT * FROM projects ORDER BY created_at DESC";
 $projects = $conn->query($proj_query);
@@ -198,7 +292,7 @@ include 'includes/sidebar.php';
                                 <td><?php echo htmlspecialchars($proj['category'] ?: 'N/A'); ?></td>
                                 <td>
                                     <div class="action-btns">
-                                        <a href="#" class="btn-icon" onclick="editProject(); return false;"><i class="fa-solid fa-pen"></i></a>
+                                        <a href="#" class="btn-icon" onclick="editProject(<?php echo $proj['id']; ?>); return false;"><i class="fa-solid fa-pen"></i></a>
                                         <a href="?delete_id=<?php echo $proj['id']; ?>" class="btn-icon delete" onclick="return confirm('Are you sure you want to delete this project?');"><i class="fa-solid fa-trash"></i></a>
                                     </div>
                                 </td>
@@ -233,6 +327,7 @@ include 'includes/sidebar.php';
             </div>
             
             <form id="live-add-form" action="projects.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="project_id" id="project_id" value="">
                 
                 <!-- Category and SEO Section -->
                 <div class="project-meta-section">
@@ -297,6 +392,10 @@ include 'includes/sidebar.php';
                         }
                         .category-selector label:hover .del-cat-btn {
                             opacity: 1;
+                        }
+                        .draggable-cat:hover .tag-span, .draggable-gallery-cat:hover .tag-span {
+                            border-color: #000;
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
                         }
                         .add-cat-btn {
                             background: #fff;
@@ -382,6 +481,58 @@ include 'includes/sidebar.php';
                         </button>
                     </div>
 
+                    <!-- Gallery Categories section -->
+                    <label style="margin-bottom: 10px; display: block; font-weight: 600; font-size: 14px; color: var(--text-dark); margin-top: 20px;">Gallery Categories (For Filter Buttons)</label>
+                    <div class="category-selector" id="gallery-cat-selector-container">
+                        <?php 
+                        if ($gallery_categories && $gallery_categories->num_rows > 0): 
+                            while($cat = $gallery_categories->fetch_assoc()):
+                        ?>
+                        <label data-catname="<?php echo htmlspecialchars($cat['name']); ?>" class="gallery-cat draggable-gallery-cat" draggable="true" style="cursor: grab;">
+                            <span class="tag-span" style="background-color: white; font-weight: normal; border-color: rgba(0,0,0,0.1); color: var(--text-dark);">
+                                <?php if(!empty($cat['icon'])): ?><i class="cat-icon <?php echo htmlspecialchars($cat['icon']); ?>" style="color: var(--text-muted); margin-right: 8px;"></i><?php endif; ?>
+                                <?php echo htmlspecialchars($cat['name']); ?>
+                            </span>
+                            <button type="button" class="del-cat-btn" onclick="deleteInlineGalleryCategory('<?php echo htmlspecialchars(addslashes($cat['name'])); ?>')"><i class="fa-solid fa-xmark"></i></button>
+                        </label>
+                        <?php 
+                            endwhile;
+                            $gallery_categories->data_seek(0);
+                        endif; 
+                        ?>
+                        
+                        <div id="inline-add-gallery-cat-form" style="display: none; align-items: center; gap: 10px; background: #f9f9f9; padding: 5px 10px; border-radius: 25px; border: 1px solid #ddd;">
+                            <input type="text" id="inline_gallery_cat_name" placeholder="Category Name" style="padding: 5px 10px; border: 1px solid #ddd; border-radius: 15px; font-size: 13px; width: 120px;" required>
+                            
+                            <div style="position: relative; display: inline-block;">
+                                <div style="display: flex; align-items: center; border: 1px solid #ddd; border-radius: 15px; background: white; padding: 2px;">
+                                    <div style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border-radius: 12px; margin-right: 5px; border: 1px solid #eee;">
+                                        <i id="selected-gallery-icon-preview" class="fa-solid fa-couch" style="color: #333;"></i>
+                                    </div>
+                                    <input type="text" id="inline_gallery_cat_icon" value="fa-solid fa-couch" onfocus="toggleGalleryIconPicker(true)" oninput="updateGalleryIconPreview(this.value)" placeholder="fa-solid fa-couch" style="border: none; outline: none; font-size: 13px; width: 130px; background: transparent; padding: 5px;">
+                                    <button type="button" onclick="toggleGalleryIconPicker()" style="background: #6b7280; color: white; border: none; padding: 6px 12px; border-radius: 10px; font-size: 12px; cursor: pointer; margin-right: 2px;">Select</button>
+                                </div>
+
+                                <div id="gallery-icon-picker-dropdown" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 5px; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 320px; padding: 15px; z-index: 100;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                        <strong style="font-size: 12px; color: #333;">SELECT AN ICON</strong>
+                                        <button type="button" onclick="toggleGalleryIconPicker(false)" style="background: none; border: none; cursor: pointer; color: #888;"><i class="fa-solid fa-xmark"></i></button>
+                                    </div>
+                                    <input type="text" id="gallery-icon-search" placeholder="Search icons..." oninput="filterGalleryIcons()" style="width: 100%; padding: 8px; border: 1px solid #eee; border-radius: 4px; margin-bottom: 15px; font-size: 13px; box-sizing: border-box;">
+                                    <div id="gallery-icon-grid" style="display: flex; flex-wrap: wrap; gap: 8px; max-height: 150px; overflow-y: auto;">
+                                        <!-- Icons populated by JS -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" onclick="saveInlineGalleryCategory()" style="background: var(--accent-color); color: var(--text-dark); border: none; padding: 8px 20px; border-radius: 15px; font-size: 13px; cursor: pointer;">Save</button>
+                            <button type="button" onclick="toggleInlineAddGalleryCat()" style="background: none; border: none; color: #888; cursor: pointer; padding: 5px;"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <button type="button" class="add-cat-btn" id="add-gallery-cat-btn-trigger" onclick="toggleInlineAddGalleryCat()">
+                            <i class="fa-solid fa-plus" style="margin-right: 5px;"></i> Add Category
+                        </button>
+                    </div>
+
                     <!-- Custom Delete Confirmation Modal -->
                     <div id="delete-cat-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;">
                         <div style="background: white; padding: 25px; border-radius: 10px; width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center;">
@@ -395,6 +546,18 @@ include 'includes/sidebar.php';
                         </div>
                     </div>
 
+                    <!-- Custom Delete Confirmation Modal (Gallery Categories) -->
+                    <div id="delete-gallery-cat-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;">
+                        <div style="background: white; padding: 25px; border-radius: 10px; width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center;">
+                            <div style="font-size: 40px; color: #ef4444; margin-bottom: 15px;"><i class="fa-solid fa-circle-exclamation"></i></div>
+                            <h3 style="margin-top: 0; color: var(--text-dark);">Delete Gallery Category?</h3>
+                            <p style="color: var(--text-muted); margin-bottom: 25px;">Are you sure you want to delete "<strong id="delete-gallery-cat-name-display"></strong>"? This action cannot be undone.</p>
+                            <div style="display: flex; gap: 10px; justify-content: center;">
+                                <button type="button" onclick="closeDeleteGalleryCatModal()" style="padding: 10px 20px; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer; color: var(--text-dark); font-weight: 500;">Cancel</button>
+                                <button type="button" id="confirm-delete-gallery-cat-btn" style="padding: 10px 20px; border: none; background: #ef4444; color: white; border-radius: 6px; cursor: pointer; font-weight: 500;">Delete</button>
+                            </div>
+                        </div>
+                    </div>
                     <script>
                         const iconList = [
                             'fa-solid fa-couch', 'fa-solid fa-house', 'fa-regular fa-building', 'fa-solid fa-chair', 
@@ -562,6 +725,161 @@ include 'includes/sidebar.php';
                             });
                         });
 
+                        // --- Gallery Categories JS ---
+                        function toggleGalleryIconPicker(forceState) {
+                            const picker = document.getElementById('gallery-icon-picker-dropdown');
+                            if (forceState === true) {
+                                picker.style.display = 'block';
+                            } else if (forceState === false) {
+                                picker.style.display = 'none';
+                            } else {
+                                picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+                            }
+                            if(picker.style.display === 'block') {
+                                const grid = document.getElementById('gallery-icon-grid');
+                                grid.innerHTML = '';
+                                iconList.forEach(icon => {
+                                    const btn = document.createElement('button');
+                                    btn.type = 'button';
+                                    btn.className = 'gallery-icon-picker-item';
+                                    btn.style.cssText = 'width: 36px; height: 36px; border: 1px solid #eee; border-radius: 6px; background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #333; transition: all 0.2s;';
+                                    btn.innerHTML = `<i class="${icon}"></i>`;
+                                    btn.onclick = () => selectGalleryIcon(icon);
+                                    btn.onmouseover = () => btn.style.borderColor = '#aaa';
+                                    btn.onmouseout = () => btn.style.borderColor = '#eee';
+                                    grid.appendChild(btn);
+                                });
+                                document.getElementById('gallery-icon-search').value = '';
+                                filterGalleryIcons();
+                            }
+                        }
+
+                        function updateGalleryIconPreview(val) {
+                            document.getElementById('selected-gallery-icon-preview').className = val;
+                        }
+
+                        function selectGalleryIcon(icon) {
+                            document.getElementById('inline_gallery_cat_icon').value = icon;
+                            updateGalleryIconPreview(icon);
+                            toggleGalleryIconPicker(false);
+                        }
+
+                        function filterGalleryIcons() {
+                            const term = document.getElementById('gallery-icon-search').value.toLowerCase();
+                            const items = document.querySelectorAll('.gallery-icon-picker-item');
+                            items.forEach(item => {
+                                const iconClass = item.querySelector('i').className.toLowerCase();
+                                if(iconClass.includes(term)) {
+                                    item.style.display = 'flex';
+                                } else {
+                                    item.style.display = 'none';
+                                }
+                            });
+                        }
+
+                        document.addEventListener('click', function(e) {
+                            if(!e.target.closest('#inline-add-gallery-cat-form')) {
+                                toggleGalleryIconPicker(false);
+                            }
+                        });
+
+                        function toggleInlineAddGalleryCat() {
+                            const form = document.getElementById('inline-add-gallery-cat-form');
+                            const btn = document.getElementById('add-gallery-cat-btn-trigger');
+                            if (form.style.display === 'flex') {
+                                form.style.display = 'none';
+                                btn.style.display = 'flex';
+                            } else {
+                                form.style.display = 'flex';
+                                btn.style.display = 'none';
+                            }
+                        }
+
+                        function saveInlineGalleryCategory() {
+                            const name = document.getElementById('inline_gallery_cat_name').value;
+                            const icon = document.getElementById('inline_gallery_cat_icon').value;
+                            if(!name) { alert('Please enter a gallery category name'); return; }
+
+                            const formData = new FormData();
+                            formData.append('ajax_action', 'add_gallery_category');
+                            formData.append('name', name);
+                            formData.append('icon', icon);
+
+                            fetch('projects.php', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if(data.success) {
+                                    const label = document.createElement('label');
+                                    label.setAttribute('data-catname', data.name);
+                                    label.className = 'gallery-cat draggable-gallery-cat';
+                                    label.draggable = true;
+                                    label.style.cursor = 'grab';
+                                    label.innerHTML = `
+                                        <span class="tag-span" style="background-color: white; font-weight: normal; border-color: rgba(0,0,0,0.1); color: var(--text-dark);">
+                                            ${data.icon ? '<i class="cat-icon ' + data.icon + '" style="color: var(--text-muted); margin-right: 8px;"></i> ' : ''}${data.name}
+                                        </span>
+                                        <button type="button" class="del-cat-btn" onclick="deleteInlineGalleryCategory('${data.name}')"><i class="fa-solid fa-xmark"></i></button>
+                                    `;
+                                    const container = document.getElementById('gallery-cat-selector-container');
+                                    container.insertBefore(label, document.getElementById('inline-add-gallery-cat-form'));
+                                    
+                                    document.getElementById('inline_gallery_cat_name').value = '';
+                                    toggleInlineAddGalleryCat();
+                                } else {
+                                    alert('Error adding gallery category: ' + (data.error || 'Unknown error'));
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                alert('Failed to save gallery category. Check console.');
+                            });
+                        }
+
+                        let galleryCategoryToDelete = '';
+
+                        function deleteInlineGalleryCategory(name) {
+                            galleryCategoryToDelete = name;
+                            document.getElementById('delete-gallery-cat-name-display').innerText = name;
+                            document.getElementById('delete-gallery-cat-modal').style.display = 'flex';
+                        }
+                        
+                        function closeDeleteGalleryCatModal() {
+                            document.getElementById('delete-gallery-cat-modal').style.display = 'none';
+                            galleryCategoryToDelete = '';
+                        }
+                        
+                        document.getElementById('confirm-delete-gallery-cat-btn').addEventListener('click', function() {
+                            if(!galleryCategoryToDelete) return;
+                            
+                            const formData = new FormData();
+                            formData.append('ajax_action', 'delete_gallery_category');
+                            formData.append('name', galleryCategoryToDelete);
+
+                            fetch('projects.php', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if(data.success) {
+                                    const label = document.querySelector('#gallery-cat-selector-container label[data-catname="' + galleryCategoryToDelete + '"]');
+                                    if(label) label.remove();
+                                    closeDeleteGalleryCatModal();
+                                } else {
+                                    alert('Error deleting gallery category: ' + (data.error || 'Unknown error'));
+                                    closeDeleteGalleryCatModal();
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                closeDeleteGalleryCatModal();
+                            });
+                        });
+                        // --- End Gallery Categories JS ---
+
                         // Drag and drop for categories
                         const catContainer = document.getElementById('cat-selector-container');
                         let draggedItem = null;
@@ -618,6 +936,70 @@ include 'includes/sidebar.php';
                             
                             const formData = new FormData();
                             formData.append('ajax_action', 'update_category_order');
+                            formData.append('order_data', JSON.stringify(orderData));
+
+                            fetch('projects.php', {
+                                method: 'POST',
+                                body: formData
+                            }).catch(err => console.error(err));
+                        }
+
+                        // Drag and drop for gallery categories
+                        const galleryCatContainer = document.getElementById('gallery-cat-selector-container');
+                        let galleryDraggedItem = null;
+
+                        galleryCatContainer.addEventListener('dragstart', function(e) {
+                            if(e.target.closest('.draggable-gallery-cat')) {
+                                galleryDraggedItem = e.target.closest('.draggable-gallery-cat');
+                                setTimeout(() => galleryDraggedItem.style.opacity = '0.5', 0);
+                            }
+                        });
+
+                        galleryCatContainer.addEventListener('dragend', function(e) {
+                            if(galleryDraggedItem) {
+                                galleryDraggedItem.style.opacity = '1';
+                                galleryDraggedItem = null;
+                                saveGalleryCategoryOrder();
+                            }
+                        });
+
+                        galleryCatContainer.addEventListener('dragover', function(e) {
+                            e.preventDefault();
+                            if(!galleryDraggedItem) return;
+                            const afterElement = getGalleryDragAfterElement(galleryCatContainer, e.clientX, e.clientY);
+                            if (afterElement == null) {
+                                // insert before the add form
+                                const addForm = document.getElementById('inline-add-gallery-cat-form');
+                                if(addForm && addForm.parentNode === galleryCatContainer) {
+                                    galleryCatContainer.insertBefore(galleryDraggedItem, addForm);
+                                } else {
+                                    galleryCatContainer.appendChild(galleryDraggedItem);
+                                }
+                            } else {
+                                galleryCatContainer.insertBefore(galleryDraggedItem, afterElement);
+                            }
+                        });
+
+                        function getGalleryDragAfterElement(container, x, y) {
+                            const draggableElements = [...container.querySelectorAll('.draggable-gallery-cat:not([style*="opacity: 0.5"])')];
+                            return draggableElements.reduce((closest, child) => {
+                                const box = child.getBoundingClientRect();
+                                const offsetX = x - box.left - box.width / 2;
+                                const offsetY = y - box.top - box.height / 2;
+                                if (offsetX < 0 && offsetY < box.height && offsetY > -box.height && offsetX > closest.offset) {
+                                    return { offset: offsetX, element: child };
+                                } else {
+                                    return closest;
+                                }
+                            }, { offset: Number.NEGATIVE_INFINITY }).element;
+                        }
+
+                        function saveGalleryCategoryOrder() {
+                            const items = [...document.querySelectorAll('.draggable-gallery-cat')];
+                            const orderData = items.map(item => item.getAttribute('data-catname'));
+                            
+                            const formData = new FormData();
+                            formData.append('ajax_action', 'update_gallery_category_order');
                             formData.append('order_data', JSON.stringify(orderData));
 
                             fetch('projects.php', {
@@ -719,18 +1101,21 @@ function switchTab(tabId) {
 function addProject() {
     document.getElementById('live-editor-title').innerHTML = '<i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-color);"></i> Live Add Project';
     document.getElementById('btn-save-project').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Project';
+    document.getElementById('project_id').value = '';
     
-    // Optional: Reset iframe to clear state if it was an edit previously
-    // document.getElementById('editor-iframe').src = 'editor-project.php';
+    // Reset iframe to blank template
+    document.getElementById('editor-iframe').src = 'editor-project.php';
     
     switchTab('add-project');
 }
 
-function editProject() {
+function editProject(id) {
     document.getElementById('live-editor-title').innerHTML = '<i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-color);"></i> Live Edit Project';
     document.getElementById('btn-save-project').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Project';
+    document.getElementById('project_id').value = id;
     
-    // In a real app, you would pass the project ID to the iframe here (e.g. editor-project.php?id=1)
+    // Pass the project ID to the iframe
+    document.getElementById('editor-iframe').src = 'editor-project.php?id=' + id;
     
     switchTab('add-project');
 }

@@ -65,6 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_testimonial'])) {
     $company_icon = $conn->real_escape_string($_POST['company_icon'] ?? '');
     $content = $conn->real_escape_string($_POST['content']);
     $status = $conn->real_escape_string($_POST['status']);
+    $company_logo_size = isset($_POST['company_logo_size']) ? (int)$_POST['company_logo_size'] : 40;
 
     $client_image = '';
     $company_logo = '';
@@ -109,9 +110,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_testimonial'])) {
         if (empty($error_msg)) {
             if ($testimonial_id > 0) {
                 // Update existing
-                $update_query = "UPDATE testimonials SET client_name=?, client_role=?, company_name=?, company_icon=?, content=?, status=?";
-                $params = [$client_name, $client_role, $company_name, $company_icon, $content, $status];
-                $types = "ssssss";
+                $update_query = "UPDATE testimonials SET client_name=?, client_role=?, company_name=?, company_icon=?, content=?, status=?, company_logo_size=?";
+                $params = [$client_name, $client_role, $company_name, $company_icon, $content, $status, $company_logo_size];
+                $types = "ssssssi";
 
                 if (!empty($client_image)) {
                     $update_query .= ", client_image=?";
@@ -138,8 +139,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_testimonial'])) {
                 $stmt->close();
             } else {
                 // Insert new
-                $stmt = $conn->prepare("INSERT INTO testimonials (client_name, client_role, company_name, company_logo, company_icon, client_image, content, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param("ssssssss", $client_name, $client_role, $company_name, $company_logo, $company_icon, $client_image, $content, $status);
+                $stmt = $conn->prepare("INSERT INTO testimonials (client_name, client_role, company_name, company_logo, company_icon, client_image, content, status, company_logo_size) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("ssssssssi", $client_name, $client_role, $company_name, $company_logo, $company_icon, $client_image, $content, $status, $company_logo_size);
                 if ($stmt->execute()) {
                     header("Location: testimonials.php?success=insert");
                     exit;
@@ -186,7 +187,8 @@ $stmt->close();
     <div class="main-content">
         
         <div class="page-header">
-            <h1>Manage Testimonials</h1>
+            <h1><?php echo isset($_GET['edit']) ? 'Edit Testimonial' : 'Manage Testimonials'; ?></h1>
+            <?php if(!isset($_GET['edit'])): ?>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <button class="btn-primary" style="background-color: var(--accent-color); color: var(--text-dark);" onclick="switchTab('manage-stats')">
                     <i class="fa-solid fa-chart-bar"></i> Manage Stats
@@ -195,6 +197,7 @@ $stmt->close();
                     <i class="fa-solid fa-plus"></i> Add New Testimonial
                 </button>
             </div>
+            <?php endif; ?>
         </div>
 
         <?php if(!empty($success_msg)): ?>
@@ -250,9 +253,9 @@ $stmt->close();
                                 <?php if(!empty($row['company_name'])): ?>
                                 <div style="font-size: 12px; color: var(--text-main); display: flex; align-items: center; gap: 5px;">
                                     <?php if(!empty($row['company_logo'])): ?>
-                                    <img src="../uploads/testimonials/<?php echo htmlspecialchars($row['company_logo']); ?>" style="max-height: 20px;">
+                                    <img src="../uploads/testimonials/<?php echo htmlspecialchars($row['company_logo']); ?>" style="max-height: <?php echo !empty($row['company_logo_size']) ? (int)$row['company_logo_size'] : 40; ?>px;">
                                     <?php elseif(!empty($row['company_icon'])): ?>
-                                    <i class="<?php echo htmlspecialchars($row['company_icon']); ?>" style="color: #EAB136;"></i> 
+                                    <i class="<?php echo htmlspecialchars($row['company_icon']); ?>" style="color: #EAB136; font-size: <?php echo !empty($row['company_logo_size']) ? (int)$row['company_logo_size'] : 40; ?>px;"></i> 
                                     <?php endif; ?>
                                     <?php echo htmlspecialchars($row['company_name']); ?>
                                 </div>
@@ -307,10 +310,19 @@ $stmt->close();
                                 <input type="text" name="company_name" id="input_company_name" class="form-control" placeholder="e.g., Logoipsum" value="<?php echo $edit_data ? htmlspecialchars($edit_data['company_name']) : ''; ?>">
                             </div>
 
-                            <div class="form-group">
-                                <label class="form-label">Brand Logo (Image file)</label>
-                                <input type="file" name="company_logo" id="input_company_logo" class="form-control" accept="image/*" onchange="previewCompanyLogo(this)">
-                                <small style="color: var(--text-muted); font-size: 11px;">Upload an image (png, jpg, svg) or use an icon below.</small>
+                            <div class="form-group" style="display:flex; gap:15px; align-items:flex-start;">
+                                <div style="flex:1;">
+                                    <label class="form-label">Brand Logo (Image file)</label>
+                                    <input type="file" name="company_logo" id="input_company_logo" class="form-control" accept="image/*" onchange="previewCompanyLogo(this)">
+                                    <small style="color: var(--text-muted); font-size: 11px;">Upload an image (png, jpg, svg) or use an icon below.</small>
+                                </div>
+                                <div style="width:100px;">
+                                    <label class="form-label">Logo Size</label>
+                                    <div style="display:flex; align-items:center; gap:5px;">
+                                        <input type="number" name="company_logo_size" id="input_company_logo_size" class="form-control" min="10" max="150" value="<?php echo $edit_data ? (int)$edit_data['company_logo_size'] : 40; ?>" style="padding-right:0;">
+                                        <span style="font-size:12px; color:var(--text-muted);">px</span>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="form-group">
@@ -380,8 +392,8 @@ $stmt->close();
                                         $logo_src = '../uploads/testimonials/' . htmlspecialchars($edit_data['company_logo']);
                                     }
                                 ?>
-                                <img id="preview_company_img" src="<?php echo $logo_src; ?>" style="max-height: 25px; display: <?php echo $logo_display; ?>;">
-                                <i id="preview_icon" class="<?php echo $edit_data ? htmlspecialchars($edit_data['company_icon']) : 'fa-solid fa-gem'; ?>" style="color: #EAB136; display: <?php echo $icon_display; ?>;"></i> 
+                                <img id="preview_company_img" src="<?php echo $logo_src; ?>" style="max-height: <?php echo $edit_data ? (int)$edit_data['company_logo_size'] : 40; ?>px; display: <?php echo $logo_display; ?>;">
+                                <i id="preview_icon" class="<?php echo $edit_data ? htmlspecialchars($edit_data['company_icon']) : 'fa-solid fa-gem'; ?>" style="color: #EAB136; display: <?php echo $icon_display; ?>; font-size: <?php echo $edit_data ? (int)$edit_data['company_logo_size'] : 40; ?>px;"></i> 
                                 <span id="preview_company"><?php echo $edit_data ? htmlspecialchars($edit_data['company_name']) : ''; ?></span>
                             </span>
                         </div>
@@ -444,7 +456,8 @@ document.addEventListener('DOMContentLoaded', () => {
         role: document.getElementById('input_client_role'),
         company: document.getElementById('input_company_name'),
         icon: document.getElementById('input_company_icon'),
-        content: document.getElementById('input_content')
+        content: document.getElementById('input_content'),
+        logo_size: document.getElementById('input_company_logo_size')
     };
 
     const preview = {
@@ -462,7 +475,10 @@ document.addEventListener('DOMContentLoaded', () => {
         preview.role.innerText = inputs.role.value || 'Role / Title';
         preview.company.innerText = inputs.company.value || '';
         
-        const hasLogo = document.getElementById('input_company_logo').files[0];
+        const hasNewLogo = document.getElementById('input_company_logo').files[0];
+        const hasExistingLogo = preview.company_img.getAttribute('src') && preview.company_img.getAttribute('src') !== '';
+        const hasLogo = hasNewLogo || hasExistingLogo;
+        
         const hasCompany = inputs.company.value.trim() !== '';
 
         if (!hasLogo && !hasCompany) {
@@ -471,11 +487,15 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('preview_company_wrapper').style.display = 'flex';
         }
 
-        // Hide icon if company_logo is uploaded (handled in previewCompanyLogo)
+        // Only fallback to icon if there is genuinely no logo (new or existing)
         if (!hasLogo) {
             preview.icon.className = inputs.icon.value || 'fa-solid fa-gem';
             preview.icon.style.display = 'inline-block';
             preview.company_img.style.display = 'none';
+        } else {
+            // Ensure logo is visible (it might have been hidden previously)
+            preview.icon.style.display = 'none';
+            preview.company_img.style.display = 'inline-block';
         }
 
         preview.content.innerText = inputs.content.value || 'The testimonial content will appear here...';
@@ -485,6 +505,19 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if(inputs.name.value && !document.getElementById('input_client_image').files[0]) {
              preview.img.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(inputs.name.value);
         }
+        
+        let logoSize = parseInt(inputs.logo_size.value) || 40;
+        if (logoSize > 150) {
+            logoSize = 150;
+            inputs.logo_size.value = 150;
+        } else if (logoSize < 10) {
+            // Don't auto-correct while they might be typing a single digit like '1', but cap the minimum applied size
+            // logoSize = Math.max(10, logoSize); 
+            // Wait, to allow typing, just limit the applied size, not the input value immediately
+        }
+        
+        preview.company_img.style.maxHeight = Math.max(10, logoSize) + 'px';
+        preview.icon.style.fontSize = Math.max(10, logoSize) + 'px';
     }
 
     Object.values(inputs).forEach(input => {

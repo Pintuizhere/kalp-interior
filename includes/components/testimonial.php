@@ -70,9 +70,9 @@ $testi_stats_stmt->close();
                         <?php if(!empty($row['company_name']) || !empty($row['company_logo'])): ?>
                         <span style="font-weight: 700; color: var(--text-dark); font-size: 16px; display: flex; align-items: center; gap: 5px;">
                             <?php if(!empty($row['company_logo'])): ?>
-                            <img src="uploads/testimonials/<?php echo htmlspecialchars($row['company_logo']); ?>" style="max-height: 25px;">
+                            <img src="uploads/testimonials/<?php echo htmlspecialchars($row['company_logo']); ?>" style="max-height: <?php echo !empty($row['company_logo_size']) ? (int)$row['company_logo_size'] : 40; ?>px;">
                             <?php elseif(!empty($row['company_icon'])): ?>
-                            <i class="<?php echo htmlspecialchars($row['company_icon']); ?>" style="color: #EAB136;"></i> 
+                            <i class="<?php echo htmlspecialchars($row['company_icon']); ?>" style="color: #EAB136; font-size: <?php echo !empty($row['company_logo_size']) ? (int)$row['company_logo_size'] : 40; ?>px;"></i> 
                             <?php endif; ?>
                             <?php echo !empty($row['company_name']) ? htmlspecialchars($row['company_name']) : ''; ?>
                         </span>
