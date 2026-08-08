@@ -251,6 +251,16 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (standardSteps) standardSteps.style.display = 'block';
                         if (specificTypeLabel) specificTypeLabel.style.display = 'flex';
                         if (kitchenOptions) kitchenOptions.style.display = 'none';
+                        
+                        const val = this.querySelector('input').value;
+                        if(val === 'residential' || val === 'commercial') {
+                            document.querySelectorAll('.pkg-card').forEach(el => {
+                                el.style.display = (el.getAttribute('data-category') === val) ? 'flex' : 'none';
+                            });
+                            document.querySelectorAll('.addon-card').forEach(el => {
+                                el.style.display = (el.getAttribute('data-category') === val) ? 'inline-flex' : 'none';
+                            });
+                        }
                     }
                 }
             });

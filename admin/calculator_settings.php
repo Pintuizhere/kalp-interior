@@ -108,13 +108,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Add/Edit Addon
     if ($action == 'save_addon') {
         $id = (int)($_POST['id'] ?? 0);
+        $category_slug = $conn->real_escape_string($_POST['category_slug'] ?? 'residential');
         $name = $conn->real_escape_string($_POST['name']);
         $percent = (float)$_POST['percent_value'];
         
         if ($id > 0) {
-            $conn->query("UPDATE calc_addons SET name='$name', percent_value=$percent WHERE id=$id");
+            $conn->query("UPDATE calc_addons SET category_slug='$category_slug', name='$name', percent_value=$percent WHERE id=$id");
         } else {
-            $conn->query("INSERT INTO calc_addons (name, percent_value) VALUES ('$name', $percent)");
+            $conn->query("INSERT INTO calc_addons (category_slug, name, percent_value) VALUES ('$category_slug', '$name', $percent)");
         }
         $success_msg = "Add-on saved!";
     }
@@ -263,8 +264,14 @@ include 'includes/sidebar.php';
                         <div class="form-group">
                             <label class="form-label">Category</label>
                             <select name="category_slug" id="type_cat" class="form-control" required>
-                                <option value="residential">Residential</option>
-                                <option value="commercial">Commercial</option>
+                                <?php 
+                                if (isset($categories) && $categories->num_rows > 0) {
+                                    mysqli_data_seek($categories, 0);
+                                    while($cat = $categories->fetch_assoc()):
+                                        if($cat['slug'] == 'kitchen' || $cat['slug'] == 'modular-kitchen') continue;
+                                ?>
+                                <option value="<?php echo $cat['slug']; ?>"><?php echo $cat['name']; ?></option>
+                                <?php endwhile; } ?>
                             </select>
                         </div>
                         <div class="form-group">
@@ -379,8 +386,13 @@ include 'includes/sidebar.php';
                         <div class="form-group">
                             <label class="form-label">Category Area</label>
                             <select name="category_slug" id="pkg_cat" class="form-control" required>
-                                <option value="standard">Standard (Residential/Commercial)</option>
-                                <option value="kitchen">Modular Kitchen</option>
+                                <?php 
+                                if (isset($categories) && $categories->num_rows > 0) {
+                                    mysqli_data_seek($categories, 0);
+                                    while($cat = $categories->fetch_assoc()):
+                                ?>
+                                <option value="<?php echo $cat['slug']; ?>"><?php echo $cat['name']; ?></option>
+                                <?php endwhile; } ?>
                             </select>
                         </div>
                         <div class="form-group">
@@ -432,11 +444,23 @@ include 'includes/sidebar.php';
                         <input type="hidden" name="action" value="save_addon">
                         <input type="hidden" name="id" id="addon_id" value="0">
                         <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select name="category_slug" id="addon_cat" class="form-control" required>
+                                <?php 
+                                if (isset($categories) && $categories->num_rows > 0) {
+                                    mysqli_data_seek($categories, 0);
+                                    while($cat = $categories->fetch_assoc()):
+                                ?>
+                                <option value="<?php echo $cat['slug']; ?>"><?php echo $cat['name']; ?></option>
+                                <?php endwhile; } ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label class="form-label">Add-on Name (e.g. Civil work)</label>
                             <input type="text" name="name" id="addon_name" required class="form-control">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Cost % (of base subtotal)</label>
+                            <label class="form-label">Value (% or ₹/sq ft)</label>
                             <input type="number" step="0.01" name="percent_value" id="addon_pct" required class="form-control">
                         </div>
                         <button type="submit" class="btn-primary">Save Add-on</button>
@@ -445,15 +469,24 @@ include 'includes/sidebar.php';
                 </div>
                 <div class="table-wrapper">
                     <table class="admin-table">
-                        <thead><tr><th>Name</th><th>Percent Value</th><th>Action</th></tr></thead>
+                        <thead><tr><th>Category</th><th>Name</th><th>Value</th><th>Action</th></tr></thead>
                         <tbody>
                             <?php while($row = $addons->fetch_assoc()): ?>
                             <tr>
+                                <td><span style="text-transform:uppercase; font-size:10px; padding:3px 8px; background:#eee; border-radius:10px;"><?php echo $row['category_slug'] ?? 'residential'; ?></span></td>
                                 <td><strong><?php echo $row['name']; ?></strong></td>
-                                <td>+<?php echo $row['percent_value']; ?>%</td>
+                                <td>
+                                    <?php 
+                                    if (($row['category_slug'] ?? '') == 'modular-kitchen') {
+                                        echo '₹' . $row['percent_value'] . '/sq ft';
+                                    } else {
+                                        echo '+' . $row['percent_value'] . '%';
+                                    }
+                                    ?>
+                                </td>
                                 <td>
                                     <div class="action-btns">
-                                        <a href="javascript:void(0)" class="btn-icon" onclick="editAddon(<?php echo $row['id']; ?>, '<?php echo addslashes($row['name']); ?>', <?php echo $row['percent_value']; ?>)"><i class="fa-solid fa-pen"></i></a>
+                                        <a href="javascript:void(0)" class="btn-icon" onclick="editAddon(<?php echo $row['id']; ?>, '<?php echo addslashes($row['category_slug'] ?? 'residential'); ?>', '<?php echo addslashes($row['name']); ?>', <?php echo $row['percent_value']; ?>)"><i class="fa-solid fa-pen"></i></a>
                                         <a href="?delete=calc_addons&id=<?php echo $row['id']; ?>" class="btn-icon delete" onclick="return confirm('Delete?');"><i class="fa-solid fa-trash"></i></a>
                                     </div>
                                 </td>
@@ -774,6 +807,7 @@ function resetForm(prefix) {
     if(prefix == 'addon') {
         document.getElementById('addon_name').value = '';
         document.getElementById('addon_pct').value = '';
+        document.getElementById('addon_cat').value = 'residential';
     }
 }
 
@@ -808,8 +842,9 @@ function editPackage(id, cat, name, price, pdf) {
     document.getElementById('pkg_price').value = price;
     document.getElementById('pkg_pdf').value = pdf;
 }
-function editAddon(id, name, pct) {
+function editAddon(id, cat, name, pct) {
     document.getElementById('addon_id').value = id;
+    document.getElementById('addon_cat').value = cat;
     document.getElementById('addon_name').value = name;
     document.getElementById('addon_pct').value = pct;
 }

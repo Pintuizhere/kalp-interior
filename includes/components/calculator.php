@@ -223,19 +223,19 @@ if($res){ while($row = $res->fetch_assoc()){ $calc_settings[$row['setting_key']]
                             </div>
                             <div class="calc-options-grid finish-options">
                                 <?php 
-                                $pkg_category = isset($calc_packages_data['standard']) ? 'standard' : (isset($calc_packages_data['residential']) ? 'residential' : '');
-                                if($pkg_category): 
-                                    $is_first_pkg = true; 
-                                    foreach($calc_packages_data[$pkg_category] as $pkg): ?>
-                                <label class="calc-option-card <?php echo $is_first_pkg ? 'active' : ''; ?>" style="flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px;">
-                                    <input type="radio" name="finish_level" value="<?php echo $pkg['price_per_sqft']; ?>" <?php echo $is_first_pkg ? 'checked' : ''; ?>>
+                                foreach(['residential', 'commercial'] as $cat_slug):
+                                    if(isset($calc_packages_data[$cat_slug])): 
+                                        $is_first_pkg = true; 
+                                        foreach($calc_packages_data[$cat_slug] as $pkg): ?>
+                                <label class="calc-option-card pkg-card <?php echo ($cat_slug=='residential' && $is_first_pkg) ? 'active' : ''; ?>" data-category="<?php echo $cat_slug; ?>" style="flex-direction: row; text-align: left; align-items: center; justify-content: flex-start; padding: 15px; <?php echo $cat_slug == 'commercial' ? 'display:none;' : ''; ?>">
+                                    <input type="radio" name="finish_level" value="<?php echo $pkg['price_per_sqft']; ?>" <?php echo ($cat_slug=='residential' && $is_first_pkg) ? 'checked' : ''; ?>>
                                     <?php echo $pkg['icon_svg']; ?>
                                     <div>
                                         <span style="display: block; font-weight: 600;"><?php echo htmlspecialchars($pkg['name']); ?></span>
                                         <span style="font-size: 11px; opacity: 0.7; display: none;">₹<?php echo $pkg['price_per_sqft']; ?>/sqft</span>
                                     </div>
                                 </label>
-                                <?php $is_first_pkg = false; endforeach; endif; ?>
+                                <?php $is_first_pkg = false; endforeach; endif; endforeach; ?>
                             </div>
                         </div>
 
@@ -246,8 +246,12 @@ if($res){ while($row = $res->fetch_assoc()){ $calc_settings[$row['setting_key']]
                                 <label>Add-ons (Optional)</label>
                             </div>
                             <div class="calc-checkbox-grid addons">
-                                <?php foreach($calc_addons_data as $addon): ?>
-                                <label class="calc-checkbox">
+                                <?php 
+                                foreach($calc_addons_data as $addon): 
+                                    if ($addon['category_slug'] === 'modular-kitchen') continue;
+                                    $cat_slug = $addon['category_slug'] ?? 'residential';
+                                ?>
+                                <label class="calc-checkbox addon-card" data-category="<?php echo $cat_slug; ?>" style="<?php echo $cat_slug == 'commercial' ? 'display:none;' : ''; ?>">
                                     <input type="checkbox" name="addons" value="<?php echo $addon['percent_value']; ?>">
                                     <span class="chk-box"><i class="fa-solid fa-check"></i></span> <?php echo htmlspecialchars($addon['name']); ?>
                                 </label>
@@ -456,29 +460,21 @@ if($res){ while($row = $res->fetch_assoc()){ $calc_settings[$row['setting_key']]
                         <p style="text-align: center; color: rgba(255,255,255,0.7); font-size: 13px; margin-bottom: 25px;">The prices are indicative only, actual cost will be provided after hardware finalization</p>
                         
                         <div class="calc-options-grid k-accessories-grid" style="grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                            <?php 
+                            foreach($calc_addons_data as $addon): 
+                                if ($addon['category_slug'] === 'modular-kitchen'):
+                            ?>
                             <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
-                                <input type="checkbox" name="k_accessories" value="300" data-name="Granite" style="margin-right: 15px; margin-top: 5px;">
+                                <input type="checkbox" name="k_accessories" value="<?php echo floatval($addon['percent_value']); ?>" data-name="<?php echo htmlspecialchars($addon['name']); ?>" style="margin-right: 15px; margin-top: 5px;">
                                 <div>
-                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Granite</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹300/sq ft</div>
+                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;"><?php echo htmlspecialchars($addon['name']); ?></div>
+                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹<?php echo floatval($addon['percent_value']); ?>/sq ft</div>
                                 </div>
                             </label>
-                            
-                            <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
-                                <input type="checkbox" name="k_accessories" value="450" data-name="Premium granite" style="margin-right: 15px; margin-top: 5px;">
-                                <div>
-                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Premium granite</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹450/sq ft</div>
-                                </div>
-                            </label>
-
-                            <label class="calc-checkbox-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; cursor: pointer; transition: 0.3s;">
-                                <input type="checkbox" name="k_accessories" value="900" data-name="Quartz/Premium Imported Granite" style="margin-right: 15px; margin-top: 5px;">
-                                <div>
-                                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Quartz/Premium Imported Granite</div>
-                                    <div style="color: #E74C3C; font-weight: bold; font-size: 13px; display: none;">₹900/sq ft</div>
-                                </div>
-                            </label>
+                            <?php 
+                                endif;
+                            endforeach; 
+                            ?>
                         </div>
 
                         <div style="display: flex; justify-content: space-between; margin-top: 30px;">
