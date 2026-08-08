@@ -8,7 +8,7 @@ $calc_types = $conn->query("SELECT * FROM calc_types ORDER BY category_slug ASC,
 $calc_types_data = [];
 while($row = $calc_types->fetch_assoc()){ $calc_types_data[$row['category_slug']][] = $row; }
 
-$calc_styles = $conn->query("SELECT * FROM calc_styles ORDER BY percent_value ASC");
+$calc_styles = $conn->query("SELECT * FROM calc_styles ORDER BY position ASC, percent_value ASC");
 $calc_styles_data = [];
 while($row = $calc_styles->fetch_assoc()){ $calc_styles_data[] = $row; }
 
@@ -201,16 +201,22 @@ if($res){ while($row = $res->fetch_assoc()){ $calc_settings[$row['setting_key']]
                             <label>Select Design Style</label>
                         </div>
                         <div class="calc-options-grid style-options">
-                            <?php $is_first_style = true; foreach($calc_styles_data as $style): ?>
-                            <label class="calc-option-card <?php echo $is_first_style ? 'active' : ''; ?>">
-                                <input type="radio" name="design_style" value="<?php echo $style['percent_value']; ?>" <?php echo $is_first_style ? 'checked' : ''; ?>>
+                            <?php 
+                            $is_first_res = true;
+                            foreach($calc_styles_data as $style): 
+                                $cat_slug = $style['category_slug'] ?? 'residential';
+                                $is_active = ($cat_slug == 'residential' && $is_first_res);
+                                if ($cat_slug == 'residential') $is_first_res = false;
+                            ?>
+                            <label class="calc-option-card style-card <?php echo $is_active ? 'active' : ''; ?>" data-category="<?php echo $cat_slug; ?>" style="<?php echo $cat_slug == 'commercial' ? 'display: none;' : ''; ?> flex-direction: column; text-align: center; padding: 15px;">
+                                <input type="radio" name="design_style" value="<?php echo $style['percent_value']; ?>" <?php echo $is_active ? 'checked' : ''; ?>>
                                 <i class="<?php echo htmlspecialchars($style['icon']); ?>" style="color: <?php 
                                     $colors = ['#2ECC71', '#A9CCE3', '#F1C40F', '#3498DB', '#9B59B6', '#E67E22', '#1ABC9C'];
-                                    echo $colors[array_rand($colors)]; // Give it a random brand color, or if I want it deterministic, I can use modulo
+                                    echo $colors[array_rand($colors)]; 
                                 ?>;"></i>
                                 <span><?php echo htmlspecialchars($style['name']); ?></span>
                             </label>
-                            <?php $is_first_style = false; endforeach; ?>
+                            <?php endforeach; ?>
                         </div>
                     </div>
 

@@ -260,6 +260,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             document.querySelectorAll('.addon-card').forEach(el => {
                                 el.style.display = (el.getAttribute('data-category') === val) ? 'inline-flex' : 'none';
                             });
+                            document.querySelectorAll('.style-card').forEach(el => {
+                                el.style.display = (el.getAttribute('data-category') === val) ? 'flex' : 'none';
+                            });
                         }
                     }
                 }

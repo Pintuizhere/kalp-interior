@@ -73,17 +73,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $success_msg = "Type saved!";
     }
     
-    // Add/Edit Style
+    // Add/Edit Design Style
     if ($action == 'save_style') {
         $id = (int)($_POST['id'] ?? 0);
+        $category_slug = $conn->real_escape_string($_POST['category_slug']);
         $name = $conn->real_escape_string($_POST['name']);
         $percent = (float)$_POST['percent_value'];
         $icon = $conn->real_escape_string($_POST['icon']);
+        $position = (int)($_POST['position'] ?? 0);
         
         if ($id > 0) {
-            $conn->query("UPDATE calc_styles SET name='$name', percent_value=$percent, icon='$icon' WHERE id=$id");
+            $conn->query("UPDATE calc_styles SET category_slug='$category_slug', name='$name', percent_value=$percent, icon='$icon', position=$position WHERE id=$id");
         } else {
-            $conn->query("INSERT INTO calc_styles (name, icon, percent_value) VALUES ('$name', '$icon', $percent)");
+            $conn->query("INSERT INTO calc_styles (category_slug, name, icon, percent_value, position) VALUES ('$category_slug', '$name', '$icon', $percent, $position)");
         }
         $success_msg = "Style saved!";
     }
@@ -134,7 +136,7 @@ if (isset($_GET['delete'])) {
 // Fetch all data
 $categories = $conn->query("SELECT * FROM calc_categories ORDER BY id ASC");
 $types = $conn->query("SELECT * FROM calc_types ORDER BY category_slug ASC, id ASC");
-$styles = $conn->query("SELECT * FROM calc_styles ORDER BY percent_value ASC");
+$styles = $conn->query("SELECT * FROM calc_styles ORDER BY position ASC, percent_value ASC");
 $packages = $conn->query("SELECT * FROM calc_packages ORDER BY category_slug ASC, price_per_sqft ASC");
 $addons = $conn->query("SELECT * FROM calc_addons ORDER BY id ASC");
 
@@ -329,8 +331,25 @@ include 'includes/sidebar.php';
                         <input type="hidden" name="action" value="save_style">
                         <input type="hidden" name="id" id="style_id" value="0">
                         <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select name="category_slug" id="style_cat" class="form-control" required>
+                                <?php 
+                                if (isset($categories) && $categories->num_rows > 0) {
+                                    mysqli_data_seek($categories, 0);
+                                    while($cat = $categories->fetch_assoc()):
+                                        if($cat['slug'] == 'kitchen' || $cat['slug'] == 'modular-kitchen') continue;
+                                ?>
+                                <option value="<?php echo $cat['slug']; ?>"><?php echo $cat['name']; ?></option>
+                                <?php endwhile; } ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label class="form-label">Style Name</label>
                             <input type="text" name="name" id="style_name" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Position (Sort Order)</label>
+                            <input type="number" name="position" id="style_pos" required class="form-control" value="0">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Price Adjustment % (e.g. -8 for -8%, 15 for +15%)</label>
@@ -352,10 +371,12 @@ include 'includes/sidebar.php';
                 </div>
                 <div class="table-wrapper">
                     <table class="admin-table">
-                        <thead><tr><th>Icon</th><th>Style Name</th><th>Adjustment %</th><th>Action</th></tr></thead>
+                        <thead><tr><th>Pos</th><th>Category</th><th>Icon</th><th>Style Name</th><th>Adjustment %</th><th>Action</th></tr></thead>
                         <tbody>
                             <?php while($row = $styles->fetch_assoc()): ?>
                             <tr>
+                                <td><?php echo $row['position']; ?></td>
+                                <td><span style="text-transform:uppercase; font-size:10px; padding:3px 8px; background:#eee; border-radius:10px;"><?php echo $row['category_slug'] ?? 'residential'; ?></span></td>
                                 <td><i class="<?php echo $row['icon']; ?>"></i></td>
                                 <td><strong><?php echo $row['name']; ?></strong></td>
                                 <td style="color: <?php echo $row['percent_value'] > 0 ? '#166534' : ($row['percent_value'] < 0 ? '#b91c1c' : '#333'); ?>">
@@ -363,7 +384,7 @@ include 'includes/sidebar.php';
                                 </td>
                                 <td>
                                     <div class="action-btns">
-                                        <a href="javascript:void(0)" class="btn-icon" onclick="editStyle(<?php echo $row['id']; ?>, '<?php echo addslashes($row['name']); ?>', <?php echo $row['percent_value']; ?>, '<?php echo addslashes($row['icon']); ?>')"><i class="fa-solid fa-pen"></i></a>
+                                        <a href="javascript:void(0)" class="btn-icon" onclick="editStyle(<?php echo $row['id']; ?>, '<?php echo addslashes($row['category_slug'] ?? 'residential'); ?>', '<?php echo addslashes($row['name']); ?>', <?php echo $row['percent_value']; ?>, '<?php echo addslashes($row['icon']); ?>', <?php echo $row['position']; ?>)"><i class="fa-solid fa-pen"></i></a>
                                         <a href="?delete=calc_styles&id=<?php echo $row['id']; ?>" class="btn-icon delete" onclick="return confirm('Delete?');"><i class="fa-solid fa-trash"></i></a>
                                     </div>
                                 </td>
@@ -796,7 +817,9 @@ function resetForm(prefix) {
     if(prefix == 'style') {
         document.getElementById('style_name').value = '';
         document.getElementById('style_pct').value = '';
+        document.getElementById('style_pos').value = '0';
         document.getElementById('style_icon').value = '';
+        document.getElementById('style_cat').value = 'residential';
         document.getElementById('style_icon_preview').className = 'fa-solid fa-couch';
     }
     if(prefix == 'pkg') {
@@ -827,10 +850,12 @@ function editType(id, cat, name, sqft, icon) {
     let v = (icon || '').trim();
     document.getElementById('type_icon_preview').className = v ? (v.includes('fa-') ? v : 'fa-solid fa-' + v) : 'fa-solid fa-bed';
 }
-function editStyle(id, name, pct, icon) {
+function editStyle(id, cat, name, pct, icon, pos) {
     document.getElementById('style_id').value = id;
+    document.getElementById('style_cat').value = cat;
     document.getElementById('style_name').value = name;
     document.getElementById('style_pct').value = pct;
+    document.getElementById('style_pos').value = pos;
     document.getElementById('style_icon').value = icon;
     let v = (icon || '').trim();
     document.getElementById('style_icon_preview').className = v ? (v.includes('fa-') ? v : 'fa-solid fa-' + v) : 'fa-solid fa-couch';
