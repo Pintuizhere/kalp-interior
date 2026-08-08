@@ -23,6 +23,10 @@ while($row = $calc_addons->fetch_assoc()){ $calc_addons_data[] = $row; }
 $calc_settings = [];
 $res = $conn->query("SELECT setting_key, setting_value FROM calculator_settings");
 if($res){ while($row = $res->fetch_assoc()){ $calc_settings[$row['setting_key']] = $row['setting_value']; } }
+
+$calc_breakdowns = $conn->query("SELECT * FROM calc_breakdowns ORDER BY category_slug ASC, position ASC");
+$calc_breakdowns_data = [];
+while($row = $calc_breakdowns->fetch_assoc()){ $calc_breakdowns_data[$row['category_slug']][] = $row; }
 ?>
 <style>
     @media (max-width: 768px) {
@@ -516,38 +520,7 @@ if($res){ while($row = $res->fetch_assoc()){ $calc_settings[$row['setting_key']]
                     <div class="results-breakdown" id="estimate-breakdown-section" style="display: none;">
                         <h4 class="breakdown-title">Estimate Breakdown</h4>
                         <ul class="breakdown-list">
-                            <li>
-                                <span>TV Unit, Crockery, Vanity & Other Furniture</span>
-                                <span id="bd-furniture">₹0</span>
-                            </li>
-                            <li>
-                                <span>Wardrobes & Storage</span>
-                                <span id="bd-wardrobes">₹0</span>
-                            </li>
-                            <li>
-                                <span>Modular Kitchen</span>
-                                <span id="bd-kitchen">₹0</span>
-                            </li>
-                            <li>
-                                <span>False Ceiling</span>
-                                <span id="bd-false-ceiling">₹0</span>
-                            </li>
-                            <li>
-                                <span>Electrical & Lighting</span>
-                                <span id="bd-electrical">₹0</span>
-                            </li>
-                            <li>
-                                <span>Paint & Wall Finishes</span>
-                                <span id="bd-paint">₹0</span>
-                            </li>
-                            <li>
-                                <span>Decorative Lights & Accessories</span>
-                                <span id="bd-decorative">₹0</span>
-                            </li>
-                            <li>
-                                <span>Design, Project Management & Site Supervision</span>
-                                <span id="bd-design">₹0</span>
-                            </li>
+                            <div id="dynamic-breakdown-list"></div>
                             <!-- Add-ons -->
                             <li id="li-addon-8" style="display: none; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 10px; margin-top: 10px; color: var(--accent-color);">
                                 <span>+ Civil work</span>
@@ -953,6 +926,7 @@ window.CALC_CONFIG = {
         com_design: <?php echo $calc_settings['bd_commercial_design'] ?? 7.0; ?>,
         com_paint: <?php echo $calc_settings['bd_commercial_paint'] ?? 7.5; ?>
     },
+    breakdownData: <?php echo json_encode($calc_breakdowns_data); ?>,
     appended_pdf_path: "<?php echo addslashes($calc_settings['appended_pdf_path'] ?? ''); ?>"
 };
 </script>

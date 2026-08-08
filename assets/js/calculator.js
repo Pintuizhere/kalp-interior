@@ -740,40 +740,42 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('calc-total-range').innerText = `${formatNum(totalCost)}`;
                 document.getElementById('bd-total').innerText = `${formatNum(totalCost)}`;
 
-                // Extract percentages from config or fallback to defaults
-                const cfg = window.CALC_CONFIG ? window.CALC_CONFIG.settings : {};
-
-                // Get the current selected category to pick the right breakdown percentages
+                // Dynamic Breakdowns Calculation
+                const breakdownData = window.CALC_CONFIG ? window.CALC_CONFIG.breakdownData : {};
                 const selectedCat = document.querySelector('input[name="property_category"]:checked');
                 const catSlug = selectedCat ? selectedCat.value : 'residential';
+                
+                const catBreakdowns = breakdownData[catSlug] || [];
+                let dynamicListHtml = '';
+                let accumulatedCost = 0;
 
-                const p_fur = parseFloat(cfg[`bd_${catSlug}_furniture`] || cfg['bd_furniture']) || 0.285;
-                const p_war = parseFloat(cfg[`bd_${catSlug}_wardrobes`] || cfg['bd_wardrobes']) || 0.204;
-                const p_kit = parseFloat(cfg[`bd_${catSlug}_kitchen`] || cfg['bd_kitchen']) || 0.155;
-                const p_fc = parseFloat(cfg[`bd_${catSlug}_false_ceiling`] || cfg['bd_false_ceiling']) || 0.097;
-                const p_elec = parseFloat(cfg[`bd_${catSlug}_electrical`] || cfg['bd_electrical']) || 0.089;
-                const p_des = parseFloat(cfg[`bd_${catSlug}_design`] || cfg['bd_design']) || 0.07;
-                const p_paint = parseFloat(cfg[`bd_${catSlug}_paint`] || cfg['bd_paint']) || 0.075;
+                if (catBreakdowns.length > 0) {
+                    catBreakdowns.forEach((item, index) => {
+                        const pct = parseFloat(item.percent_value) / 100;
+                        let itemCost = 0;
+                        if (index === catBreakdowns.length - 1) {
+                            // Last item gets the remainder to avoid rounding issues
+                            itemCost = subtotal - accumulatedCost;
+                        } else {
+                            itemCost = Math.round(subtotal * pct);
+                            accumulatedCost += itemCost;
+                        }
 
-                // Update breakdown with new percentages based on subtotal
-                const furnitureCost = Math.round(subtotal * p_fur);
-                const wardrobesCost = Math.round(subtotal * p_war);
-                const kitchenCost = Math.round(subtotal * p_kit);
-                const falseCeilingCost = Math.round(subtotal * p_fc);
-                const electricalCost = Math.round(subtotal * p_elec);
-                const designCost = Math.round(subtotal * p_des);
-                const paintCost = Math.round(subtotal * p_paint);
-                // Make sure decorative sums to exactly the remainder to avoid rounding issues
-                const decorativeCost = subtotal - (furnitureCost + wardrobesCost + kitchenCost + falseCeilingCost + electricalCost + designCost + paintCost);
+                        dynamicListHtml += `
+                            <li style="display: flex;">
+                                <span>${item.name}</span>
+                                <span>${formatNum(itemCost)}</span>
+                            </li>
+                        `;
+                    });
+                } else {
+                    dynamicListHtml = '<li style="display: flex; justify-content: center; opacity: 0.7;">No breakdown found for this category</li>';
+                }
 
-                document.getElementById('bd-furniture').innerText = `${formatNum(furnitureCost)}`;
-                document.getElementById('bd-wardrobes').innerText = `${formatNum(wardrobesCost)}`;
-                document.getElementById('bd-kitchen').innerText = `${formatNum(kitchenCost)}`;
-                document.getElementById('bd-false-ceiling').innerText = `${formatNum(falseCeilingCost)}`;
-                document.getElementById('bd-electrical').innerText = `${formatNum(electricalCost)}`;
-                document.getElementById('bd-design').innerText = `${formatNum(designCost)}`;
-                document.getElementById('bd-paint').innerText = `${formatNum(paintCost)}`;
-                document.getElementById('bd-decorative').innerText = `${formatNum(decorativeCost)}`;
+                const dynListEl = document.getElementById('dynamic-breakdown-list');
+                if (dynListEl) {
+                    dynListEl.innerHTML = dynamicListHtml;
+                }
 
                 // Hide sqft price text
                 document.getElementById('calc-sqft-price').style.display = 'none';
@@ -781,11 +783,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Show estimate breakdown section
                 document.getElementById('estimate-breakdown-section').style.display = 'block';
                 document.getElementById('download-pdf-btn').style.display = 'flex';
-
-                // Show other breakdowns
-                ['bd-furniture', 'bd-wardrobes', 'bd-kitchen', 'bd-false-ceiling', 'bd-electrical', 'bd-design', 'bd-paint', 'bd-decorative'].forEach(id => {
-                    document.getElementById(id).closest('li').style.display = 'flex';
-                });
 
                 // Hide kitchen accessories
                 const kAccList = document.getElementById('kitchen-accessories-list');
@@ -986,35 +983,47 @@ document.addEventListener('DOMContentLoaded', function () {
                                 }
                             }
 
-                            // Populate Quotation
-                            const items = ['furniture', 'wardrobes', 'kitchen', 'false-ceiling', 'electrical', 'paint', 'decorative', 'design'];
-                            items.forEach(item => {
-                                const el = document.getElementById(`bd-${item}`);
-                                const pdfEl = document.getElementById(`pdf-bd-${item}`);
-                                const li = el ? el.closest('li') : null;
-                                if (pdfEl && li) {
-                                    if (li.style.display !== 'none' || computedCosts) {
-                                        pdfEl.textContent = computedCosts ? formatNum(computedCosts[item]) : el.textContent;
-                                        pdfEl.closest('tr').style.display = 'table-row';
-                                    } else {
-                                        pdfEl.closest('tr').style.display = 'none';
-                                    }
-                                }
-                            });
+                            // Populate Quotation (Dynamic Breakdowns)
+                            const pdfBreakdownList = document.getElementById('pdf-breakdown-list');
+                            if (pdfBreakdownList) {
+                                // Clear standard items but keep addons if we want, or just recreate them
+                                // Actually we can just keep the dynamic items first.
+                                let dynamicPdfHtml = '';
+                                
+                                const breakdownData = window.CALC_CONFIG ? window.CALC_CONFIG.breakdownData : {};
+                                const catBreakdowns = breakdownData[catSlug] || [];
+                                let accumulatedCostPdf = 0;
 
-                            const addonIds = ['8', '10', '4'];
-                            addonIds.forEach(id => {
-                                const row = document.getElementById('li-addon-' + id);
-                                const pdfRow = document.getElementById('pdf-row-addon-' + id);
-                                if (row && (row.style.display !== 'none' || (computedCosts && computedCosts['addon-' + id]))) {
-                                    if (pdfRow) pdfRow.style.display = 'table-row';
-                                    const valEl = document.getElementById('bd-addon-' + id);
-                                    const pdfValEl = document.getElementById('pdf-bd-addon-' + id);
-                                    if (pdfValEl) pdfValEl.textContent = computedCosts ? formatNum(computedCosts['addon-' + id]) : (valEl ? valEl.textContent : '');
-                                } else {
-                                    if (pdfRow) pdfRow.style.display = 'none';
-                                }
-                            });
+                                catBreakdowns.forEach((item, index) => {
+                                    const pct = parseFloat(item.percent_value) / 100;
+                                    let itemCost = 0;
+                                    if (index === catBreakdowns.length - 1) {
+                                        itemCost = subtotal - accumulatedCostPdf;
+                                    } else {
+                                        itemCost = Math.round(subtotal * pct);
+                                        accumulatedCostPdf += itemCost;
+                                    }
+
+                                    dynamicPdfHtml += `<tr><td style="padding: 5px 0;">${item.name}</td><td style="padding: 5px 0; text-align: right;">${formatNum(itemCost)}</td></tr>`;
+                                });
+                                
+                                // Save addons that might be in the list
+                                const addonIds = ['8', '10', '4'];
+                                let addonsHtml = '';
+                                addonIds.forEach(id => {
+                                    const row = document.getElementById('li-addon-' + id);
+                                    if (row && (row.style.display !== 'none' || (computedCosts && computedCosts['addon-' + id]))) {
+                                        const valEl = document.getElementById('bd-addon-' + id);
+                                        const text = row.querySelector('span:first-child').innerText;
+                                        const cost = computedCosts ? formatNum(computedCosts['addon-' + id]) : (valEl ? valEl.textContent : '');
+                                        addonsHtml += `<tr><td style="padding: 5px 0; color: #a49375;">${text}</td><td style="padding: 5px 0; text-align: right; color: #a49375;">${cost}</td></tr>`;
+                                    }
+                                });
+
+                                pdfBreakdownList.innerHTML = dynamicPdfHtml + addonsHtml;
+                            }
+
+                            // Addons handled above
 
                             const pdfCostTotal = document.getElementById('pdf-cost-total');
                             if (pdfCostTotal) {

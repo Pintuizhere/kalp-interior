@@ -121,13 +121,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $success_msg = "Add-on saved!";
     }
+    
+    // Add/Edit Breakdown
+    if ($action == 'save_breakdown') {
+        $id = (int)($_POST['id'] ?? 0);
+        $category_slug = $conn->real_escape_string($_POST['category_slug'] ?? 'residential');
+        $name = $conn->real_escape_string($_POST['name']);
+        $percent = (float)$_POST['percent_value'];
+        $position = (int)($_POST['position'] ?? 0);
+        
+        if ($id > 0) {
+            $conn->query("UPDATE calc_breakdowns SET category_slug='$category_slug', name='$name', percent_value=$percent, position=$position WHERE id=$id");
+        } else {
+            $conn->query("INSERT INTO calc_breakdowns (category_slug, name, percent_value, position) VALUES ('$category_slug', '$name', $percent, $position)");
+        }
+        $success_msg = "Cost breakdown item saved!";
+    }
 }
 
 // Handle GET Actions (Delete)
 if (isset($_GET['delete'])) {
     $table = $conn->real_escape_string($_GET['delete']);
     $id = (int)$_GET['id'];
-    if (in_array($table, ['calc_categories', 'calc_types', 'calc_styles', 'calc_packages', 'calc_addons'])) {
+    if (in_array($table, ['calc_categories', 'calc_types', 'calc_styles', 'calc_packages', 'calc_addons', 'calc_breakdowns'])) {
         $conn->query("DELETE FROM $table WHERE id=$id");
         $success_msg = "Item deleted successfully!";
     }
@@ -139,6 +155,7 @@ $types = $conn->query("SELECT * FROM calc_types ORDER BY category_slug ASC, id A
 $styles = $conn->query("SELECT * FROM calc_styles ORDER BY position ASC, percent_value ASC");
 $packages = $conn->query("SELECT * FROM calc_packages ORDER BY category_slug ASC, price_per_sqft ASC");
 $addons = $conn->query("SELECT * FROM calc_addons ORDER BY id ASC");
+$breakdowns = $conn->query("SELECT * FROM calc_breakdowns ORDER BY category_slug ASC, position ASC");
 
 $settings = [];
 $res = $conn->query("SELECT setting_key, setting_value FROM calculator_settings");
@@ -186,9 +203,19 @@ include 'includes/sidebar.php';
     
     <div class="main-content">
         <?php if(!empty($success_msg)): ?>
-            <div style="background:#d4edda; color:#155724; padding:15px; border-radius:5px; margin-bottom:20px;">
-                <?php echo $success_msg; ?>
+            <div id="successToast" style="position: fixed; top: 20px; right: 20px; background: #2ECC71; color: white; padding: 15px 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 9999; font-weight: 500; display: flex; align-items: center; gap: 10px; transition: opacity 0.3s ease;">
+                <i class="fa-solid fa-circle-check"></i>
+                <?php echo htmlspecialchars($success_msg); ?>
             </div>
+            <script>
+                setTimeout(function() {
+                    const toast = document.getElementById('successToast');
+                    if (toast) {
+                        toast.style.opacity = '0';
+                        setTimeout(() => toast.remove(), 300);
+                    }
+                }, 3000); // Show for 3 seconds
+            </script>
         <?php endif; ?>
         
         <div class="page-header">
@@ -521,86 +548,62 @@ include 'includes/sidebar.php';
 
         <!-- COST BREAKDOWN TAB -->
         <div id="tab-breakdowns" class="tab-content">
-            <div class="form-panel">
-                <h3 style="margin-top:0; margin-bottom:20px; font-size:16px;">Cost Breakdown Percentages</h3>
-                <p style="font-size:12px; color:#666; margin-bottom: 20px;">Ensure these total up to 100% per category. The system will calculate specific costs out of the subtotal based on these percentages. The remaining percentage automatically goes to 'Decorative'.</p>
-                <form method="POST">
-                    <input type="hidden" name="action" value="save_breakdowns">
-                    
-                    <h4 style="margin-bottom:15px; padding-bottom:5px; border-bottom:1px solid #eee;">Residential Breakdown</h4>
-                    <div class="calc-grid-1x1-sm">
+            <div class="calc-grid-1x2">
+                <div class="form-panel" style="align-self: start;">
+                    <h3 style="margin-top:0; margin-bottom:20px; font-size:16px;">Add/Edit Cost Breakdown Percentages</h3>
+                    <p style="font-size:12px; color:#666; margin-bottom: 20px;">Ensure these total up to 100% per category. The system will calculate specific costs out of the subtotal based on these percentages.</p>
+                    <form method="POST">
+                        <input type="hidden" name="action" value="save_breakdown">
+                        <input type="hidden" name="id" id="bd_id" value="0">
                         <div class="form-group">
-                            <label class="form-label">Furniture (%)</label>
-                            <input type="number" step="0.01" name="settings[bd_residential_furniture]" value="<?php echo $settings['bd_residential_furniture'] ?? ($settings['bd_furniture'] ?? 28.5); ?>" class="form-control breakdown-input res-input">
+                            <label class="form-label">Category</label>
+                            <select name="category_slug" id="bd_cat" class="form-control" required>
+                                <?php 
+                                if (isset($categories) && $categories->num_rows > 0) {
+                                    mysqli_data_seek($categories, 0);
+                                    while($cat = $categories->fetch_assoc()):
+                                ?>
+                                <option value="<?php echo $cat['slug']; ?>"><?php echo $cat['name']; ?></option>
+                                <?php endwhile; } ?>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Wardrobes (%)</label>
-                            <input type="number" step="0.01" name="settings[bd_residential_wardrobes]" value="<?php echo $settings['bd_residential_wardrobes'] ?? ($settings['bd_wardrobes'] ?? 20.4); ?>" class="form-control breakdown-input res-input">
+                            <label class="form-label">Item Name (e.g. Wardrobes & Storage)</label>
+                            <input type="text" name="name" id="bd_name" required class="form-control">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Kitchen (%)</label>
-                            <input type="number" step="0.01" name="settings[bd_residential_kitchen]" value="<?php echo $settings['bd_residential_kitchen'] ?? ($settings['bd_kitchen'] ?? 15.5); ?>" class="form-control breakdown-input res-input">
+                            <label class="form-label">Percentage (%)</label>
+                            <input type="number" step="0.01" name="percent_value" id="bd_pct" required class="form-control">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">False Ceiling (%)</label>
-                            <input type="number" step="0.01" name="settings[bd_residential_false_ceiling]" value="<?php echo $settings['bd_residential_false_ceiling'] ?? ($settings['bd_false_ceiling'] ?? 9.7); ?>" class="form-control breakdown-input res-input">
+                            <label class="form-label">Position (Sort Order)</label>
+                            <input type="number" name="position" id="bd_pos" required class="form-control" value="0">
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Electrical (%)</label>
-                            <input type="number" step="0.01" name="settings[bd_residential_electrical]" value="<?php echo $settings['bd_residential_electrical'] ?? ($settings['bd_electrical'] ?? 8.9); ?>" class="form-control breakdown-input res-input">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Design (%)</label>
-                            <input type="number" step="0.01" name="settings[bd_residential_design]" value="<?php echo $settings['bd_residential_design'] ?? ($settings['bd_design'] ?? 7.0); ?>" class="form-control breakdown-input res-input">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Paint (%)</label>
-                            <input type="number" step="0.01" name="settings[bd_residential_paint]" value="<?php echo $settings['bd_residential_paint'] ?? ($settings['bd_paint'] ?? 7.5); ?>" class="form-control breakdown-input res-input">
-                        </div>
-                    </div>
-                    <div style="margin-bottom: 30px; font-weight: bold; padding: 10px; background: #eee; display: inline-block; border-radius: 5px;">
-                        Residential Total: <span id="res-total">0</span>% (Remaining allocated to 'Decorative')
-                    </div>
-
-                    <h4 style="margin-bottom:15px; padding-bottom:5px; border-bottom:1px solid #eee;">Commercial Breakdown</h4>
-                    <div class="calc-grid-1x1-sm">
-                        <div class="form-group">
-                            <label class="form-label">Furniture (%)</label>
-                            <input type="number" step="0.01" name="settings[bd_commercial_furniture]" value="<?php echo $settings['bd_commercial_furniture'] ?? ($settings['bd_furniture'] ?? 28.5); ?>" class="form-control breakdown-input com-input">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Wardrobes (%)</label>
-                            <input type="number" step="0.01" name="settings[bd_commercial_wardrobes]" value="<?php echo $settings['bd_commercial_wardrobes'] ?? ($settings['bd_wardrobes'] ?? 20.4); ?>" class="form-control breakdown-input com-input">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Kitchen (%)</label>
-                            <input type="number" step="0.01" name="settings[bd_commercial_kitchen]" value="<?php echo $settings['bd_commercial_kitchen'] ?? ($settings['bd_kitchen'] ?? 15.5); ?>" class="form-control breakdown-input com-input">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">False Ceiling (%)</label>
-                            <input type="number" step="0.01" name="settings[bd_commercial_false_ceiling]" value="<?php echo $settings['bd_commercial_false_ceiling'] ?? ($settings['bd_false_ceiling'] ?? 9.7); ?>" class="form-control breakdown-input com-input">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Electrical (%)</label>
-                            <input type="number" step="0.01" name="settings[bd_commercial_electrical]" value="<?php echo $settings['bd_commercial_electrical'] ?? ($settings['bd_electrical'] ?? 8.9); ?>" class="form-control breakdown-input com-input">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Design (%)</label>
-                            <input type="number" step="0.01" name="settings[bd_commercial_design]" value="<?php echo $settings['bd_commercial_design'] ?? ($settings['bd_design'] ?? 7.0); ?>" class="form-control breakdown-input com-input">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Paint (%)</label>
-                            <input type="number" step="0.01" name="settings[bd_commercial_paint]" value="<?php echo $settings['bd_commercial_paint'] ?? ($settings['bd_paint'] ?? 7.5); ?>" class="form-control breakdown-input com-input">
-                        </div>
-                    </div>
-                    <div style="margin-bottom: 20px; font-weight: bold; padding: 10px; background: #eee; display: inline-block; border-radius: 5px;">
-                        Commercial Total: <span id="com-total">0</span>% (Remaining allocated to 'Decorative')
-                    </div>
-
-                    <div style="margin-top: 20px;">
-                        <button type="submit" class="btn-primary">Save Breakdowns</button>
-                    </div>
-                </form>
+                        <button type="submit" class="btn-primary">Save Item</button>
+                        <button type="button" class="btn-primary" style="background:#ccc; color:#333; margin-left:10px;" onclick="resetForm('bd')">Reset</button>
+                    </form>
+                </div>
+                <div class="table-wrapper">
+                    <table class="admin-table">
+                        <thead><tr><th>Pos</th><th>Category</th><th>Item Name</th><th>Percentage</th><th>Action</th></tr></thead>
+                        <tbody>
+                            <?php while($row = $breakdowns->fetch_assoc()): ?>
+                            <tr>
+                                <td><?php echo $row['position']; ?></td>
+                                <td><span style="text-transform:uppercase; font-size:10px; padding:3px 8px; background:#eee; border-radius:10px;"><?php echo $row['category_slug']; ?></span></td>
+                                <td><strong><?php echo htmlspecialchars($row['name']); ?></strong></td>
+                                <td><?php echo $row['percent_value']; ?>%</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <a href="javascript:void(0)" class="btn-icon" onclick="editBreakdown(<?php echo $row['id']; ?>, '<?php echo addslashes($row['category_slug']); ?>', '<?php echo addslashes($row['name']); ?>', <?php echo $row['percent_value']; ?>, <?php echo $row['position']; ?>)"><i class="fa-solid fa-pen"></i></a>
+                                        <a href="?delete=calc_breakdowns&id=<?php echo $row['id']; ?>" class="btn-icon delete" onclick="return confirm('Delete?');"><i class="fa-solid fa-trash"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -832,6 +835,12 @@ function resetForm(prefix) {
         document.getElementById('addon_pct').value = '';
         document.getElementById('addon_cat').value = 'residential';
     }
+    if(prefix == 'bd') {
+        document.getElementById('bd_name').value = '';
+        document.getElementById('bd_pct').value = '';
+        document.getElementById('bd_pos').value = '0';
+        document.getElementById('bd_cat').value = 'residential';
+    }
 }
 
 function editCat(id, name, icon) {
@@ -873,24 +882,12 @@ function editAddon(id, cat, name, pct) {
     document.getElementById('addon_name').value = name;
     document.getElementById('addon_pct').value = pct;
 }
-
-// Breakdown Total Calculation
-function updateTotals() {
-    let resSum = 0;
-    document.querySelectorAll('.res-input').forEach(inp => resSum += parseFloat(inp.value || 0));
-    const resTotal = document.getElementById('res-total');
-    if (resTotal) {
-        resTotal.innerText = resSum.toFixed(2);
-        resTotal.style.color = (resSum > 100) ? 'red' : '#333';
-    }
-
-    let comSum = 0;
-    document.querySelectorAll('.com-input').forEach(inp => comSum += parseFloat(inp.value || 0));
-    const comTotal = document.getElementById('com-total');
-    if (comTotal) {
-        comTotal.innerText = comSum.toFixed(2);
-        comTotal.style.color = (comSum > 100) ? 'red' : '#333';
-    }
+function editBreakdown(id, cat, name, pct, pos) {
+    document.getElementById('bd_id').value = id;
+    document.getElementById('bd_cat').value = cat;
+    document.getElementById('bd_name').value = name;
+    document.getElementById('bd_pct').value = pct;
+    document.getElementById('bd_pos').value = pos;
 }
 
 // Icon Picker Logic
@@ -950,8 +947,38 @@ function filterIcons() {
     renderIcons(filtered);
 }
 
-document.querySelectorAll('.breakdown-input').forEach(inp => inp.addEventListener('input', updateTotals));
-updateTotals();
+// Button loading states for Save and Delete
+document.addEventListener('DOMContentLoaded', function() {
+    // For Save buttons
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function() {
+            const btn = this.querySelector('button[type="submit"]');
+            if (btn) {
+                btn.style.backgroundColor = '#2ECC71';
+                btn.style.color = '#fff';
+                btn.style.border = 'none';
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            }
+        });
+    });
+
+    // For Delete buttons
+    document.querySelectorAll('.btn-icon.delete').forEach(btn => {
+        // Remove the inline onclick to manage it via JS
+        btn.removeAttribute('onclick');
+        btn.addEventListener('click', function(e) {
+            if(confirm('Are you sure you want to delete this item?')) {
+                this.style.backgroundColor = '#2ECC71';
+                this.style.color = '#fff';
+                this.style.border = 'none';
+                this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                this.style.pointerEvents = 'none';
+            } else {
+                e.preventDefault();
+            }
+        });
+    });
+});
 </script>
 
 <?php include 'includes/footer.php'; ?>
