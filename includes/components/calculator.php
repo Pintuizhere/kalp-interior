@@ -50,8 +50,8 @@ while($row = $calc_breakdowns->fetch_assoc()){ $calc_breakdowns_data[$row['categ
         .results-cta { padding: 15px !important; flex-direction: column; text-align: center; }
         .results-cta .cta-arrow { align-self: center; margin-top: 10px; }
         
-        .cf-badge { width: 100% !important; margin-bottom: 10px; }
-        .calc-footer-badges { padding: 20px 0 !important; }
+        .cf-badge { width: 100% !important; margin-bottom: 15px; display: flex; align-items: flex-start; }
+        .calc-footer-badges { padding: 25px !important; flex-direction: column; background: #fff; border-radius: 15px; }
     }
     
     @media (max-width: 480px) {

@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 el.style.display = (el.getAttribute('data-category') === val) ? 'inline-flex' : 'none';
                             });
                             document.querySelectorAll('.style-card').forEach(el => {
-                                el.style.display = (el.getAttribute('data-category') === val) ? 'flex' : 'none';
+                                el.style.display = 'flex';
                             });
                         }
                     }
@@ -604,17 +604,26 @@ document.addEventListener('DOMContentLoaded', function () {
                     const totalCost = baseCost + addonsCost;
 
                     // Reset all other breakdowns
-                    ['bd-furniture', 'bd-wardrobes', 'bd-false-ceiling', 'bd-electrical', 'bd-design', 'bd-paint', 'bd-decorative'].forEach(id => {
-                        document.getElementById(id).innerText = '₹0';
-                        document.getElementById(id).closest('li').style.display = 'none';
+                    ['bd-furniture', 'bd-wardrobes', 'bd-false-ceiling', 'bd-electrical', 'bd-design', 'bd-paint', 'bd-decorative', 'bd-kitchen'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) {
+                            el.innerText = '₹0';
+                            if (el.closest('li')) el.closest('li').style.display = 'none';
+                        }
                     });
+                    
+                    const dynListEl = document.getElementById('dynamic-breakdown-list');
+                    if (dynListEl) {
+                        dynListEl.innerHTML = `<li style="display: flex;">
+                            <span>Modular Kitchen</span>
+                            <span>${formatNum(baseCost)}</span>
+                        </li>`;
+                    }
+
                     ['8', '10', '4'].forEach(val => {
                         const li = document.getElementById(`li-addon-${val}`);
                         if (li) li.style.display = 'none';
                     });
-
-                    document.getElementById('bd-kitchen').closest('li').style.display = 'flex';
-                    document.getElementById('bd-kitchen').innerText = formatNum(baseCost);
 
                     document.getElementById('calc-total-range').innerText = formatNum(totalCost);
                     document.getElementById('bd-total').innerText = formatNum(totalCost);
@@ -817,7 +826,8 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(() => {
                 const typeEl = document.querySelector('input[name="property_type"]:checked');
                 const sqftInput = document.getElementById('sqft-input');
-                const isKitchen = document.querySelector('input[name="property_category"]:checked')?.value === 'kitchen';
+                const _catVal = document.querySelector('input[name="property_category"]:checked')?.value;
+                const isKitchen = _catVal === 'kitchen' || _catVal === 'modular-kitchen';
 
                 let ranges = [];
                 if (!isKitchen && typeEl && typeEl.value !== 'custom' && !sqftInput.value) {
@@ -950,36 +960,49 @@ document.addEventListener('DOMContentLoaded', function () {
                             let computedCosts = null;
                             const formatNum = (num) => '₹' + Math.round(num).toLocaleString('en-IN');
 
-                            if (customSqft && !isKitchen) {
+                            const catSlug = categoryEl ? categoryEl.value : 'residential';
+                            let subtotal = 0;
+
+                            if (!isKitchen) {
                                 const rate = parseInt(finishValue);
-                                let baseCost = customSqft * rate;
+                                let sqftToUse = customSqft;
+                                if (!sqftToUse) {
+                                    sqftToUse = parseInt(sqftInput && sqftInput.value ? sqftInput.value : 0);
+                                    if (!sqftToUse && typeEl && typeEl.value !== 'custom') {
+                                        sqftToUse = parseInt(typeEl.value);
+                                    }
+                                }
+                                let baseCost = (sqftToUse || 0) * rate;
                                 const designStylePct = parseInt(styleEl ? styleEl.value : 0);
                                 const designStyleCost = baseCost * (designStylePct / 100);
-                                let addonsCost = 0;
-                                const checkedAddons = document.querySelectorAll('input[name="addons"]:checked');
-                                if (checkedAddons) {
-                                    checkedAddons.forEach(addon => {
-                                        addonsCost += baseCost * (parseInt(addon.value || 0) / 100);
-                                    });
-                                }
-                                const subtotal = Math.round(baseCost + designStyleCost);
-                                const totalCost = Math.round(subtotal + addonsCost);
-                                computedCosts = {
-                                    'furniture': Math.round(subtotal * 0.285),
-                                    'wardrobes': Math.round(subtotal * 0.204),
-                                    'kitchen': Math.round(subtotal * 0.155),
-                                    'false-ceiling': Math.round(subtotal * 0.097),
-                                    'electrical': Math.round(subtotal * 0.089),
-                                    'design': Math.round(subtotal * 0.07),
-                                    'paint': Math.round(subtotal * 0.075),
-                                    'total': totalCost
-                                };
-                                computedCosts['decorative'] = subtotal - (computedCosts['furniture'] + computedCosts['wardrobes'] + computedCosts['kitchen'] + computedCosts['false-ceiling'] + computedCosts['electrical'] + computedCosts['design'] + computedCosts['paint']);
+                                subtotal = Math.round(baseCost + designStyleCost);
 
-                                if (checkedAddons) {
-                                    checkedAddons.forEach(addon => {
-                                        computedCosts['addon-' + addon.value] = Math.round(baseCost * (parseInt(addon.value || 0) / 100));
-                                    });
+                                if (customSqft) {
+                                    let addonsCost = 0;
+                                    const checkedAddons = document.querySelectorAll('input[name="addons"]:checked');
+                                    if (checkedAddons) {
+                                        checkedAddons.forEach(addon => {
+                                            addonsCost += baseCost * (parseInt(addon.value || 0) / 100);
+                                        });
+                                    }
+                                    const totalCost = Math.round(subtotal + addonsCost);
+                                    computedCosts = {
+                                        'furniture': Math.round(subtotal * 0.285),
+                                        'wardrobes': Math.round(subtotal * 0.204),
+                                        'kitchen': Math.round(subtotal * 0.155),
+                                        'false-ceiling': Math.round(subtotal * 0.097),
+                                        'electrical': Math.round(subtotal * 0.089),
+                                        'design': Math.round(subtotal * 0.07),
+                                        'paint': Math.round(subtotal * 0.075),
+                                        'total': totalCost
+                                    };
+                                    computedCosts['decorative'] = subtotal - (computedCosts['furniture'] + computedCosts['wardrobes'] + computedCosts['kitchen'] + computedCosts['false-ceiling'] + computedCosts['electrical'] + computedCosts['design'] + computedCosts['paint']);
+    
+                                    if (checkedAddons) {
+                                        checkedAddons.forEach(addon => {
+                                            computedCosts['addon-' + addon.value] = Math.round(baseCost * (parseInt(addon.value || 0) / 100));
+                                        });
+                                    }
                                 }
                             }
 
