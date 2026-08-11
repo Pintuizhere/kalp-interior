@@ -311,7 +311,7 @@ if ($categories_result && $categories_result->num_rows > 0) {
                             <div class="promo-content">
                                 <h4>— Get Estimate</h4>
                                 <h3>Celebrate <span class="accent-text" style="font-family: var(--font-accent); font-style: italic; font-weight: 400; color: var(--accent-color);">Your Dream<br>Project</span> with Our Expertise</h3>
-                                <a href="contact.php" class="btn-primary" style="padding: 10px 25px; font-size: 13px;">Get Estimate</a>
+                                <a href="calculator.php" class="btn-primary" style="padding: 10px 25px; font-size: 13px;">Get Estimate</a>
                             </div>
                         </div>
 

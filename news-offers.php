@@ -217,7 +217,7 @@ require_once 'admin/config/db.php';
                 <?php
                 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
                 if ($page < 1) $page = 1;
-                $limit = 9;
+                $limit = 12;
                 $offset = ($page - 1) * $limit;
 
                 // Count total

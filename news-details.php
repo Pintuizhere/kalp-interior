@@ -531,7 +531,7 @@ if ($cat == 'news') {
                             CELEBRATE <span class="accent-script">Your Dream</span><br>
                             <span class="accent-script" style="margin-right: 5px;">Project</span> WITH OUR EXPERTISE
                         </h3>
-                        <a href="contact.php" class="estimate-btn">Get Estimate</a>
+                        <a href="calculator.php" class="estimate-btn">Get Estimate</a>
                     </div>
                 </div>
 
