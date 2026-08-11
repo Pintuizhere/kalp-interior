@@ -158,7 +158,6 @@ include 'includes/header.php';
             <div class="sd-why-grid">
                 <div class="sd-why-left">
                     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
-                        <span style="display: block; width: 40px; height: 2px; background: var(--accent-color);"></span>
                         <p class="section-subtitle" style="margin-bottom: 0;">WHY CHOOSE US</p>
                     </div>
                     <h2 class="sd-why-title"><?php echo $sd_why_title; ?><br><span class="signature-text" style="color: var(--accent-color); font-weight: 400; text-transform: none;"><?php echo $sd_why_signature; ?></span></h2>
@@ -324,7 +323,6 @@ include 'includes/header.php';
                     <img src="<?php echo $p_img; ?>" alt="<?php echo $p_title; ?>" class="mp-card-bg">
                     <div class="mp-card-top">
                         <div class="mp-tag"><?php echo $p_cat; ?></div>
-                        <div class="mp-like"><i class="fa-regular fa-heart"></i></div>
                     </div>
                     <div class="mp-card-bottom">
                         <div class="mp-card-title-row" style="margin-bottom: 10px;">

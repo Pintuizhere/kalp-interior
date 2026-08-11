@@ -40,7 +40,7 @@ $testi_stats_stmt->close();
     <div class="container" style="max-width: 1200px;">
         <div class="testi-top-area" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px;">
             <div style="max-width: 50%;">
-                <p class="section-subtitle" style="justify-content: flex-start; margin-bottom: 15px;"><span style="display: inline-block; width: 40px; height: 1px; background-color: var(--accent-color); margin-right: 15px;"></span> TESTIMONIAL</p>
+                <p class="section-subtitle" style="justify-content: flex-start; margin-bottom: 15px;">TESTIMONIAL</p>
                 <h2 class="section-title" style="font-size: 3rem; color: var(--text-dark); line-height: 1.2; margin: 0;">Real experiences from<br>satisfied homeowners.</h2>
             </div>
             <div style="max-width: 35%;">

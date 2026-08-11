@@ -34,13 +34,17 @@ include 'includes/header.php';
                 ?>
                 <!-- Service Card -->
                 <div class="hp-service-card">
-                    <div class="hp-sc-image">
-                        <img src="<?php echo htmlspecialchars($srv_img); ?>" alt="<?php echo htmlspecialchars($srv['name']); ?>">
-                        <div class="hp-sc-icon"><i class="<?php echo htmlspecialchars($srv['icon']); ?>"></i></div>
-                    </div>
+                    <a href="service-details.php?slug=<?php echo !empty($srv['slug']) ? urlencode($srv['slug']) : $srv['id']; ?>" style="display: block; text-decoration: none; color: inherit;">
+                        <div class="hp-sc-image">
+                            <img src="<?php echo htmlspecialchars($srv_img); ?>" alt="<?php echo htmlspecialchars($srv['name']); ?>">
+                            <div class="hp-sc-icon"><i class="<?php echo htmlspecialchars($srv['icon']); ?>"></i></div>
+                        </div>
+                    </a>
                     <div class="hp-sc-content">
                         <div class="hp-sc-number"><?php echo $num; ?></div>
-                        <h3><?php echo htmlspecialchars(strtoupper($srv['name'])); ?></h3>
+                        <a href="service-details.php?slug=<?php echo !empty($srv['slug']) ? urlencode($srv['slug']) : $srv['id']; ?>" style="text-decoration: none; color: inherit;">
+                            <h3><?php echo htmlspecialchars(strtoupper($srv['name'])); ?></h3>
+                        </a>
                         <p><?php echo htmlspecialchars($srv['short_desc']); ?></p>
                         <a href="service-details.php?slug=<?php echo !empty($srv['slug']) ? urlencode($srv['slug']) : $srv['id']; ?>" class="hp-sc-link">Explore Service <i class="fa-solid fa-arrow-right"></i></a>
                     </div>

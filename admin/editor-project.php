@@ -90,9 +90,21 @@ $cover_image = !empty($project['cover_image']) ? '../' . $project['cover_image']
                     <div class="hero-details-header">
                         <h2 class="project-title" contenteditable="true"><?php echo htmlspecialchars($title); ?></h2>
                         <div class="project-actions">
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-solid fa-share-nodes"></i></button>
+                            <button class="icon-btn" onclick="shareProject()"><i class="fa-solid fa-share-nodes"></i></button>
                         </div>
+                        <script>
+                        function shareProject() {
+                            if (navigator.share) {
+                                navigator.share({
+                                    title: document.title,
+                                    url: window.location.href
+                                }).catch(console.error);
+                            } else {
+                                navigator.clipboard.writeText(window.location.href);
+                                alert('Link copied to clipboard!');
+                            }
+                        }
+                        </script>
                     </div>
                     <p class="location-pin" contenteditable="true"><i class="fa-solid fa-location-dot" style="color: var(--accent-color); margin-right: 8px;"></i> <?php echo htmlspecialchars($location); ?></p>
                     

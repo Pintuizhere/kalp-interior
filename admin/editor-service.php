@@ -249,7 +249,6 @@ include 'includes/header.php';
                         <div class="sd-why-grid">
                             <div class="sd-why-left">
                                 <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
-                                    <span style="display: block; width: 40px; height: 2px; background: var(--accent-color);"></span>
                                     <p class="section-subtitle" style="margin-bottom: 0;">WHY CHOOSE US</p>
                                 </div>
                                 <h2 class="sd-why-title"><span contenteditable="true" id="v-sd_why_title"><?php echo $sd_why_title; ?></span><br><span class="signature-text" style="color: var(--accent-color); font-weight: 400; text-transform: none;" contenteditable="true" id="v-sd_why_signature"><?php echo $sd_why_signature; ?></span></h2>

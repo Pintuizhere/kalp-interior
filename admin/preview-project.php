@@ -38,9 +38,21 @@ include '../includes/header.php';
                     <div class="hero-details-header">
                         <h2 class="project-title" id="pv_title">MODERN 4 BHK<br>APARTMENT</h2>
                         <div class="project-actions">
-                            <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
-                            <button class="icon-btn"><i class="fa-solid fa-share-nodes"></i></button>
+                            <button class="icon-btn" onclick="shareProject()"><i class="fa-solid fa-share-nodes"></i></button>
                         </div>
+                        <script>
+                        function shareProject() {
+                            if (navigator.share) {
+                                navigator.share({
+                                    title: document.title,
+                                    url: window.location.href
+                                }).catch(console.error);
+                            } else {
+                                navigator.clipboard.writeText(window.location.href);
+                                alert('Link copied to clipboard!');
+                            }
+                        }
+                        </script>
                     </div>
                     <p class="location-pin"><i class="fa-solid fa-location-dot" style="color: var(--accent-color); margin-right: 8px;"></i> <span id="pv_location">Mumbai, India</span></p>
                     
@@ -283,7 +295,7 @@ include '../includes/header.php';
                     <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="Villa" class="mp-card-bg">
                     <div class="mp-card-top">
                         <div class="mp-tag"><i class="fa-solid fa-house"></i> Residential Design</div>
-                        <div class="mp-like"><i class="fa-regular fa-heart"></i></div>
+
                     </div>
                     <div class="mp-card-bottom">
                         <div class="mp-card-title-row">
@@ -305,7 +317,7 @@ include '../includes/header.php';
                     <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80" alt="Office" class="mp-card-bg">
                     <div class="mp-card-top">
                         <div class="mp-tag"><i class="fa-solid fa-building"></i> Commercial Design</div>
-                        <div class="mp-like"><i class="fa-regular fa-heart"></i></div>
+
                     </div>
                     <div class="mp-card-bottom">
                         <div class="mp-card-title-row">
@@ -327,7 +339,7 @@ include '../includes/header.php';
                     <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80" alt="Apartment" class="mp-card-bg">
                     <div class="mp-card-top">
                         <div class="mp-tag"><i class="fa-solid fa-house"></i> Residential Design</div>
-                        <div class="mp-like"><i class="fa-regular fa-heart"></i></div>
+
                     </div>
                     <div class="mp-card-bottom">
                         <div class="mp-card-title-row">

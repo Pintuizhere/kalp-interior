@@ -114,9 +114,9 @@ if ($categories_result && $categories_result->num_rows > 0) {
                     <div style="position: sticky; top: 100px;">
                         <h4 style="font-size: 12px; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 20px; text-transform: uppercase;">Share</h4>
                         <div class="share-icons-vertical" style="display: flex; flex-direction: column; gap: 15px;">
-                            <a href="#" class="share-icon"><i class="fa-brands fa-facebook-f"></i></a>
-                            <a href="#" class="share-icon"><i class="fa-brands fa-twitter"></i></a>
-                            <a href="#" class="share-icon"><i class="fa-brands fa-linkedin-in"></i></a>
+                            <a href="#" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href), 'facebook-share', 'width=800,height=600'); return false;" class="share-icon" title="Share on Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                            <a href="#" onclick="window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(window.location.href) + '&text=' + encodeURIComponent(document.title), 'twitter-share', 'width=800,height=600'); return false;" class="share-icon" title="Share on Twitter"><i class="fa-brands fa-twitter"></i></a>
+                            <a href="#" onclick="window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(window.location.href), 'linkedin-share', 'width=800,height=600'); return false;" class="share-icon" title="Share on LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
                         </div>
                     </div>
                 </div>
@@ -263,6 +263,11 @@ if ($categories_result && $categories_result->num_rows > 0) {
                     .toc-list li a:hover {
                         color: var(--accent-color);
                     }
+                    @media (max-width: 991px) {
+                        .toc-widget {
+                            display: none !important;
+                        }
+                    }
                 </style>
                 <div class="blog-main-content">
                     <?php echo $post['content']; ?>
@@ -284,7 +289,7 @@ if ($categories_result && $categories_result->num_rows > 0) {
                             </div>
                         </div>
 
-                        <div class="sidebar-widget">
+                        <div class="sidebar-widget toc-widget">
                             <h4 class="widget-title">Table of Content</h4>
                             <ul class="toc-list">
                                 <?php foreach($toc_headings as $heading): ?>
